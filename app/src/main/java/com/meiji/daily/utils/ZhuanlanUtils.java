@@ -1,7 +1,9 @@
 package com.meiji.daily.utils;
 
+import com.google.gson.Gson;
 import com.meiji.daily.bean.ZhuanlanBean;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,8 +12,19 @@ import java.util.List;
 
 public class ZhuanlanUtils {
 
-    public static List<ZhuanlanBean> saveData() {
+    private List<ZhuanlanBean> list = new ArrayList<>();
 
-        return;
+    public void saveData(String response) {
+        Gson gson = new Gson();
+        ZhuanlanBean bean = gson.fromJson(response, ZhuanlanBean.class);
+        list.add(bean);
+    }
+
+    public List<ZhuanlanBean> getList() {
+        return list;
+    }
+
+    public void setList(List<ZhuanlanBean> list) {
+        this.list = list;
     }
 }

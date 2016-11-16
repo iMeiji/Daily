@@ -18,10 +18,13 @@ import com.meiji.daily.R;
 import com.meiji.daily.adapter.ZhuanlanAdapter;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.utils.Api;
+import com.meiji.daily.utils.ZhuanlanUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -29,7 +32,7 @@ import okhttp3.Response;
 /**
  * Created by Meiji on 2016/11/16.
  */
-public class GlobalFragment extends Fragment {
+public class GlobalFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     public static final int TYPE_PRODUCT = 0;
     public static final int TYPE_MUSIC = 1;
@@ -47,13 +50,14 @@ public class GlobalFragment extends Fragment {
         @Override
         public boolean handleMessage(Message message) {
             if (message.what == 1) {
-                SetAdapter();
+                setAdapter();
             }
             return false;
         }
     });
     private Gson gson = new Gson();
     private OkHttpClient okHttpClient = new OkHttpClient();
+    private ZhuanlanUtils utils = new ZhuanlanUtils();
 
     public GlobalFragment() {
 
@@ -83,13 +87,6 @@ public class GlobalFragment extends Fragment {
 
         initViews(view);
 
-/*        refreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                refreshLayout.setRefreshing(true);
-            }
-        });*/
-
         switch (type) {
             default:
             case TYPE_PRODUCT:
@@ -113,20 +110,15 @@ public class GlobalFragment extends Fragment {
         }
         requestData();
 
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                requestData();
-            }
-        });
-
         return view;
     }
 
     private void requestData() {
-        if (list != null) {
+        if (list.size() != 0) {
             list.clear();
         }
+
+        refreshLayout.setRefreshing(true);
 
         for (int i = 0; i < ids.length; i++) {
             final Request request = new Request.Builder()
@@ -135,37 +127,62 @@ public class GlobalFragment extends Fragment {
                     .build();
 
             final int finalI = i;
-            new Thread(new Runnable() {
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    try {
+//                        Response response = okHttpClient.newCall(request).execute();
+//                        if (response.isSuccessful()) {
+//                            String responseJson = response.body().string();
+//                            //System.out.println(responseJson);
+////                            ZhuanlanBean bean = gson.fromJson(responseJson, ZhuanlanBean.class);
+////                            list.add(bean);
+//                            if (finalI == ids.length - 1) {
+//                                /*Message message = handler.obtainMessage();
+//                                message.what = 1;
+//                                message.sendToTarget();*/
+//                            }
+//                        }
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }).start();
+            okHttpClient.newCall(request).enqueue(new Callback() {
                 @Override
-                public void run() {
-                    try {
-                        Response response = okHttpClient.newCall(request).execute();
-                        if (response.isSuccessful()) {
-                            String responseJson = response.body().string();
-                            System.out.println(responseJson);
-                            ZhuanlanBean bean = gson.fromJson(responseJson, ZhuanlanBean.class);
-                            list.add(bean);
-                            if (finalI == ids.length - 1) {
-                                Message message = handler.obtainMessage();
-                                message.what = 1;
-                                message.sendToTarget();
-                            }
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                public void onFailure(Call call, IOException e) {
+                    e.printStackTrace();
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    if (!response.isSuccessful())
+                        throw new IOException("Unexpected code " + response);
+
+                    String responseJson = response.body().string();
+                    ZhuanlanBean bean = gson.fromJson(responseJson, ZhuanlanBean.class);
+                    list.add(bean);
+                    System.out.println(finalI + "---" + responseJson);
+                    if (finalI == ids.length - 1) {
+                        Message message = handler.obtainMessage();
+                        message.what = 1;
+                        message.sendToTarget();
                     }
                 }
-            }).start();
+            });
         }
+
     }
 
-    private void SetAdapter() {
+    private void setAdapter() {
+        recyclerView.setVisibility(View.VISIBLE);
         if (adapter == null) {
             adapter = new ZhuanlanAdapter(getActivity(), list);
             recyclerView.setAdapter(adapter);
             refreshLayout.setRefreshing(false);
         } else {
-            adapter.notifyDataSetChanged();
+            recyclerView.setAdapter(adapter);
+// 有毒           adapter.notifyDataSetChanged();
             refreshLayout.setRefreshing(false);
         }
     }
@@ -175,6 +192,7 @@ public class GlobalFragment extends Fragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.rv_main);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
         refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
 
         //设置下拉刷新的按钮的颜色
@@ -189,10 +207,18 @@ public class GlobalFragment extends Fragment {
         refreshLayout.setProgressBackgroundColorSchemeColor(Color.WHITE);
         //设置下拉刷新按钮的大小
         refreshLayout.setSize(SwipeRefreshLayout.DEFAULT);
+        refreshLayout.setOnRefreshListener(this);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        refreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onRefresh() {
+        recyclerView.setVisibility(View.GONE);
+        requestData();
     }
 }
