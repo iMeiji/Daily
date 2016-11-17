@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,7 +19,6 @@ import com.meiji.daily.R;
 import com.meiji.daily.adapter.ZhuanlanAdapter;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.utils.Api;
-import com.meiji.daily.utils.ZhuanlanUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ import okhttp3.Response;
 /**
  * Created by Meiji on 2016/11/16.
  */
-public class GlobalFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class ZhuanlanFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     public static final int TYPE_PRODUCT = 0;
     public static final int TYPE_MUSIC = 1;
@@ -52,19 +52,22 @@ public class GlobalFragment extends Fragment implements SwipeRefreshLayout.OnRef
             if (message.what == 1) {
                 setAdapter();
             }
+            if (message.what == 2) {
+                refreshLayout.setRefreshing(false);
+            }
             return false;
         }
     });
     private Gson gson = new Gson();
     private OkHttpClient okHttpClient = new OkHttpClient();
-    private ZhuanlanUtils utils = new ZhuanlanUtils();
+    private Message message;
 
-    public GlobalFragment() {
+    public ZhuanlanFragment() {
 
     }
 
-    public static GlobalFragment newInstance() {
-        return new GlobalFragment();
+    public static ZhuanlanFragment newInstance() {
+        return new ZhuanlanFragment();
     }
 
     public int getType() {
@@ -114,11 +117,12 @@ public class GlobalFragment extends Fragment implements SwipeRefreshLayout.OnRef
     }
 
     private void requestData() {
+        //Call call = new Call();
         if (list.size() != 0) {
             list.clear();
         }
 
-        refreshLayout.setRefreshing(true);
+        setRefreshing(true);
 
         for (int i = 0; i < ids.length; i++) {
             final Request request = new Request.Builder()
@@ -127,31 +131,14 @@ public class GlobalFragment extends Fragment implements SwipeRefreshLayout.OnRef
                     .build();
 
             final int finalI = i;
-//            new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    try {
-//                        Response response = okHttpClient.newCall(request).execute();
-//                        if (response.isSuccessful()) {
-//                            String responseJson = response.body().string();
-//                            //System.out.println(responseJson);
-////                            ZhuanlanBean bean = gson.fromJson(responseJson, ZhuanlanBean.class);
-////                            list.add(bean);
-//                            if (finalI == ids.length - 1) {
-//                                /*Message message = handler.obtainMessage();
-//                                message.what = 1;
-//                                message.sendToTarget();*/
-//                            }
-//                        }
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }).start();
             okHttpClient.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     e.printStackTrace();
+                    Snackbar.make(refreshLayout, "网络不给力", Snackbar.LENGTH_SHORT).show();
+                    message = handler.obtainMessage();
+                    message.what = 2;
+                    message.sendToTarget();
                 }
 
                 @Override
@@ -164,48 +151,39 @@ public class GlobalFragment extends Fragment implements SwipeRefreshLayout.OnRef
                     list.add(bean);
                     System.out.println(finalI + "---" + responseJson);
                     if (finalI == ids.length - 1) {
-                        Message message = handler.obtainMessage();
+                        message = handler.obtainMessage();
                         message.what = 1;
                         message.sendToTarget();
                     }
                 }
             });
         }
-
     }
 
     private void setAdapter() {
-        recyclerView.setVisibility(View.VISIBLE);
+        setRefreshing(false);
         if (adapter == null) {
             adapter = new ZhuanlanAdapter(getActivity(), list);
-            recyclerView.setAdapter(adapter);
-            refreshLayout.setRefreshing(false);
-        } else {
-            recyclerView.setAdapter(adapter);
-// 有毒           adapter.notifyDataSetChanged();
-            refreshLayout.setRefreshing(false);
         }
+        recyclerView.setAdapter(adapter);
     }
 
     private void initViews(View view) {
-
         recyclerView = (RecyclerView) view.findViewById(R.id.rv_main);
+        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
-
-        //设置下拉刷新的按钮的颜色
+        // 设置下拉刷新的按钮的颜色
         refreshLayout.setColorSchemeResources(
                 android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-        //设置手指在屏幕上下拉多少距离开始刷新
+        // 设置手指在屏幕上下拉多少距离开始刷新
         refreshLayout.setDistanceToTriggerSync(300);
-        //设置下拉刷新按钮的背景颜色
+        // 设置下拉刷新按钮的背景颜色
         refreshLayout.setProgressBackgroundColorSchemeColor(Color.WHITE);
-        //设置下拉刷新按钮的大小
+        //设 置下拉刷新按钮的大小
         refreshLayout.setSize(SwipeRefreshLayout.DEFAULT);
         refreshLayout.setOnRefreshListener(this);
     }
@@ -213,12 +191,21 @@ public class GlobalFragment extends Fragment implements SwipeRefreshLayout.OnRef
     @Override
     public void onDestroy() {
         super.onDestroy();
-        refreshLayout.setRefreshing(false);
+        setRefreshing(false);
     }
 
     @Override
     public void onRefresh() {
-        recyclerView.setVisibility(View.GONE);
+        setRefreshing(true);
         requestData();
+    }
+
+    private void setRefreshing(boolean flag) {
+        refreshLayout.setRefreshing(flag);
+        if (flag) {
+            recyclerView.setVisibility(View.GONE);
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+        }
     }
 }
