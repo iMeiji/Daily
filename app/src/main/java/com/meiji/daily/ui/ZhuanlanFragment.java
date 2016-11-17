@@ -62,11 +62,12 @@ public class ZhuanlanFragment extends Fragment implements SwipeRefreshLayout.OnR
     private OkHttpClient okHttpClient = new OkHttpClient();
     private Message message;
 
+
     public ZhuanlanFragment() {
 
     }
 
-    public static ZhuanlanFragment newInstance() {
+    public static ZhuanlanFragment getInstance() {
         return new ZhuanlanFragment();
     }
 
@@ -87,9 +88,7 @@ public class ZhuanlanFragment extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_universal, container, false);
-
         initViews(view);
-
         switch (type) {
             default:
             case TYPE_PRODUCT:
@@ -112,12 +111,10 @@ public class ZhuanlanFragment extends Fragment implements SwipeRefreshLayout.OnR
                 break;
         }
         requestData();
-
         return view;
     }
 
     private void requestData() {
-        //Call call = new Call();
         if (list.size() != 0) {
             list.clear();
         }
@@ -149,7 +146,7 @@ public class ZhuanlanFragment extends Fragment implements SwipeRefreshLayout.OnR
                     String responseJson = response.body().string();
                     ZhuanlanBean bean = gson.fromJson(responseJson, ZhuanlanBean.class);
                     list.add(bean);
-                    System.out.println(finalI + "---" + responseJson);
+                    //System.out.println(finalI + "---" + responseJson);
                     if (finalI == ids.length - 1) {
                         message = handler.obtainMessage();
                         message.what = 1;
@@ -183,7 +180,7 @@ public class ZhuanlanFragment extends Fragment implements SwipeRefreshLayout.OnR
         refreshLayout.setDistanceToTriggerSync(300);
         // 设置下拉刷新按钮的背景颜色
         refreshLayout.setProgressBackgroundColorSchemeColor(Color.WHITE);
-        //设 置下拉刷新按钮的大小
+        // 设置下拉刷新按钮的大小
         refreshLayout.setSize(SwipeRefreshLayout.DEFAULT);
         refreshLayout.setOnRefreshListener(this);
     }

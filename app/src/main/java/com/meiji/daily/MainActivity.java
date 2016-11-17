@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -16,7 +15,8 @@ import android.view.MenuItem;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.meiji.daily.ui.ZhuanlanFragment;
+import com.meiji.daily.zhuanlan.model.ZhuanlanModeImpl;
+import com.meiji.daily.zhuanlan.view.ZhuanlanViewImpl;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
-        replaceFragment(new ZhuanlanFragment());
+        replaceFragment(ZhuanlanModeImpl.TYPE_PRODUCT);
         navigationView.setCheckedItem(R.id.nav_product);
     }
 
@@ -102,40 +102,22 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_product) {
-
-            ZhuanlanFragment fragment = ZhuanlanFragment.newInstance();
-            fragment.setType(ZhuanlanFragment.TYPE_PRODUCT);
-            replaceFragment(fragment);
+            replaceFragment(ZhuanlanModeImpl.TYPE_PRODUCT);
 
         } else if (id == R.id.nav_life) {
-
-            ZhuanlanFragment fragment = ZhuanlanFragment.newInstance();
-            fragment.setType(ZhuanlanFragment.TYPE_LIFE);
-            replaceFragment(fragment);
+            replaceFragment(ZhuanlanModeImpl.TYPE_LIFE);
 
         } else if (id == R.id.nav_music) {
-
-            ZhuanlanFragment fragment = ZhuanlanFragment.newInstance();
-            fragment.setType(ZhuanlanFragment.TYPE_MUSIC);
-            replaceFragment(fragment);
+            replaceFragment(ZhuanlanModeImpl.TYPE_MUSIC);
 
         } else if (id == R.id.nav_emotion) {
-
-            ZhuanlanFragment fragment = ZhuanlanFragment.newInstance();
-            fragment.setType(ZhuanlanFragment.TYPE_EMOTION);
-            replaceFragment(fragment);
+            replaceFragment(ZhuanlanModeImpl.TYPE_EMOTION);
 
         } else if (id == R.id.nav_profession) {
-
-            ZhuanlanFragment fragment = ZhuanlanFragment.newInstance();
-            fragment.setType(ZhuanlanFragment.TYPE_FINANCE);
-            replaceFragment(fragment);
+            replaceFragment(ZhuanlanModeImpl.TYPE_FINANCE);
 
         } else if (id == R.id.nav_zhihu) {
-
-            ZhuanlanFragment fragment = ZhuanlanFragment.newInstance();
-            fragment.setType(ZhuanlanFragment.TYPE_ZHIHU);
-            replaceFragment(fragment);
+            replaceFragment(ZhuanlanModeImpl.TYPE_ZHIHU);
 
         } else if (id == R.id.nav_user_define) {
 
@@ -148,8 +130,13 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void replaceFragment(Fragment fragment) {
-        getSupportFragmentManager().beginTransaction().replace(R.id.content_main, fragment).commit();
+    private void replaceFragment(int type) {
+//        ZhuanlanFragment fragment = ZhuanlanFragment.getInstance();
+//        fragment.setType(type);
+//        getSupportFragmentManager().beginTransaction().replace(R.id.content_main, fragment).commit();
+        ZhuanlanViewImpl view = ZhuanlanViewImpl.getInstance();
+        view.setType(type);
+        getSupportFragmentManager().beginTransaction().replace(R.id.content_main, view).commit();
     }
 
     @Override
