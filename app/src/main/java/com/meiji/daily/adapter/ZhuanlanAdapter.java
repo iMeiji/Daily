@@ -23,16 +23,21 @@ public class ZhuanlanAdapter extends RecyclerView.Adapter<ZhuanlanAdapter.Zhuanl
 
     private Context mContext;
     private List<ZhuanlanBean> list = new ArrayList<>();
+    private IOnItemClickListener mListener;
 
     public ZhuanlanAdapter(Context context, List<ZhuanlanBean> list) {
         this.mContext = context;
         this.list = list;
     }
 
+    public void setItemClickListener(IOnItemClickListener listener) {
+        this.mListener = listener;
+    }
+
     @Override
     public ZhuanlanItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.zhuanlan_item, parent, false);
-        return new ZhuanlanItemViewHolder(view);
+        return new ZhuanlanItemViewHolder(view, mListener);
     }
 
     @Override
@@ -59,21 +64,31 @@ public class ZhuanlanAdapter extends RecyclerView.Adapter<ZhuanlanAdapter.Zhuanl
         return list != null ? list.size() : 0;
     }
 
-    public class ZhuanlanItemViewHolder extends RecyclerView.ViewHolder {
+    public class ZhuanlanItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private CircleImageView cv_avatar;
         private TextView tv_name;
         private TextView tv_followersCount;
         private TextView tv_postsCount;
         private TextView tv_intro;
+        private IOnItemClickListener mListener;
 
-        public ZhuanlanItemViewHolder(View itemView) {
+        public ZhuanlanItemViewHolder(View itemView, IOnItemClickListener mListener) {
             super(itemView);
             cv_avatar = (CircleImageView) itemView.findViewById(R.id.cv_avatar);
             tv_name = (TextView) itemView.findViewById(R.id.tv_name);
             tv_followersCount = (TextView) itemView.findViewById(R.id.tv_followersCount);
             tv_postsCount = (TextView) itemView.findViewById(R.id.tv_postsCount);
             tv_intro = (TextView) itemView.findViewById(R.id.tv_intro);
+            this.mListener = mListener;
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            if (mListener != null) {
+                mListener.onClick(view, getLayoutPosition());
+            }
         }
     }
 

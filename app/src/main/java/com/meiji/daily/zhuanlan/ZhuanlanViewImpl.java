@@ -1,4 +1,4 @@
-package com.meiji.daily.zhuanlan.view;
+package com.meiji.daily.zhuanlan;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -14,19 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.meiji.daily.R;
+import com.meiji.daily.adapter.IOnItemClickListener;
 import com.meiji.daily.adapter.ZhuanlanAdapter;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.zhuanlan.presenter.IZhuanlanPresenter;
 import com.meiji.daily.zhuanlan.presenter.ZhuanlanPresenterImpl;
+import com.meiji.daily.zhuanlan.view.IZhuanlanView;
 
 import java.util.List;
-
-import static com.meiji.daily.zhuanlan.model.ZhuanlanModeImpl.TYPE_EMOTION;
-import static com.meiji.daily.zhuanlan.model.ZhuanlanModeImpl.TYPE_FINANCE;
-import static com.meiji.daily.zhuanlan.model.ZhuanlanModeImpl.TYPE_LIFE;
-import static com.meiji.daily.zhuanlan.model.ZhuanlanModeImpl.TYPE_MUSIC;
-import static com.meiji.daily.zhuanlan.model.ZhuanlanModeImpl.TYPE_PRODUCT;
-import static com.meiji.daily.zhuanlan.model.ZhuanlanModeImpl.TYPE_ZHIHU;
 
 
 /**
@@ -41,23 +36,14 @@ public class ZhuanlanViewImpl extends Fragment implements IZhuanlanView, SwipeRe
     private ZhuanlanAdapter adapter;
 
     private IZhuanlanPresenter presenter;
-    private String[] ids;
     private Context mContext;
 
-    public ZhuanlanViewImpl() {
-
-    }
-
-    public static ZhuanlanViewImpl getInstance() {
-        return new ZhuanlanViewImpl();
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
+    public ZhuanlanViewImpl(int type) {
         this.type = type;
+    }
+
+    public static ZhuanlanViewImpl getInstance(int type) {
+        return new ZhuanlanViewImpl(type);
     }
 
     @Override
@@ -68,29 +54,8 @@ public class ZhuanlanViewImpl extends Fragment implements IZhuanlanView, SwipeRe
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_universal, container, false);
+        View view = inflater.inflate(R.layout.fragment_zhuanlan, container, false);
         initViews(view);
-        switch (type) {
-            default:
-            case TYPE_PRODUCT:
-                ids = getActivity().getResources().getStringArray(R.array.product);
-                break;
-            case TYPE_MUSIC:
-                ids = getActivity().getResources().getStringArray(R.array.music);
-                break;
-            case TYPE_LIFE:
-                ids = getActivity().getResources().getStringArray(R.array.life);
-                break;
-            case TYPE_EMOTION:
-                ids = getActivity().getResources().getStringArray(R.array.emotion);
-                break;
-            case TYPE_FINANCE:
-                ids = getActivity().getResources().getStringArray(R.array.profession);
-                break;
-            case TYPE_ZHIHU:
-                ids = getActivity().getResources().getStringArray(R.array.zhihu);
-                break;
-        }
         onShowRefreshing();
         onRequestData();
         return view;
@@ -114,27 +79,28 @@ public class ZhuanlanViewImpl extends Fragment implements IZhuanlanView, SwipeRe
         // 设置下拉刷新按钮的大小
         refreshLayout.setSize(SwipeRefreshLayout.DEFAULT);
         refreshLayout.setOnRefreshListener(this);
-        presenter = new ZhuanlanPresenterImpl(this);
         mContext = getActivity();
+        presenter = new ZhuanlanPresenterImpl(this, mContext);
     }
 
     @Override
     public void onRequestData() {
-        presenter.doRequestData(ids);
+        presenter.doGetType(this.type);
     }
 
     @Override
     public void onSetAdapter(List<ZhuanlanBean> list) {
-        for (int i = 0; i < list.size(); i++) {
-            ZhuanlanBean bean = list.get(i);
-            System.out.println(bean.getName());
-        }
         onHideRefreshing();
-//        recyclerView.setVisibility(View.VISIBLE);
         if (adapter == null) {
             adapter = new ZhuanlanAdapter(getActivity(), list);
         }
         recyclerView.setAdapter(adapter);
+        adapter.setItemClickListener(new IOnItemClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                presenter.doOnClickItem(position);
+            }
+        });
     }
 
     @Override
@@ -159,6 +125,7 @@ public class ZhuanlanViewImpl extends Fragment implements IZhuanlanView, SwipeRe
     public void onFail() {
         onHideRefreshing();
         Snackbar.make(refreshLayout, "网络不给力", Snackbar.LENGTH_SHORT).show();
+        refreshLayout.setEnabled(true);
     }
 
     @Override

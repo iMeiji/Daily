@@ -15,8 +15,8 @@ import android.view.MenuItem;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.meiji.daily.zhuanlan.ZhuanlanViewImpl;
 import com.meiji.daily.zhuanlan.model.ZhuanlanModeImpl;
-import com.meiji.daily.zhuanlan.view.ZhuanlanViewImpl;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -131,11 +131,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void replaceFragment(int type) {
-//        ZhuanlanFragment fragment = ZhuanlanFragment.getInstance();
-//        fragment.setType(type);
-//        getSupportFragmentManager().beginTransaction().replace(R.id.content_main, fragment).commit();
-        ZhuanlanViewImpl view = ZhuanlanViewImpl.getInstance();
-        view.setType(type);
+        ZhuanlanViewImpl view = ZhuanlanViewImpl.getInstance(type);
         getSupportFragmentManager().beginTransaction().replace(R.id.content_main, view).commit();
     }
 
