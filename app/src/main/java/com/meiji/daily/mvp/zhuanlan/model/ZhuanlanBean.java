@@ -1,4 +1,4 @@
-package com.meiji.daily.bean;
+package com.meiji.daily.mvp.zhuanlan.model;
 
 import java.util.List;
 
@@ -36,6 +36,10 @@ public class ZhuanlanBean {
      * postsCount : 56
      * canPost : false
      */
+
+    public static final String ZHUANLANBEAN_SLUG = "slug";
+    public static final String ZHUANLANBEAN_NAME = "name";
+    public static final String ZHUANLANBEAN_POSTSCOUNT = "postsCount";
 
     private int followersCount;
     private CreatorBean creator;

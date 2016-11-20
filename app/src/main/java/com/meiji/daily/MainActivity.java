@@ -15,8 +15,8 @@ import android.view.MenuItem;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.meiji.daily.zhuanlan.ZhuanlanViewImpl;
-import com.meiji.daily.zhuanlan.model.ZhuanlanModeImpl;
+import com.meiji.daily.mvp.zhuanlan.ZhuanlanViewImpl;
+import com.meiji.daily.mvp.zhuanlan.model.ZhuanlanModeImpl;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private long exitTime;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initView() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -130,8 +131,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void replaceFragment(int type) {
-        ZhuanlanViewImpl view = ZhuanlanViewImpl.getInstance(type);
-        getSupportFragmentManager().beginTransaction().replace(R.id.content_main, view).commit();
+        ZhuanlanViewImpl fragment = ZhuanlanViewImpl.newInstance(type);
+//        getSupportFragmentManager().beginTransaction().replace(R.id.content_main, fragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.app_bar_main, fragment).commit();
     }
 
     @Override

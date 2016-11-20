@@ -1,6 +1,6 @@
-package com.meiji.daily.zhuanlan.view;
+package com.meiji.daily.mvp.zhuanlan.view;
 
-import com.meiji.daily.bean.ZhuanlanBean;
+import com.meiji.daily.mvp.zhuanlan.model.ZhuanlanBean;
 
 import java.util.List;
 

@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.meiji.daily.R;
-import com.meiji.daily.bean.ZhuanlanBean;
+import com.meiji.daily.mvp.zhuanlan.model.ZhuanlanBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ public class ZhuanlanAdapter extends RecyclerView.Adapter<ZhuanlanAdapter.Zhuanl
 
     @Override
     public ZhuanlanItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.zhuanlan_item, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_zhuanlan, parent, false);
         return new ZhuanlanItemViewHolder(view, mListener);
     }
 

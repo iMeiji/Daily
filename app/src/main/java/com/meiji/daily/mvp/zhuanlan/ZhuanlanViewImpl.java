@@ -1,4 +1,4 @@
-package com.meiji.daily.zhuanlan;
+package com.meiji.daily.mvp.zhuanlan;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -16,10 +16,10 @@ import android.view.ViewGroup;
 import com.meiji.daily.R;
 import com.meiji.daily.adapter.IOnItemClickListener;
 import com.meiji.daily.adapter.ZhuanlanAdapter;
-import com.meiji.daily.bean.ZhuanlanBean;
-import com.meiji.daily.zhuanlan.presenter.IZhuanlanPresenter;
-import com.meiji.daily.zhuanlan.presenter.ZhuanlanPresenterImpl;
-import com.meiji.daily.zhuanlan.view.IZhuanlanView;
+import com.meiji.daily.mvp.zhuanlan.model.ZhuanlanBean;
+import com.meiji.daily.mvp.zhuanlan.presenter.IZhuanlanPresenter;
+import com.meiji.daily.mvp.zhuanlan.presenter.ZhuanlanPresenterImpl;
+import com.meiji.daily.mvp.zhuanlan.view.IZhuanlanView;
 
 import java.util.List;
 
@@ -42,7 +42,7 @@ public class ZhuanlanViewImpl extends Fragment implements IZhuanlanView, SwipeRe
         this.type = type;
     }
 
-    public static ZhuanlanViewImpl getInstance(int type) {
+    public static ZhuanlanViewImpl newInstance(int type) {
         return new ZhuanlanViewImpl(type);
     }
 
@@ -130,7 +130,8 @@ public class ZhuanlanViewImpl extends Fragment implements IZhuanlanView, SwipeRe
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         onHideRefreshing();
+        presenter.onDestroy();
+        super.onDestroy();
     }
 }

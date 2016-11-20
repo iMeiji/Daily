@@ -1,4 +1,4 @@
-package com.meiji.daily.zhuanlan.presenter;
+package com.meiji.daily.mvp.zhuanlan.presenter;
 
 /**
  * Created by Meiji on 2016/11/17.
@@ -32,5 +32,7 @@ public interface IZhuanlanPresenter {
      * @param position
      */
     void doOnClickItem(int position);
+
+    void onDestroy();
 }
 

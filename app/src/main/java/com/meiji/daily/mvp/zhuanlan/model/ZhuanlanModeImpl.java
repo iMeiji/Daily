@@ -1,13 +1,13 @@
-package com.meiji.daily.zhuanlan.model;
+package com.meiji.daily.mvp.zhuanlan.model;
 
 import com.google.gson.Gson;
-import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.utils.Api;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -16,7 +16,7 @@ import okhttp3.Response;
  * Created by Meiji on 2016/11/17.
  */
 
-public class ZhuanlanModeImpl implements IZhuanlanMode {
+public class ZhuanlanModeImpl implements IZhuanlanModel {
 
     public static final int TYPE_PRODUCT = 0;
     public static final int TYPE_MUSIC = 1;
@@ -28,6 +28,7 @@ public class ZhuanlanModeImpl implements IZhuanlanMode {
     private OkHttpClient okHttpClient = new OkHttpClient();
     private Gson gson = new Gson();
     private List<ZhuanlanBean> list = new ArrayList<>();
+    private Call call;
 
     public ZhuanlanModeImpl() {
     }
@@ -47,7 +48,8 @@ public class ZhuanlanModeImpl implements IZhuanlanMode {
 
             Response response = null;
             try {
-                response = okHttpClient.newCall(request).execute();
+                call = okHttpClient.newCall(request);
+                response = call.execute();
                 if (response.isSuccessful()) {
                     flag = true;
                 }
@@ -58,34 +60,6 @@ public class ZhuanlanModeImpl implements IZhuanlanMode {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-
-            /*okHttpClient.newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    e.printStackTrace();
-                    *//*Snackbar.make(refreshLayout, "网络不给力", Snackbar.LENGTH_SHORT).show();
-                    message = handler.obtainMessage();
-                    message.what = 2;
-                    message.sendToTarget();*//*
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    if (!response.isSuccessful())
-                        throw new IOException("Unexpected code " + response);
-
-                    String responseJson = response.body().string();
-                    ZhuanlanBean bean = gson.fromJson(responseJson, ZhuanlanBean.class);
-                    list.add(bean);
-                    System.out.println(finalI + "---" + responseJson);
-                    if (finalI == ids.length - 1) {
-                        *//*message = handler.obtainMessage();
-                        message.what = 1;
-                        message.sendToTarget();*//*
-                    }
-                }
-            });*/
         }
         return flag;
     }
@@ -93,5 +67,10 @@ public class ZhuanlanModeImpl implements IZhuanlanMode {
     @Override
     public List<ZhuanlanBean> getList() {
         return list;
+    }
+
+    @Override
+    public void onDestroy() {
+        call.cancel();
     }
 }
