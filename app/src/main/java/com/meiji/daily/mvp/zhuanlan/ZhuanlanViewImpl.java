@@ -56,7 +56,6 @@ public class ZhuanlanViewImpl extends Fragment implements IZhuanlanView, SwipeRe
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_zhuanlan, container, false);
         initViews(view);
-        onShowRefreshing();
         onRequestData();
         return view;
     }
@@ -95,6 +94,7 @@ public class ZhuanlanViewImpl extends Fragment implements IZhuanlanView, SwipeRe
             adapter = new ZhuanlanAdapter(getActivity(), list);
         }
         recyclerView.setAdapter(adapter);
+
         adapter.setItemClickListener(new IOnItemClickListener() {
             @Override
             public void onClick(View view, int position) {
@@ -117,13 +117,11 @@ public class ZhuanlanViewImpl extends Fragment implements IZhuanlanView, SwipeRe
 
     @Override
     public void onRefresh() {
-        onShowRefreshing();
-        onRequestData();
+        presenter.doRefresh();
     }
 
     @Override
     public void onFail() {
-        onHideRefreshing();
         Snackbar.make(refreshLayout, "网络不给力", Snackbar.LENGTH_SHORT).show();
         refreshLayout.setEnabled(true);
     }

@@ -34,5 +34,9 @@ public interface IZhuanlanPresenter {
     void doOnClickItem(int position);
 
     void onDestroy();
+
+    void onFail();
+
+    void doRefresh();
 }
 

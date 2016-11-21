@@ -28,4 +28,6 @@ public interface IPostsListPresenter {
 
     void onDestroy();
 
+    void onFail();
+
 }

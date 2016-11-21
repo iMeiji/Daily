@@ -43,7 +43,7 @@ public class ZhuanlanPresenterImpl implements IZhuanlanPresenter {
                 doSetAdapter();
             }
             if (message.what == 0) {
-                view.onFail();
+                onFail();
             }
             return false;
         }
@@ -57,6 +57,7 @@ public class ZhuanlanPresenterImpl implements IZhuanlanPresenter {
 
     @Override
     public void doGetType(int type) {
+        view.onShowRefreshing();
         switch (type) {
             default:
             case TYPE_PRODUCT:
@@ -127,5 +128,17 @@ public class ZhuanlanPresenterImpl implements IZhuanlanPresenter {
     @Override
     public void onDestroy() {
         model.onDestroy();
+    }
+
+    @Override
+    public void onFail() {
+        view.onHideRefreshing();
+        view.onFail();
+    }
+
+    @Override
+    public void doRefresh() {
+        view.onShowRefreshing();
+        view.onRequestData();
     }
 }

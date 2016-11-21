@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.meiji.daily.R;
 import com.meiji.daily.adapter.PostsListAdapter;
@@ -31,15 +32,14 @@ import static com.meiji.daily.mvp.zhuanlan.model.ZhuanlanBean.ZHUANLANBEAN_SLUG;
 
 public class PostsListViewImpl extends AppCompatActivity implements IPostsListView, SwipeRefreshLayout.OnRefreshListener {
 
-    private Toolbar toolbar;
-    private RecyclerView rv_posts;
-    private SwipeRefreshLayout refresh;
+    private Toolbar toolbar; // 双击 toolbar 返回顶部 待写
     private SwipeRefreshLayout refreshLayout;
     private RecyclerView recyclerView;
     private IPostsListPresenter presenter;
     private String url;
     private PostsListAdapter adapter;
     private int postCount;
+    private boolean flag = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,7 +47,6 @@ public class PostsListViewImpl extends AppCompatActivity implements IPostsListVi
         setContentView(R.layout.activity_postlist);
         initView();
         initData();
-        onShowRefreshing();
         onRequestData();
     }
 
@@ -57,7 +56,7 @@ public class PostsListViewImpl extends AppCompatActivity implements IPostsListVi
         postCount = intent.getIntExtra(ZHUANLANBEAN_POSTSCOUNT, 0);
         String title = intent.getStringExtra(ZHUANLANBEAN_NAME);
         getSupportActionBar().setTitle(title);
-        url = Api.BASE_URL + slug + "/posts?limit=5";
+        url = Api.BASE_URL + slug + "/posts?limit=10";
     }
 
     @Override
@@ -70,81 +69,79 @@ public class PostsListViewImpl extends AppCompatActivity implements IPostsListVi
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * 请求数据
-     */
     @Override
     public void onRequestData() {
-
         presenter.doRequestData(url);
     }
 
-    /**
-     * 设置适配器
-     *
-     * @param list
-     */
     @Override
-    public void onSetAdapter(List<PostsListBean> list) {
-        onHideRefreshing();
+    public void onSetAdapter(final List<PostsListBean> list) {
         if (adapter == null) {
             adapter = new PostsListAdapter(list, this);
             recyclerView.setAdapter(adapter);
         } else {
             adapter.notifyItemInserted(list.size());
         }
-        // 列表文章 < 总文章 继续加载 这里要判断recyclerview是否滚动到底在执行 不然后台一直加载
-        if (list.size() < postCount) {
-            presenter.doRequestData(url + "&offset=" + list.size());
-        }
+        flag = true;
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (!recyclerView.canScrollVertically(1)) {
+                        // 列表文章 < 总文章 继续加载 这里要判断recyclerview是否滚动到底再执行 不然后台一直加载
+                        if ((list.size() < postCount) && flag) {
+                            onShowRefreshing();
+                            presenter.doRequestData(url + "&offset=" + list.size());
+                            flag = false;
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
+
     }
 
-    /**
-     * 正在刷新
-     */
     @Override
     public void onShowRefreshing() {
         refreshLayout.setRefreshing(true);
     }
 
-    /**
-     * 完成刷新
-     */
     @Override
     public void onHideRefreshing() {
         refreshLayout.setRefreshing(false);
     }
 
-    /**
-     * 请求数据失败
-     */
     @Override
     public void onFail() {
-        onHideRefreshing();
         Snackbar.make(refreshLayout, "网络不给力", Snackbar.LENGTH_SHORT).show();
+        refreshLayout.setEnabled(true);
     }
 
     private void initView() {
         toolbar = (Toolbar) findViewById(R.id.toolbar_postlist);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh);
-
         recyclerView = (RecyclerView) findViewById(R.id.rv_posts);
-        LinearLayoutManager manager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(manager);
-
-        //设置下拉刷新的按钮的颜色
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh);
+        // 设置下拉刷新的按钮的颜色
         refreshLayout.setColorSchemeResources(
                 android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-        //设置手指在屏幕上下拉多少距离开始刷新
+        // 设置手指在屏幕上下拉多少距离开始刷新
         refreshLayout.setDistanceToTriggerSync(300);
-        //设置下拉刷新按钮的背景颜色
+        // 设置下拉刷新按钮的背景颜色
         refreshLayout.setProgressBackgroundColorSchemeColor(Color.WHITE);
-        //设置下拉刷新按钮的大小
+        // 设置下拉刷新按钮的大小
         refreshLayout.setSize(SwipeRefreshLayout.DEFAULT);
         refreshLayout.setOnRefreshListener(this);
         presenter = new PostsListPresenterImpl(this, this);
@@ -152,11 +149,10 @@ public class PostsListViewImpl extends AppCompatActivity implements IPostsListVi
 
     @Override
     public void onRefresh() {
-        onShowRefreshing();
+        recyclerView.setVisibility(View.GONE);
         presenter.doRefresh();
-        onRequestData();
+        recyclerView.setVisibility(View.VISIBLE);
     }
-
 
     @Override
     protected void onDestroy() {

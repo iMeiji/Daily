@@ -24,7 +24,7 @@ public class PostsListPresenterImpl implements IPostsListPresenter {
                 doSetAdapter();
             }
             if (message.what == 0) {
-                view.onFail();
+                onFail();
             }
             return false;
         }
@@ -42,6 +42,7 @@ public class PostsListPresenterImpl implements IPostsListPresenter {
      */
     @Override
     public void doRequestData(final String url) {
+        view.onShowRefreshing();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -63,7 +64,10 @@ public class PostsListPresenterImpl implements IPostsListPresenter {
 
     @Override
     public void doRefresh() {
+        view.onShowRefreshing();
+        model.onDestroy();
         model.clearList();
+        view.onRequestData();
     }
 
     /**
@@ -71,6 +75,7 @@ public class PostsListPresenterImpl implements IPostsListPresenter {
      */
     @Override
     public void doSetAdapter() {
+        view.onHideRefreshing();
         view.onSetAdapter(model.getList());
     }
 
@@ -87,5 +92,11 @@ public class PostsListPresenterImpl implements IPostsListPresenter {
     @Override
     public void onDestroy() {
         model.onDestroy();
+    }
+
+    @Override
+    public void onFail() {
+        view.onHideRefreshing();
+        view.onFail();
     }
 }
