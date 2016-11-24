@@ -1,4 +1,4 @@
-package com.meiji.daily.mvp.postscontent.model;
+package com.meiji.daily.mvp.postscontent;
 
 import com.google.gson.Gson;
 import com.meiji.daily.utils.Api;
@@ -14,7 +14,7 @@ import okhttp3.Response;
  * Created by Meiji on 2016/11/23.
  */
 
-public class PostsContentModelImpl implements IPostsContentModel {
+public class PostsContentModel implements IPostsContent.Model {
 
     private OkHttpClient client = new OkHttpClient();
     private Call call;

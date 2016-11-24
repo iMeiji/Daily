@@ -15,8 +15,8 @@ import android.view.MenuItem;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.meiji.daily.mvp.zhuanlan.ZhuanlanViewImpl;
-import com.meiji.daily.mvp.zhuanlan.model.ZhuanlanModeImpl;
+import com.meiji.daily.mvp.zhuanlan.ZhuanlanModel;
+import com.meiji.daily.mvp.zhuanlan.ZhuanlanView;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
-        replaceFragment(ZhuanlanModeImpl.TYPE_PRODUCT);
+        replaceFragment(ZhuanlanModel.TYPE_PRODUCT);
         navigationView.setCheckedItem(R.id.nav_product);
     }
 
@@ -102,22 +102,22 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_product) {
-            replaceFragment(ZhuanlanModeImpl.TYPE_PRODUCT);
+            replaceFragment(ZhuanlanModel.TYPE_PRODUCT);
 
         } else if (id == R.id.nav_life) {
-            replaceFragment(ZhuanlanModeImpl.TYPE_LIFE);
+            replaceFragment(ZhuanlanModel.TYPE_LIFE);
 
         } else if (id == R.id.nav_music) {
-            replaceFragment(ZhuanlanModeImpl.TYPE_MUSIC);
+            replaceFragment(ZhuanlanModel.TYPE_MUSIC);
 
         } else if (id == R.id.nav_emotion) {
-            replaceFragment(ZhuanlanModeImpl.TYPE_EMOTION);
+            replaceFragment(ZhuanlanModel.TYPE_EMOTION);
 
         } else if (id == R.id.nav_profession) {
-            replaceFragment(ZhuanlanModeImpl.TYPE_FINANCE);
+            replaceFragment(ZhuanlanModel.TYPE_FINANCE);
 
         } else if (id == R.id.nav_zhihu) {
-            replaceFragment(ZhuanlanModeImpl.TYPE_ZHIHU);
+            replaceFragment(ZhuanlanModel.TYPE_ZHIHU);
 
         } else if (id == R.id.nav_user_define) {
 
@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void replaceFragment(int type) {
-        ZhuanlanViewImpl fragment = ZhuanlanViewImpl.newInstance(type);
+        ZhuanlanView fragment = ZhuanlanView.newInstance(type);
 //        getSupportFragmentManager().beginTransaction().replace(R.id.content_main, fragment).commit();
         getSupportFragmentManager().beginTransaction().replace(R.id.app_bar_main, fragment).commit();
     }

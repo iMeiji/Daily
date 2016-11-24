@@ -1,4 +1,4 @@
-package com.meiji.daily.mvp.zhuanlan.model;
+package com.meiji.daily.mvp.zhuanlan;
 
 import java.util.List;
 

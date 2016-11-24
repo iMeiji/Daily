@@ -1,4 +1,4 @@
-package com.meiji.daily.mvp.postslist.presenter;
+package com.meiji.daily.mvp.postslist;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,27 +6,23 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.meiji.daily.mvp.postscontent.PostsContentViewImpl;
-import com.meiji.daily.mvp.postslist.model.IPostsListModel;
-import com.meiji.daily.mvp.postslist.model.PostsListBean;
-import com.meiji.daily.mvp.postslist.model.PostsListModelImpl;
-import com.meiji.daily.mvp.postslist.view.IPostsListView;
+import com.meiji.daily.mvp.postscontent.PostsContentView;
 
 import java.util.List;
 
-import static com.meiji.daily.mvp.postslist.model.PostsListBean.POSTSLISTBEAN_SLUG;
-import static com.meiji.daily.mvp.postslist.model.PostsListBean.POSTSLISTBEAN_TITLE;
-import static com.meiji.daily.mvp.postslist.model.PostsListBean.POSTSLISTBEAN_TITLEIMAGE;
+import static com.meiji.daily.mvp.postslist.PostsListBean.POSTSLISTBEAN_SLUG;
+import static com.meiji.daily.mvp.postslist.PostsListBean.POSTSLISTBEAN_TITLE;
+import static com.meiji.daily.mvp.postslist.PostsListBean.POSTSLISTBEAN_TITLEIMAGE;
 
 /**
  * Created by Meiji on 2016/11/19.
  */
 
-public class PostsListPresenterImpl implements IPostsListPresenter {
+public class PostsListPresenter implements IPostsList.Presenter {
 
     private Context mContext;
-    private IPostsListView view;
-    private IPostsListModel model;
+    private IPostsList.View view;
+    private IPostsList.Model model;
     private List<PostsListBean> list;
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
@@ -42,10 +38,10 @@ public class PostsListPresenterImpl implements IPostsListPresenter {
     });
     private int postCount;
 
-    public PostsListPresenterImpl(IPostsListView view, Context mContext) {
+    public PostsListPresenter(IPostsList.View view, Context mContext) {
         this.view = view;
         this.mContext = mContext;
-        this.model = new PostsListModelImpl();
+        this.model = new PostsListModel();
     }
 
     /**
@@ -102,7 +98,7 @@ public class PostsListPresenterImpl implements IPostsListPresenter {
         String title = list.get(position).getTitle();
         int slug = list.get(position).getSlug();
 
-        Intent intent = new Intent(mContext, PostsContentViewImpl.class);
+        Intent intent = new Intent(mContext, PostsContentView.class);
         intent.putExtra(POSTSLISTBEAN_TITLEIMAGE, titleImage);
         intent.putExtra(POSTSLISTBEAN_TITLE, title);
         intent.putExtra(POSTSLISTBEAN_SLUG, slug);

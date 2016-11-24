@@ -1,4 +1,4 @@
-package com.meiji.daily.mvp.zhuanlan.presenter;
+package com.meiji.daily.mvp.zhuanlan;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,32 +7,28 @@ import android.os.Message;
 import android.util.Log;
 
 import com.meiji.daily.R;
-import com.meiji.daily.mvp.postslist.PostsListViewImpl;
-import com.meiji.daily.mvp.zhuanlan.model.IZhuanlanModel;
-import com.meiji.daily.mvp.zhuanlan.model.ZhuanlanBean;
-import com.meiji.daily.mvp.zhuanlan.model.ZhuanlanModeImpl;
-import com.meiji.daily.mvp.zhuanlan.view.IZhuanlanView;
+import com.meiji.daily.mvp.postslist.PostsListView;
 
 import java.util.List;
 
-import static com.meiji.daily.mvp.zhuanlan.model.ZhuanlanBean.ZHUANLANBEAN_NAME;
-import static com.meiji.daily.mvp.zhuanlan.model.ZhuanlanBean.ZHUANLANBEAN_POSTSCOUNT;
-import static com.meiji.daily.mvp.zhuanlan.model.ZhuanlanBean.ZHUANLANBEAN_SLUG;
-import static com.meiji.daily.mvp.zhuanlan.model.ZhuanlanModeImpl.TYPE_EMOTION;
-import static com.meiji.daily.mvp.zhuanlan.model.ZhuanlanModeImpl.TYPE_FINANCE;
-import static com.meiji.daily.mvp.zhuanlan.model.ZhuanlanModeImpl.TYPE_LIFE;
-import static com.meiji.daily.mvp.zhuanlan.model.ZhuanlanModeImpl.TYPE_MUSIC;
-import static com.meiji.daily.mvp.zhuanlan.model.ZhuanlanModeImpl.TYPE_PRODUCT;
-import static com.meiji.daily.mvp.zhuanlan.model.ZhuanlanModeImpl.TYPE_ZHIHU;
+import static com.meiji.daily.mvp.zhuanlan.ZhuanlanBean.ZHUANLANBEAN_NAME;
+import static com.meiji.daily.mvp.zhuanlan.ZhuanlanBean.ZHUANLANBEAN_POSTSCOUNT;
+import static com.meiji.daily.mvp.zhuanlan.ZhuanlanBean.ZHUANLANBEAN_SLUG;
+import static com.meiji.daily.mvp.zhuanlan.ZhuanlanModel.TYPE_EMOTION;
+import static com.meiji.daily.mvp.zhuanlan.ZhuanlanModel.TYPE_FINANCE;
+import static com.meiji.daily.mvp.zhuanlan.ZhuanlanModel.TYPE_LIFE;
+import static com.meiji.daily.mvp.zhuanlan.ZhuanlanModel.TYPE_MUSIC;
+import static com.meiji.daily.mvp.zhuanlan.ZhuanlanModel.TYPE_PRODUCT;
+import static com.meiji.daily.mvp.zhuanlan.ZhuanlanModel.TYPE_ZHIHU;
 
 /**
  * Created by Meiji on 2016/11/17.
  */
 
-public class ZhuanlanPresenterImpl implements IZhuanlanPresenter {
+public class ZhuanlanPresenter implements IZhuanlan.Presenter {
 
-    private IZhuanlanView view;
-    private IZhuanlanModel model;
+    private IZhuanlan.View view;
+    private IZhuanlan.Model model;
     private Context mContext;
     private String[] ids;
     private List<ZhuanlanBean> list;
@@ -49,9 +45,9 @@ public class ZhuanlanPresenterImpl implements IZhuanlanPresenter {
         }
     });
 
-    public ZhuanlanPresenterImpl(IZhuanlanView view, Context context) {
+    public ZhuanlanPresenter(IZhuanlan.View view, Context context) {
         this.view = view;
-        this.model = new ZhuanlanModeImpl();
+        this.model = new ZhuanlanModel();
         this.mContext = context;
     }
 
@@ -117,7 +113,7 @@ public class ZhuanlanPresenterImpl implements IZhuanlanPresenter {
         String name = list.get(position).getName();
         int postsCount = list.get(position).getPostsCount();
 
-        Intent intent = new Intent(mContext, PostsListViewImpl.class);
+        Intent intent = new Intent(mContext, PostsListView.class);
         intent.putExtra(ZHUANLANBEAN_SLUG, slug);
         intent.putExtra(ZHUANLANBEAN_NAME, name);
         intent.putExtra(ZHUANLANBEAN_POSTSCOUNT, postsCount);

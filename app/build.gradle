@@ -15,6 +15,20 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    def outputFile = output.outputFile
+                    if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                        // 输出apk名称为daily-release-v1.0.apk
+                        def fileName = "daily-release-v${defaultConfig.versionName}.apk"
+                        output.outputFile = new File(outputFile.parent, fileName)
+                    }
+                }
+            }
+        }
+        debug {
+            minifyEnabled false
+            debuggable true
         }
     }
 }
@@ -24,15 +38,14 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.squareup.okhttp3:okhttp:3.4.2'
     compile 'com.android.support:appcompat-v7:25.0.0'
     compile 'com.android.support:design:25.0.0'
+    compile 'com.android.support:recyclerview-v7:25.0.0'
+    compile 'com.android.support:cardview-v7:25.0.0'
+    compile 'com.android.support:support-v4:25.0.0'
     compile 'com.squareup.okhttp3:okhttp:3.4.2'
     compile 'com.google.code.gson:gson:2.8.0'
-    compile 'com.android.support:recyclerview-v7:25.0.0'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.afollestad.material-dialogs:core:0.9.1.0'
-    compile 'com.android.support:cardview-v7:25.0.0'
     compile 'de.hdodenhof:circleimageview:2.1.0'
-    compile 'com.android.support:support-v4:25.0.0'
 }

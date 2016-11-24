@@ -1,4 +1,4 @@
-package com.meiji.daily.mvp.postscontent.model;
+package com.meiji.daily.mvp.postscontent;
 
 import java.util.List;
 

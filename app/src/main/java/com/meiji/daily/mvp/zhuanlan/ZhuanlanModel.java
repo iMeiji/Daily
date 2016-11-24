@@ -1,4 +1,4 @@
-package com.meiji.daily.mvp.zhuanlan.model;
+package com.meiji.daily.mvp.zhuanlan;
 
 import com.google.gson.Gson;
 import com.meiji.daily.utils.Api;
@@ -16,7 +16,7 @@ import okhttp3.Response;
  * Created by Meiji on 2016/11/17.
  */
 
-public class ZhuanlanModeImpl implements IZhuanlanModel {
+public class ZhuanlanModel implements IZhuanlan.Model {
 
     public static final int TYPE_PRODUCT = 0;
     public static final int TYPE_MUSIC = 1;
@@ -30,7 +30,7 @@ public class ZhuanlanModeImpl implements IZhuanlanModel {
     private List<ZhuanlanBean> list = new ArrayList<>();
     private Call call;
 
-    public ZhuanlanModeImpl() {
+    public ZhuanlanModel() {
     }
 
     @Override

@@ -20,12 +20,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".mvp.postslist.PostsListViewImpl"
+            android:name=".mvp.postslist.PostsListView"
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>
         <activity
-            android:name=".mvp.postscontent.PostsContentViewImpl"
+            android:name=".mvp.postscontent.PostsContentView"
             android:theme="@style/AppTheme.NoActionBar"/>
 
     </application>

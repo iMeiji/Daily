@@ -1,4 +1,4 @@
-package com.meiji.daily.mvp.postslist.model;
+package com.meiji.daily.mvp.postslist;
 
 import com.google.gson.Gson;
 
@@ -19,7 +19,7 @@ import okhttp3.Response;
  * Created by Meiji on 2016/11/19.
  */
 
-public class PostsListModelImpl implements IPostsListModel {
+public class PostsListModel implements IPostsList.Model {
 
     private OkHttpClient okHttpClient = new OkHttpClient();
     private Gson gson = new Gson();

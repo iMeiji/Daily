@@ -1,20 +1,16 @@
-package com.meiji.daily.mvp.postscontent.presenter;
+package com.meiji.daily.mvp.postscontent;
 
 import android.os.Handler;
 import android.os.Message;
-
-import com.meiji.daily.mvp.postscontent.model.IPostsContentModel;
-import com.meiji.daily.mvp.postscontent.model.PostsContentModelImpl;
-import com.meiji.daily.mvp.postscontent.view.IPostsContentView;
 
 /**
  * Created by Meiji on 2016/11/23.
  */
 
-public class PostsContentPresenterImpl implements IPostsContentPresenter {
+public class PostsContentPresenter implements IPostsContent.Presenter {
 
-    private IPostsContentView view;
-    private IPostsContentModel model;
+    private IPostsContent.View view;
+    private IPostsContent.Model model;
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message message) {
@@ -28,9 +24,9 @@ public class PostsContentPresenterImpl implements IPostsContentPresenter {
         }
     });
 
-    public PostsContentPresenterImpl(IPostsContentView view) {
+    public PostsContentPresenter(IPostsContent.View view) {
         this.view = view;
-        this.model = new PostsContentModelImpl();
+        this.model = new PostsContentModel();
     }
 
     @Override

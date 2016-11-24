@@ -21,20 +21,17 @@ import android.widget.ImageView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.meiji.daily.R;
-import com.meiji.daily.mvp.postscontent.presenter.IPostsContentPresenter;
-import com.meiji.daily.mvp.postscontent.presenter.PostsContentPresenterImpl;
-import com.meiji.daily.mvp.postscontent.view.IPostsContentView;
 import com.meiji.daily.utils.Api;
 
-import static com.meiji.daily.mvp.postslist.model.PostsListBean.POSTSLISTBEAN_SLUG;
-import static com.meiji.daily.mvp.postslist.model.PostsListBean.POSTSLISTBEAN_TITLE;
-import static com.meiji.daily.mvp.postslist.model.PostsListBean.POSTSLISTBEAN_TITLEIMAGE;
+import static com.meiji.daily.mvp.postslist.PostsListBean.POSTSLISTBEAN_SLUG;
+import static com.meiji.daily.mvp.postslist.PostsListBean.POSTSLISTBEAN_TITLE;
+import static com.meiji.daily.mvp.postslist.PostsListBean.POSTSLISTBEAN_TITLEIMAGE;
 
 /**
  * Created by Meiji on 2016/11/22.
  */
 
-public class PostsContentViewImpl extends AppCompatActivity implements View.OnClickListener, IPostsContentView {
+public class PostsContentView extends AppCompatActivity implements View.OnClickListener, IPostsContent.View {
 
     private ImageView iv_header;
     private Toolbar toolbar;
@@ -46,13 +43,13 @@ public class PostsContentViewImpl extends AppCompatActivity implements View.OnCl
     private String title;
     private int slug;
     private MaterialDialog progressDialog;
-    private IPostsContentPresenter presenter;
+    private IPostsContent.Presenter presenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_postscontent);
-        presenter = new PostsContentPresenterImpl(this);
+        presenter = new PostsContentPresenter(this);
         initData();
         initView();
         initWebClient();

@@ -15,28 +15,24 @@ import android.view.View;
 import com.meiji.daily.R;
 import com.meiji.daily.adapter.PostsListAdapter;
 import com.meiji.daily.interfaces.IOnItemClickListener;
-import com.meiji.daily.mvp.postslist.model.PostsListBean;
-import com.meiji.daily.mvp.postslist.presenter.IPostsListPresenter;
-import com.meiji.daily.mvp.postslist.presenter.PostsListPresenterImpl;
-import com.meiji.daily.mvp.postslist.view.IPostsListView;
 import com.meiji.daily.utils.Api;
 
 import java.util.List;
 
-import static com.meiji.daily.mvp.zhuanlan.model.ZhuanlanBean.ZHUANLANBEAN_NAME;
-import static com.meiji.daily.mvp.zhuanlan.model.ZhuanlanBean.ZHUANLANBEAN_POSTSCOUNT;
-import static com.meiji.daily.mvp.zhuanlan.model.ZhuanlanBean.ZHUANLANBEAN_SLUG;
+import static com.meiji.daily.mvp.zhuanlan.ZhuanlanBean.ZHUANLANBEAN_NAME;
+import static com.meiji.daily.mvp.zhuanlan.ZhuanlanBean.ZHUANLANBEAN_POSTSCOUNT;
+import static com.meiji.daily.mvp.zhuanlan.ZhuanlanBean.ZHUANLANBEAN_SLUG;
 
 /**
  * Created by Meiji on 2016/11/18.
  */
 
-public class PostsListViewImpl extends AppCompatActivity implements IPostsListView, SwipeRefreshLayout.OnRefreshListener {
+public class PostsListView extends AppCompatActivity implements IPostsList.View, SwipeRefreshLayout.OnRefreshListener {
 
     private Toolbar toolbar; // 双击 toolbar 返回顶部 待写
     private SwipeRefreshLayout refreshLayout;
     private RecyclerView recyclerView;
-    private IPostsListPresenter presenter;
+    private IPostsList.Presenter presenter;
     private String url;
     private PostsListAdapter adapter;
     private int postCount;
@@ -153,7 +149,7 @@ public class PostsListViewImpl extends AppCompatActivity implements IPostsListVi
         // 设置下拉刷新按钮的大小
         refreshLayout.setSize(SwipeRefreshLayout.DEFAULT);
         refreshLayout.setOnRefreshListener(this);
-        presenter = new PostsListPresenterImpl(this, this);
+        presenter = new PostsListPresenter(this, this);
     }
 
     @Override
