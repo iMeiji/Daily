@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.meiji.daily.R;
+import com.meiji.daily.interfaces.IOnItemClickListener;
 import com.meiji.daily.mvp.zhuanlan.model.ZhuanlanBean;
 
 import java.util.ArrayList;

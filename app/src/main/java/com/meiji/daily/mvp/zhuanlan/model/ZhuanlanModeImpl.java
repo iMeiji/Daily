@@ -40,13 +40,14 @@ public class ZhuanlanModeImpl implements IZhuanlanModel {
         }
         boolean flag = false;
 
+        Request request = null;
+        Response response = null;
         for (int i = 0; i < ids.length; i++) {
-            final Request request = new Request.Builder()
+            request = new Request.Builder()
                     .url(Api.BASE_URL + ids[i])
                     .get()
                     .build();
 
-            Response response = null;
             try {
                 call = okHttpClient.newCall(request);
                 response = call.execute();
@@ -56,7 +57,7 @@ public class ZhuanlanModeImpl implements IZhuanlanModel {
                 String responseJson = response.body().string();
                 ZhuanlanBean bean = gson.fromJson(responseJson, ZhuanlanBean.class);
                 list.add(bean);
-                System.out.println(i + "---" + responseJson);
+                System.out.println(i + "-" + responseJson);
             } catch (IOException e) {
                 e.printStackTrace();
             }

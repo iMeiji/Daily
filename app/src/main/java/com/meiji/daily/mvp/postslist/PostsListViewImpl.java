@@ -14,6 +14,7 @@ import android.view.View;
 
 import com.meiji.daily.R;
 import com.meiji.daily.adapter.PostsListAdapter;
+import com.meiji.daily.interfaces.IOnItemClickListener;
 import com.meiji.daily.mvp.postslist.model.PostsListBean;
 import com.meiji.daily.mvp.postslist.presenter.IPostsListPresenter;
 import com.meiji.daily.mvp.postslist.presenter.PostsListPresenterImpl;
@@ -44,7 +45,7 @@ public class PostsListViewImpl extends AppCompatActivity implements IPostsListVi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_postlist);
+        setContentView(R.layout.activity_postslist);
         initView();
         initData();
         onRequestData();
@@ -79,6 +80,12 @@ public class PostsListViewImpl extends AppCompatActivity implements IPostsListVi
         if (adapter == null) {
             adapter = new PostsListAdapter(list, this);
             recyclerView.setAdapter(adapter);
+            adapter.setOnItemClickListener(new IOnItemClickListener() {
+                @Override
+                public void onClick(View view, int position) {
+                    presenter.doOnClickItem(position);
+                }
+            });
         } else {
             adapter.notifyItemInserted(list.size());
         }
@@ -95,6 +102,8 @@ public class PostsListViewImpl extends AppCompatActivity implements IPostsListVi
                             onShowRefreshing();
                             presenter.doRequestData(url + "&offset=" + list.size());
                             flag = false;
+                        } else if ((list.size() == postCount)) {
+                            Snackbar.make(refreshLayout, R.string.no_more, Snackbar.LENGTH_SHORT).show();
                         }
                     }
                 }

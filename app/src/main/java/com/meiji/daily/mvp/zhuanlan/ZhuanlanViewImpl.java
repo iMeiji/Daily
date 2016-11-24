@@ -14,8 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.meiji.daily.R;
-import com.meiji.daily.adapter.IOnItemClickListener;
 import com.meiji.daily.adapter.ZhuanlanAdapter;
+import com.meiji.daily.interfaces.IOnItemClickListener;
 import com.meiji.daily.mvp.zhuanlan.model.ZhuanlanBean;
 import com.meiji.daily.mvp.zhuanlan.presenter.IZhuanlanPresenter;
 import com.meiji.daily.mvp.zhuanlan.presenter.ZhuanlanPresenterImpl;
@@ -92,15 +92,16 @@ public class ZhuanlanViewImpl extends Fragment implements IZhuanlanView, SwipeRe
         onHideRefreshing();
         if (adapter == null) {
             adapter = new ZhuanlanAdapter(getActivity(), list);
+            recyclerView.setAdapter(adapter);
+            adapter.setItemClickListener(new IOnItemClickListener() {
+                @Override
+                public void onClick(View view, int position) {
+                    presenter.doOnClickItem(position);
+                }
+            });
         }
-        recyclerView.setAdapter(adapter);
+        adapter.notifyItemInserted(list.size());
 
-        adapter.setItemClickListener(new IOnItemClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                presenter.doOnClickItem(position);
-            }
-        });
     }
 
     @Override

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.meiji.daily.R;
+import com.meiji.daily.interfaces.IOnItemClickListener;
 import com.meiji.daily.mvp.postslist.model.PostsListBean;
 
 import java.util.ArrayList;

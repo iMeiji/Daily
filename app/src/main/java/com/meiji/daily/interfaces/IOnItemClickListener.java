@@ -1,4 +1,4 @@
-package com.meiji.daily.adapter;
+package com.meiji.daily.interfaces;
 
 import android.view.View;
 

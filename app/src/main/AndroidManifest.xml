@@ -24,6 +24,10 @@
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>
+        <activity
+            android:name=".mvp.postscontent.PostsContentViewImpl"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
     </application>
 
 </manifest>

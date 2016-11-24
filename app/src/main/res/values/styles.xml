@@ -20,7 +20,7 @@
     <!--自定义CollapsingToolbarLayout字体大小 custom the title's text size of CollapsingToolBarLayout-->
     <style name="ExpandedAppBar" parent="@android:style/TextAppearance.Medium">
         <item name="android:textSize">21sp</item>
-        <item name="android:textColor">#fff</item>
+        <item name="android:textColor">#ffffff</item>
         <item name="android:textStyle">bold</item>
     </style>
 

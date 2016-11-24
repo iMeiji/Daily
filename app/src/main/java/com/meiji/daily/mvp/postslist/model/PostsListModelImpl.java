@@ -48,10 +48,6 @@ public class PostsListModelImpl implements IPostsListModel {
                 PostsListBean bean = gson.fromJson(jsonObject.toString(), PostsListBean.class);
                 list.add(bean);
             }
-//            for (int i = 0; i < list.size(); i++) {
-//                PostsListBean bean1 = list.get(i);
-//                System.out.println(bean1.getTitle());
-//            }
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
