@@ -14,7 +14,7 @@ import okhttp3.Response;
  * Created by Meiji on 2016/11/23.
  */
 
-public class PostsContentModel implements IPostsContent.Model {
+class PostsContentModel implements IPostsContent.Model {
 
     private OkHttpClient client = new OkHttpClient();
     private Call call;
@@ -23,14 +23,14 @@ public class PostsContentModel implements IPostsContent.Model {
 
     @Override
     public boolean getRequestData(int slug) {
-
         boolean flag = false;
         String url = Api.POST_URL + slug;
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
+        Request request;
         Response response;
         try {
+            request = new Request.Builder()
+                    .url(url)
+                    .build();
             call = client.newCall(request);
             response = call.execute();
             if (response.isSuccessful()) {
@@ -41,7 +41,6 @@ public class PostsContentModel implements IPostsContent.Model {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return flag;
     }
 
@@ -63,6 +62,8 @@ public class PostsContentModel implements IPostsContent.Model {
 
     @Override
     public void onDestroy() {
-        call.cancel();
+        if (call != null && call.isCanceled()) {
+            call.cancel();
+        }
     }
 }

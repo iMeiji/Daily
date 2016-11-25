@@ -4,9 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import com.meiji.daily.R;
+import com.meiji.daily.dao.ZhuanlanDao;
 import com.meiji.daily.mvp.postslist.PostsListView;
 
 import java.util.List;
@@ -25,18 +25,20 @@ import static com.meiji.daily.mvp.zhuanlan.ZhuanlanModel.TYPE_ZHIHU;
  * Created by Meiji on 2016/11/17.
  */
 
-public class ZhuanlanPresenter implements IZhuanlan.Presenter {
+class ZhuanlanPresenter implements IZhuanlan.Presenter {
 
     private IZhuanlan.View view;
     private IZhuanlan.Model model;
     private Context mContext;
     private String[] ids;
     private List<ZhuanlanBean> list;
+    private int type;
+    private ZhuanlanDao dao;
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message message) {
             if (message.what == 1) {
-                doSetAdapter();
+                doSaveData();
             }
             if (message.what == 0) {
                 onFail();
@@ -45,16 +47,18 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
         }
     });
 
-    public ZhuanlanPresenter(IZhuanlan.View view, Context context) {
+    ZhuanlanPresenter(IZhuanlan.View view, Context context) {
         this.view = view;
         this.model = new ZhuanlanModel();
         this.mContext = context;
+        dao = new ZhuanlanDao(mContext);
     }
 
     @Override
     public void doGetType(int type) {
+        this.type = type;
         view.onShowRefreshing();
-        switch (type) {
+        switch (this.type) {
             default:
             case TYPE_PRODUCT:
                 ids = mContext.getResources().getStringArray(R.array.product);
@@ -75,36 +79,57 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
                 ids = mContext.getResources().getStringArray(R.array.zhihu);
                 break;
         }
-
-        doRequestData(ids);
+        doRequestData();
     }
 
     @Override
-    public void doRequestData(final String ids[]) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                boolean result = model.getRequestData(ids);
-                System.out.println(result);
-                if (result) {
-                    Message message = new Message();
-                    message = handler.obtainMessage();
-                    message.what = 1;
-                    message.sendToTarget();
-                } else {
-                    Message message = new Message();
-                    message = handler.obtainMessage();
-                    message.what = 0;
-                    message.sendToTarget();
+    public void doRequestData() {
+        list = dao.query(type);
+        if (list.size() != ids.length) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    boolean result = model.getRequestData(ids);
+                    if (result) {
+                        Message message;
+                        message = handler.obtainMessage();
+                        message.what = 1;
+                        message.sendToTarget();
+                    } else {
+                        Message message;
+                        message = handler.obtainMessage();
+                        message.what = 0;
+                        message.sendToTarget();
+                    }
                 }
-            }
-        }).start();
+            }).start();
+        } else {
+            doSetAdapter();
+        }
+    }
+
+    @Override
+    public void doSaveData() {
+        List<ZhuanlanBean> list = model.getList();
+        for (ZhuanlanBean bean : list) {
+            String type = String.valueOf(this.type);
+            String avatarUrl = bean.getAvatar().getTemplate();
+            String avatarId = bean.getAvatar().getId();
+            String name = bean.getName();
+            String followersCount = String.valueOf(bean.getFollowersCount());
+            String postsCount = String.valueOf(bean.getPostsCount());
+            String intro = bean.getIntro();
+            String slug = bean.getSlug();
+            dao.add(type, avatarUrl, avatarId, name, followersCount, postsCount, intro, slug);
+        }
+        doSetAdapter();
     }
 
     @Override
     public void doSetAdapter() {
-        list = model.getList();
+        list = dao.query(type);
         view.onSetAdapter(list);
+        view.onHideRefreshing();
     }
 
     @Override
@@ -117,12 +142,12 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
         intent.putExtra(ZHUANLANBEAN_SLUG, slug);
         intent.putExtra(ZHUANLANBEAN_NAME, name);
         intent.putExtra(ZHUANLANBEAN_POSTSCOUNT, postsCount);
-        Log.d(this.toString(), slug + name + postsCount);
         mContext.startActivity(intent);
     }
 
     @Override
     public void onDestroy() {
+        view.onHideRefreshing();
         model.onDestroy();
     }
 

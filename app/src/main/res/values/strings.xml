@@ -91,5 +91,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="network_error">网络不给力</string>
+    <string name="title_imageview">title image</string>
 
 </resources>

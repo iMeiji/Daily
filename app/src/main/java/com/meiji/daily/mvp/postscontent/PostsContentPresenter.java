@@ -7,7 +7,7 @@ import android.os.Message;
  * Created by Meiji on 2016/11/23.
  */
 
-public class PostsContentPresenter implements IPostsContent.Presenter {
+class PostsContentPresenter implements IPostsContent.Presenter {
 
     private IPostsContent.View view;
     private IPostsContent.Model model;
@@ -15,16 +15,16 @@ public class PostsContentPresenter implements IPostsContent.Presenter {
         @Override
         public boolean handleMessage(Message message) {
             if (message.what == 1) {
-                view.onSetWebView(model.getContent());
+                doSetWebView();
             }
-            if (message.what == 2) {
+            if (message.what == 0) {
                 onFail();
             }
             return false;
         }
     });
 
-    public PostsContentPresenter(IPostsContent.View view) {
+    PostsContentPresenter(IPostsContent.View view) {
         this.view = view;
         this.model = new PostsContentModel();
     }
@@ -35,20 +35,24 @@ public class PostsContentPresenter implements IPostsContent.Presenter {
             @Override
             public void run() {
                 boolean result = model.getRequestData(slug);
-                System.out.println(result);
                 if (result) {
-                    Message message = new Message();
+                    Message message;
                     message = handler.obtainMessage();
                     message.what = 1;
                     message.sendToTarget();
                 } else {
-                    Message message = new Message();
+                    Message message;
                     message = handler.obtainMessage();
-                    message.what = 2;
+                    message.what = 0;
                     message.sendToTarget();
                 }
             }
         }).start();
+    }
+
+    @Override
+    public void doSetWebView() {
+        view.onSetWebView(model.getContent());
     }
 
     @Override

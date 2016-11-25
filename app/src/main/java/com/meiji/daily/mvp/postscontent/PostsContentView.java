@@ -1,5 +1,6 @@
 package com.meiji.daily.mvp.postscontent;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -34,15 +35,16 @@ import static com.meiji.daily.mvp.postslist.PostsListBean.POSTSLISTBEAN_TITLEIMA
 public class PostsContentView extends AppCompatActivity implements View.OnClickListener, IPostsContent.View {
 
     private ImageView iv_header;
-    private Toolbar toolbar;
+    private Toolbar toolbar_title;
     private AppBarLayout app_bar;
     private WebView webView;
-    private FloatingActionButton fab;
-    private CollapsingToolbarLayout toolbarLayout;
+    private FloatingActionButton fab_share;
+    private CollapsingToolbarLayout toolbar_layout;
+    private MaterialDialog progressDialog;
+
     private String titleImage;
     private String title;
     private int slug;
-    private MaterialDialog progressDialog;
     private IPostsContent.Presenter presenter;
 
     @Override
@@ -63,21 +65,22 @@ public class PostsContentView extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onFail() {
-        Snackbar.make(getCurrentFocus(), "加载错误", Snackbar.LENGTH_SHORT);
+        Snackbar.make(webView, R.string.network_error, Snackbar.LENGTH_SHORT);
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private void initWebClient() {
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
-        //缩放,设置为不能缩放可以防止页面上出现放大和缩小的图标
+        // 缩放,设置为不能缩放可以防止页面上出现放大和缩小的图标
         settings.setBuiltInZoomControls(false);
-        //缓存
+        // 缓存
         settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
-        //开启DOM storage API功能
+        // 开启DOM storage API功能
         settings.setDomStorageEnabled(true);
-        //开启application Cache功能
+        // 开启application Cache功能
         settings.setAppCacheEnabled(false);
-        //不调用第三方浏览器即可进行页面反应
+        // 不调用第三方浏览器即可进行页面反应
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -107,20 +110,23 @@ public class PostsContentView extends AppCompatActivity implements View.OnClickL
     }
 
     private void initView() {
-        iv_header = (ImageView) findViewById(R.id.iv_header);
-        toolbar = (Toolbar) findViewById(R.id.toolbar_postscontent);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        app_bar = (AppBarLayout) findViewById(R.id.app_bar);
-        webView = (WebView) findViewById(R.id.wb_main);
-        fab = (FloatingActionButton) findViewById(R.id.fab);
+        iv_header = (ImageView) findViewById(R.id.iv_titleimage);
+        toolbar_title = (Toolbar) findViewById(R.id.toolbar_title);
+        app_bar = (AppBarLayout) findViewById(R.id.appbar_layout);
+        webView = (WebView) findViewById(R.id.webview_content);
+        fab_share = (FloatingActionButton) findViewById(R.id.fab_share);
+        toolbar_layout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_layout);
 
-        fab.setOnClickListener(this);
-        toolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbarlayout);
-        toolbarLayout.setTitle(title);
-        toolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
-        toolbarLayout.setCollapsedTitleTextAppearance(R.style.CollapsedAppBar);
+        setSupportActionBar(toolbar_title);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
+        fab_share.setOnClickListener(this);
+
+        toolbar_layout.setTitle(title);
+        toolbar_layout.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
+        toolbar_layout.setCollapsedTitleTextAppearance(R.style.CollapsedAppBar);
 
         progressDialog = new MaterialDialog.Builder(this)
                 .progress(true, 0)
@@ -140,7 +146,7 @@ public class PostsContentView extends AppCompatActivity implements View.OnClickL
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.fab:
+            case R.id.fab_share:
                 Intent shareIntent = new Intent()
                         .setAction(Intent.ACTION_SEND)
                         .setType("text/plain");
@@ -153,7 +159,6 @@ public class PostsContentView extends AppCompatActivity implements View.OnClickL
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         int id = item.getItemId();
         switch (id) {
             case android.R.id.home:
@@ -162,7 +167,6 @@ public class PostsContentView extends AppCompatActivity implements View.OnClickL
         }
         return super.onOptionsItemSelected(item);
     }
-
 
     @Override
     protected void onDestroy() {

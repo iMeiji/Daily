@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import com.meiji.daily.mvp.postscontent.PostsContentView;
 
@@ -18,7 +17,7 @@ import static com.meiji.daily.mvp.postslist.PostsListBean.POSTSLISTBEAN_TITLEIMA
  * Created by Meiji on 2016/11/19.
  */
 
-public class PostsListPresenter implements IPostsList.Presenter {
+class PostsListPresenter implements IPostsList.Presenter {
 
     private Context mContext;
     private IPostsList.View view;
@@ -36,31 +35,27 @@ public class PostsListPresenter implements IPostsList.Presenter {
             return false;
         }
     });
-    private int postCount;
 
-    public PostsListPresenter(IPostsList.View view, Context mContext) {
+    PostsListPresenter(IPostsList.View view, Context mContext) {
         this.view = view;
         this.mContext = mContext;
         this.model = new PostsListModel();
     }
 
-    /**
-     * 请求数据
-     */
     @Override
     public void doRequestData(final String url) {
         view.onShowRefreshing();
         new Thread(new Runnable() {
             @Override
             public void run() {
-                boolean request = model.getRequestData(url);
-                if (request) {
-                    Message message = new Message();
+                boolean result = model.getRequestData(url);
+                if (result) {
+                    Message message;
                     message = handler.obtainMessage();
                     message.what = 1;
                     message.sendToTarget();
                 } else {
-                    Message message = new Message();
+                    Message message;
                     message = handler.obtainMessage();
                     message.what = 0;
                     message.sendToTarget();
@@ -77,9 +72,6 @@ public class PostsListPresenter implements IPostsList.Presenter {
         view.onRequestData();
     }
 
-    /**
-     * 设置适配器
-     */
     @Override
     public void doSetAdapter() {
         view.onHideRefreshing();
@@ -87,11 +79,6 @@ public class PostsListPresenter implements IPostsList.Presenter {
         view.onSetAdapter(list);
     }
 
-    /**
-     * 获取点击栏信息
-     *
-     * @param position
-     */
     @Override
     public void doOnClickItem(int position) {
         String titleImage = list.get(position).getTitleImage();
@@ -102,7 +89,6 @@ public class PostsListPresenter implements IPostsList.Presenter {
         intent.putExtra(POSTSLISTBEAN_TITLEIMAGE, titleImage);
         intent.putExtra(POSTSLISTBEAN_TITLE, title);
         intent.putExtra(POSTSLISTBEAN_SLUG, slug);
-        Log.d(this.toString(), titleImage + title + slug);
         mContext.startActivity(intent);
     }
 

@@ -6,9 +6,10 @@ import java.util.List;
  * Created by Meiji on 2016/11/24.
  */
 
-public interface IPostsList {
+interface IPostsList {
 
     interface View {
+
         /**
          * 请求数据
          */
@@ -16,8 +17,6 @@ public interface IPostsList {
 
         /**
          * 设置适配器
-         *
-         * @param list
          */
         void onSetAdapter(List<PostsListBean> list);
 
@@ -42,7 +41,6 @@ public interface IPostsList {
         /**
          * 请求数据
          */
-
         void doRequestData(String url);
 
         /**
@@ -52,27 +50,46 @@ public interface IPostsList {
 
         /**
          * 获取点击栏信息
-         *
-         * @param position
          */
         void doOnClickItem(int position);
 
+        /**
+         * 刷新 清空list
+         */
         void doRefresh();
 
+        /**
+         * 结束
+         */
         void onDestroy();
 
+        /**
+         * 请求数据失败
+         */
         void onFail();
 
     }
 
     interface Model {
 
+        /**
+         * 请求数据
+         */
         boolean getRequestData(String url);
 
+        /**
+         * 返回数据
+         */
         List<PostsListBean> getList();
 
+        /**
+         * 清空数据
+         */
         void clearList();
 
+        /**
+         * 结束
+         */
         void onDestroy();
     }
 }

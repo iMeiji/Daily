@@ -24,13 +24,13 @@ public class ZhuanlanModel implements IZhuanlan.Model {
     public static final int TYPE_EMOTION = 3;
     public static final int TYPE_FINANCE = 4;
     public static final int TYPE_ZHIHU = 5;
-    private String[] ids;
+
     private OkHttpClient okHttpClient = new OkHttpClient();
     private Gson gson = new Gson();
     private List<ZhuanlanBean> list = new ArrayList<>();
     private Call call;
 
-    public ZhuanlanModel() {
+    ZhuanlanModel() {
     }
 
     @Override
@@ -40,11 +40,11 @@ public class ZhuanlanModel implements IZhuanlan.Model {
         }
         boolean flag = false;
 
-        Request request = null;
-        Response response = null;
-        for (int i = 0; i < ids.length; i++) {
+        Request request;
+        Response response;
+        for (String id : ids) {
             request = new Request.Builder()
-                    .url(Api.BASE_URL + ids[i])
+                    .url(Api.BASE_URL + id)
                     .get()
                     .build();
 
@@ -57,7 +57,6 @@ public class ZhuanlanModel implements IZhuanlan.Model {
                 String responseJson = response.body().string();
                 ZhuanlanBean bean = gson.fromJson(responseJson, ZhuanlanBean.class);
                 list.add(bean);
-                System.out.println(i + "-" + responseJson);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -72,6 +71,8 @@ public class ZhuanlanModel implements IZhuanlan.Model {
 
     @Override
     public void onDestroy() {
-        call.cancel();
+        if (call != null && call.isCanceled()) {
+            call.cancel();
+        }
     }
 }

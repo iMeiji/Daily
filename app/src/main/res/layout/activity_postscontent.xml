@@ -9,7 +9,7 @@
     tools:context=".mvp.postscontent.PostsContentView">
 
     <android.support.design.widget.AppBarLayout
-        android:id="@+id/app_bar"
+        android:id="@+id/appbar_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/app_bar_height"
         android:fitsSystemWindows="true"
@@ -17,7 +17,7 @@
         app:elevation="0dp">
 
         <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/toolbarlayout"
+            android:id="@+id/collapsing_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
@@ -25,18 +25,19 @@
             app:layout_scrollFlags="scroll|enterAlwaysCollapsed">
 
             <ImageView
-                android:id="@+id/iv_header"
+                android:id="@+id/iv_titleimage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="?attr/selectableItemBackground"
                 android:clickable="true"
+                android:contentDescription="@string/title_imageview"
                 android:fitsSystemWindows="true"
                 android:foreground="?attr/selectableItemBackground"
                 android:scaleType="centerCrop"
                 android:src="@drawable/error_image"/>
 
             <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar_postscontent"
+                android:id="@+id/toolbar_title"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
@@ -57,7 +58,7 @@
             android:orientation="vertical">
 
             <WebView
-                android:id="@+id/wb_main"
+                android:id="@+id/webview_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="16dp"
@@ -72,12 +73,12 @@
     </android.support.v4.widget.NestedScrollView>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+        android:id="@+id/fab_share"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/ic_photo_share"
-        app:layout_anchor="@id/app_bar"
+        app:layout_anchor="@id/appbar_layout"
         app:layout_anchorGravity="bottom|end"/>
 
 

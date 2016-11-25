@@ -30,18 +30,20 @@ import static com.meiji.daily.mvp.zhuanlan.ZhuanlanBean.ZHUANLANBEAN_SLUG;
 public class PostsListView extends AppCompatActivity implements IPostsList.View, SwipeRefreshLayout.OnRefreshListener {
 
     private Toolbar toolbar; // 双击 toolbar 返回顶部 待写
-    private SwipeRefreshLayout refreshLayout;
-    private RecyclerView recyclerView;
-    private IPostsList.Presenter presenter;
+    private SwipeRefreshLayout refresh_layout;
+    private RecyclerView recycler_view;
+
     private String url;
     private PostsListAdapter adapter;
     private int postCount;
     private boolean flag = false;
+    private IPostsList.Presenter presenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_postslist);
+        presenter = new PostsListPresenter(this, this);
         initView();
         initData();
         onRequestData();
@@ -52,13 +54,14 @@ public class PostsListView extends AppCompatActivity implements IPostsList.View,
         String slug = intent.getStringExtra(ZHUANLANBEAN_SLUG);
         postCount = intent.getIntExtra(ZHUANLANBEAN_POSTSCOUNT, 0);
         String title = intent.getStringExtra(ZHUANLANBEAN_NAME);
-        getSupportActionBar().setTitle(title);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
+        }
         url = Api.BASE_URL + slug + "/posts?limit=10";
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         int id = item.getItemId();
         if (id == android.R.id.home) {
             onBackPressed();
@@ -75,7 +78,7 @@ public class PostsListView extends AppCompatActivity implements IPostsList.View,
     public void onSetAdapter(final List<PostsListBean> list) {
         if (adapter == null) {
             adapter = new PostsListAdapter(list, this);
-            recyclerView.setAdapter(adapter);
+            recycler_view.setAdapter(adapter);
             adapter.setOnItemClickListener(new IOnItemClickListener() {
                 @Override
                 public void onClick(View view, int position) {
@@ -87,7 +90,7 @@ public class PostsListView extends AppCompatActivity implements IPostsList.View,
         }
         flag = true;
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        recycler_view.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -99,7 +102,7 @@ public class PostsListView extends AppCompatActivity implements IPostsList.View,
                             presenter.doRequestData(url + "&offset=" + list.size());
                             flag = false;
                         } else if ((list.size() == postCount)) {
-                            Snackbar.make(refreshLayout, R.string.no_more, Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(refresh_layout, R.string.no_more, Snackbar.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -110,53 +113,54 @@ public class PostsListView extends AppCompatActivity implements IPostsList.View,
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
-
     }
 
     @Override
     public void onShowRefreshing() {
-        refreshLayout.setRefreshing(true);
+        refresh_layout.setRefreshing(true);
     }
 
     @Override
     public void onHideRefreshing() {
-        refreshLayout.setRefreshing(false);
+        refresh_layout.setRefreshing(false);
     }
 
     @Override
     public void onFail() {
-        Snackbar.make(refreshLayout, "网络不给力", Snackbar.LENGTH_SHORT).show();
-        refreshLayout.setEnabled(true);
+        Snackbar.make(refresh_layout, R.string.network_error, Snackbar.LENGTH_SHORT).show();
+        refresh_layout.setEnabled(true);
     }
 
     private void initView() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar_postlist);
+        toolbar = (Toolbar) findViewById(R.id.toolbar_title);
+        recycler_view = (RecyclerView) findViewById(R.id.recycler_view);
+        refresh_layout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        recyclerView = (RecyclerView) findViewById(R.id.rv_posts);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        recycler_view.setLayoutManager(new LinearLayoutManager(this));
+        recycler_view.setHasFixedSize(true);
         // 设置下拉刷新的按钮的颜色
-        refreshLayout.setColorSchemeResources(
+        refresh_layout.setColorSchemeResources(
                 android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
         // 设置手指在屏幕上下拉多少距离开始刷新
-        refreshLayout.setDistanceToTriggerSync(300);
+        refresh_layout.setDistanceToTriggerSync(300);
         // 设置下拉刷新按钮的背景颜色
-        refreshLayout.setProgressBackgroundColorSchemeColor(Color.WHITE);
+        refresh_layout.setProgressBackgroundColorSchemeColor(Color.WHITE);
         // 设置下拉刷新按钮的大小
-        refreshLayout.setSize(SwipeRefreshLayout.DEFAULT);
-        refreshLayout.setOnRefreshListener(this);
-        presenter = new PostsListPresenter(this, this);
+        refresh_layout.setSize(SwipeRefreshLayout.DEFAULT);
+        refresh_layout.setOnRefreshListener(this);
     }
 
     @Override
     public void onRefresh() {
-        recyclerView.setVisibility(View.GONE);
+        recycler_view.setVisibility(View.GONE);
         presenter.doRefresh();
-        recyclerView.setVisibility(View.VISIBLE);
+        recycler_view.setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -19,7 +19,7 @@ import okhttp3.Response;
  * Created by Meiji on 2016/11/19.
  */
 
-public class PostsListModel implements IPostsList.Model {
+class PostsListModel implements IPostsList.Model {
 
     private OkHttpClient okHttpClient = new OkHttpClient();
     private Gson gson = new Gson();
@@ -28,14 +28,14 @@ public class PostsListModel implements IPostsList.Model {
 
     @Override
     public boolean getRequestData(String url) {
-        System.out.println(url);
         boolean flag = false;
-        final Request request = new Request.Builder()
-                .url(url)
-                .get()
-                .build();
-        Response response = null;
+        Response response;
+        Request request;
         try {
+            request = new Request.Builder()
+                    .url(url)
+                    .get()
+                    .build();
             call = okHttpClient.newCall(request);
             response = call.execute();
             if (response.isSuccessful()) {
@@ -61,7 +61,9 @@ public class PostsListModel implements IPostsList.Model {
 
     @Override
     public void clearList() {
-        call.cancel();
+        if (call != null && call.isCanceled()) {
+            call.cancel();
+        }
         if (list.size() != 0) {
             list.clear();
         }
@@ -69,6 +71,8 @@ public class PostsListModel implements IPostsList.Model {
 
     @Override
     public void onDestroy() {
-        call.cancel();
+        if (call != null && call.isCanceled()) {
+            call.cancel();
+        }
     }
 }
