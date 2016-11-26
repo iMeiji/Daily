@@ -8,7 +8,6 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -21,6 +20,7 @@ import android.widget.ImageView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
+import com.meiji.daily.BaseActivity;
 import com.meiji.daily.R;
 import com.meiji.daily.utils.Api;
 
@@ -32,7 +32,7 @@ import static com.meiji.daily.mvp.postslist.PostsListBean.POSTSLISTBEAN_TITLEIMA
  * Created by Meiji on 2016/11/22.
  */
 
-public class PostsContentView extends AppCompatActivity implements View.OnClickListener, IPostsContent.View {
+public class PostsContentView extends BaseActivity implements View.OnClickListener, IPostsContent.View {
 
     private ImageView iv_header;
     private Toolbar toolbar_title;

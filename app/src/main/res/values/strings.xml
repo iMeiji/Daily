@@ -93,5 +93,11 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="network_error">网络不给力</string>
     <string name="title_imageview">title image</string>
+    <string name="color_palette">选择颜色</string>
+    <string name="nav_color_chooser">切换主题</string>
+    <string name="color_chooser_title">选择主题颜色</string>
+    <string name="md_done">完成</string>
+    <string name="md_cancel">取消</string>
+    <string name="md_custom">自定义</string>
 
 </resources>

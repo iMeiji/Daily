@@ -5,13 +5,13 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.meiji.daily.BaseActivity;
 import com.meiji.daily.R;
 import com.meiji.daily.adapter.PostsListAdapter;
 import com.meiji.daily.interfaces.IOnItemClickListener;
@@ -27,7 +27,7 @@ import static com.meiji.daily.mvp.zhuanlan.ZhuanlanBean.ZHUANLANBEAN_SLUG;
  * Created by Meiji on 2016/11/18.
  */
 
-public class PostsListView extends AppCompatActivity implements IPostsList.View, SwipeRefreshLayout.OnRefreshListener {
+public class PostsListView extends BaseActivity implements IPostsList.View, SwipeRefreshLayout.OnRefreshListener {
 
     private Toolbar toolbar; // 双击 toolbar 返回顶部 待写
     private SwipeRefreshLayout refresh_layout;
