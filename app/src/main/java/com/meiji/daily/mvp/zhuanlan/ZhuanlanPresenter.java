@@ -6,14 +6,15 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.meiji.daily.R;
+import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.dao.ZhuanlanDao;
 import com.meiji.daily.mvp.postslist.PostsListView;
 
 import java.util.List;
 
-import static com.meiji.daily.mvp.zhuanlan.ZhuanlanBean.ZHUANLANBEAN_NAME;
-import static com.meiji.daily.mvp.zhuanlan.ZhuanlanBean.ZHUANLANBEAN_POSTSCOUNT;
-import static com.meiji.daily.mvp.zhuanlan.ZhuanlanBean.ZHUANLANBEAN_SLUG;
+import static com.meiji.daily.bean.ZhuanlanBean.ZHUANLANBEAN_NAME;
+import static com.meiji.daily.bean.ZhuanlanBean.ZHUANLANBEAN_POSTSCOUNT;
+import static com.meiji.daily.bean.ZhuanlanBean.ZHUANLANBEAN_SLUG;
 import static com.meiji.daily.mvp.zhuanlan.ZhuanlanModel.TYPE_EMOTION;
 import static com.meiji.daily.mvp.zhuanlan.ZhuanlanModel.TYPE_FINANCE;
 import static com.meiji.daily.mvp.zhuanlan.ZhuanlanModel.TYPE_LIFE;
@@ -110,7 +111,7 @@ class ZhuanlanPresenter implements IZhuanlan.Presenter {
 
     @Override
     public void doSaveData() {
-        List<ZhuanlanBean> list = model.getList();
+        list = model.getList();
         for (ZhuanlanBean bean : list) {
             String type = String.valueOf(this.type);
             String avatarUrl = bean.getAvatar().getTemplate();

@@ -14,14 +14,15 @@ import android.view.View;
 import com.meiji.daily.BaseActivity;
 import com.meiji.daily.R;
 import com.meiji.daily.adapter.PostsListAdapter;
+import com.meiji.daily.bean.PostsListBean;
 import com.meiji.daily.interfaces.IOnItemClickListener;
 import com.meiji.daily.utils.Api;
 
 import java.util.List;
 
-import static com.meiji.daily.mvp.zhuanlan.ZhuanlanBean.ZHUANLANBEAN_NAME;
-import static com.meiji.daily.mvp.zhuanlan.ZhuanlanBean.ZHUANLANBEAN_POSTSCOUNT;
-import static com.meiji.daily.mvp.zhuanlan.ZhuanlanBean.ZHUANLANBEAN_SLUG;
+import static com.meiji.daily.bean.ZhuanlanBean.ZHUANLANBEAN_NAME;
+import static com.meiji.daily.bean.ZhuanlanBean.ZHUANLANBEAN_POSTSCOUNT;
+import static com.meiji.daily.bean.ZhuanlanBean.ZHUANLANBEAN_SLUG;
 
 /**
  * Created by Meiji on 2016/11/18.

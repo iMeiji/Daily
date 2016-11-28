@@ -1,4 +1,4 @@
-package com.meiji.daily.mvp.postscontent;
+package com.meiji.daily.bean;
 
 import java.util.List;
 

@@ -19,6 +19,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.color.CircleView;
 import com.afollestad.materialdialogs.color.ColorChooserDialog;
+import com.meiji.daily.mvp.useradd.UseraddView;
 import com.meiji.daily.mvp.zhuanlan.ZhuanlanModel;
 import com.meiji.daily.mvp.zhuanlan.ZhuanlanView;
 import com.meiji.daily.utils.ColorUtil;
@@ -130,8 +131,8 @@ public class MainActivity extends BaseActivity
         } else if (id == R.id.nav_zhihu) {
             replaceFragment(ZhuanlanModel.TYPE_ZHIHU);
 
-        } else if (id == R.id.nav_user_define) {
-
+        } else if (id == R.id.nav_user_add) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.app_bar_main, new UseraddView()).commit();
 
         } else if (id == R.id.nav_color_chooser) {
             createColorChooserDialog();

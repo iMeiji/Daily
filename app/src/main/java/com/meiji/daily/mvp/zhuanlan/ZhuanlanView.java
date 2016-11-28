@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.meiji.daily.R;
 import com.meiji.daily.adapter.ZhuanlanAdapter;
+import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.interfaces.IOnItemClickListener;
 
 import java.util.List;

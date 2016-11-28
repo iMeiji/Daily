@@ -1,6 +1,7 @@
 package com.meiji.daily.mvp.zhuanlan;
 
 import com.google.gson.Gson;
+import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.utils.Api;
 
 import java.io.IOException;
@@ -24,6 +25,7 @@ public class ZhuanlanModel implements IZhuanlan.Model {
     public static final int TYPE_EMOTION = 3;
     public static final int TYPE_FINANCE = 4;
     public static final int TYPE_ZHIHU = 5;
+    public static final int TYPE_USERADD = 6;
 
     private OkHttpClient okHttpClient = new OkHttpClient();
     private Gson gson = new Gson();

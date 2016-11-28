@@ -1,5 +1,7 @@
 package com.meiji.daily.mvp.postslist;
 
+import com.meiji.daily.bean.PostsListBean;
+
 import java.util.List;
 
 /**

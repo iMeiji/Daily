@@ -1,6 +1,7 @@
 package com.meiji.daily.mvp.postscontent;
 
 import com.google.gson.Gson;
+import com.meiji.daily.bean.PostsContentBean;
 import com.meiji.daily.utils.Api;
 
 import java.io.IOException;

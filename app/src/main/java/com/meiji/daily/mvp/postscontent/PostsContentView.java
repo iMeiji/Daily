@@ -24,9 +24,9 @@ import com.meiji.daily.BaseActivity;
 import com.meiji.daily.R;
 import com.meiji.daily.utils.Api;
 
-import static com.meiji.daily.mvp.postslist.PostsListBean.POSTSLISTBEAN_SLUG;
-import static com.meiji.daily.mvp.postslist.PostsListBean.POSTSLISTBEAN_TITLE;
-import static com.meiji.daily.mvp.postslist.PostsListBean.POSTSLISTBEAN_TITLEIMAGE;
+import static com.meiji.daily.bean.PostsListBean.POSTSLISTBEAN_SLUG;
+import static com.meiji.daily.bean.PostsListBean.POSTSLISTBEAN_TITLE;
+import static com.meiji.daily.bean.PostsListBean.POSTSLISTBEAN_TITLEIMAGE;
 
 /**
  * Created by Meiji on 2016/11/22.

@@ -5,13 +5,14 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 
+import com.meiji.daily.bean.PostsListBean;
 import com.meiji.daily.mvp.postscontent.PostsContentView;
 
 import java.util.List;
 
-import static com.meiji.daily.mvp.postslist.PostsListBean.POSTSLISTBEAN_SLUG;
-import static com.meiji.daily.mvp.postslist.PostsListBean.POSTSLISTBEAN_TITLE;
-import static com.meiji.daily.mvp.postslist.PostsListBean.POSTSLISTBEAN_TITLEIMAGE;
+import static com.meiji.daily.bean.PostsListBean.POSTSLISTBEAN_SLUG;
+import static com.meiji.daily.bean.PostsListBean.POSTSLISTBEAN_TITLE;
+import static com.meiji.daily.bean.PostsListBean.POSTSLISTBEAN_TITLEIMAGE;
 
 /**
  * Created by Meiji on 2016/11/19.

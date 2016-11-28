@@ -1,6 +1,7 @@
 package com.meiji.daily.mvp.postslist;
 
 import com.google.gson.Gson;
+import com.meiji.daily.bean.PostsListBean;
 
 import org.json.JSONArray;
 import org.json.JSONException;

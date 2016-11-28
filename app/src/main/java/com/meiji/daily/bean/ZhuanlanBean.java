@@ -1,4 +1,4 @@
-package com.meiji.daily.mvp.zhuanlan;
+package com.meiji.daily.bean;
 
 import java.util.List;
 

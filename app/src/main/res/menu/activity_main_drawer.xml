@@ -28,7 +28,7 @@
             android:title="@string/nav_zhihu"/>
 
         <item
-            android:id="@+id/nav_user_define"
+            android:id="@+id/nav_user_add"
             android:icon="@drawable/ic_photo_add"
             android:title="@string/nav_user_define"/>
     </group>

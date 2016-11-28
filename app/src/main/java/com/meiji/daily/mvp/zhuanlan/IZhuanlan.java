@@ -1,5 +1,7 @@
 package com.meiji.daily.mvp.zhuanlan;
 
+import com.meiji.daily.bean.ZhuanlanBean;
+
 import java.util.List;
 
 /**
@@ -38,7 +40,6 @@ interface IZhuanlan {
 
     interface Presenter {
 
-
         /**
          * 获取专栏类型
          */
@@ -48,8 +49,8 @@ interface IZhuanlan {
          * 请求数据,首先从数据库查询 list ,通过判断 List.size 与 ids.length
          * 相等 -> 设置适配器
          * 不相等 -> 从网络请求数据,判断是否成功
-         *          成功 -> 保存到数据库
-         *          不成功 -> 显示查询数据失败
+         * 成功 -> 保存到数据库
+         * 不成功 -> 显示查询数据失败
          */
         void doRequestData();
 

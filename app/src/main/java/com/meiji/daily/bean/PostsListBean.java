@@ -1,4 +1,4 @@
-package com.meiji.daily.mvp.postslist;
+package com.meiji.daily.bean;
 
 /**
  * Created by Meiji on 2016/11/18.

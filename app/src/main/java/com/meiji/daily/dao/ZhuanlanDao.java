@@ -5,20 +5,21 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.db.ZhuanlanHelper;
-import com.meiji.daily.mvp.zhuanlan.ZhuanlanBean;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.meiji.daily.mvp.zhuanlan.ZhuanlanBean.ZHUANLANBEAN_AVATARId;
-import static com.meiji.daily.mvp.zhuanlan.ZhuanlanBean.ZHUANLANBEAN_AVATARURL;
-import static com.meiji.daily.mvp.zhuanlan.ZhuanlanBean.ZHUANLANBEAN_FOLLOWERSCOUNT;
-import static com.meiji.daily.mvp.zhuanlan.ZhuanlanBean.ZHUANLANBEAN_INTRO;
-import static com.meiji.daily.mvp.zhuanlan.ZhuanlanBean.ZHUANLANBEAN_NAME;
-import static com.meiji.daily.mvp.zhuanlan.ZhuanlanBean.ZHUANLANBEAN_POSTSCOUNT;
-import static com.meiji.daily.mvp.zhuanlan.ZhuanlanBean.ZHUANLANBEAN_SLUG;
-import static com.meiji.daily.mvp.zhuanlan.ZhuanlanBean.ZHUANLANBEAN_TYPE;
+import static com.meiji.daily.bean.ZhuanlanBean.ZHUANLANBEAN_AVATARId;
+import static com.meiji.daily.bean.ZhuanlanBean.ZHUANLANBEAN_AVATARURL;
+import static com.meiji.daily.bean.ZhuanlanBean.ZHUANLANBEAN_FOLLOWERSCOUNT;
+import static com.meiji.daily.bean.ZhuanlanBean.ZHUANLANBEAN_INTRO;
+import static com.meiji.daily.bean.ZhuanlanBean.ZHUANLANBEAN_NAME;
+import static com.meiji.daily.bean.ZhuanlanBean.ZHUANLANBEAN_POSTSCOUNT;
+import static com.meiji.daily.bean.ZhuanlanBean.ZHUANLANBEAN_SLUG;
+import static com.meiji.daily.bean.ZhuanlanBean.ZHUANLANBEAN_TYPE;
+import static com.meiji.daily.db.ZhuanlanHelper.ZHUANLAN_TABLE;
 
 /**
  * Created by Meiji on 2016/11/25.
@@ -52,7 +53,8 @@ public class ZhuanlanDao {
         values.put(ZHUANLANBEAN_POSTSCOUNT, postsCount);
         values.put(ZHUANLANBEAN_INTRO, intro);
         values.put(ZHUANLANBEAN_SLUG, slug);
-        long id = db.insert("zhuanlan", null, values);
+        long id = db.insert(ZHUANLAN_TABLE, null, values);
+        db.query(ZHUANLAN_TABLE, null, "slug=?", new String[]{slug}, null, null, null);
         db.close();
         return id != -1;
     }
@@ -60,7 +62,7 @@ public class ZhuanlanDao {
     public List<ZhuanlanBean> query(int type) {
         ZhuanlanHelper helper = new ZhuanlanHelper(mContext, 1);
         SQLiteDatabase db = helper.getReadableDatabase();
-        Cursor cursor = db.query("zhuanlan", null, "type=?", new String[]{type + ""}, null, null, null);
+        Cursor cursor = db.query(ZHUANLAN_TABLE, null, "type=?", new String[]{type + ""}, null, null, null);
         List<ZhuanlanBean> list = new ArrayList<>();
         while (cursor.moveToNext()) {
             ZhuanlanBean bean = new ZhuanlanBean();
@@ -78,5 +80,15 @@ public class ZhuanlanDao {
         cursor.close();
         db.close();
         return list;
+    }
+
+    public boolean addSlug(String slug) {
+        ZhuanlanHelper helper = new ZhuanlanHelper(mContext, 1);
+        SQLiteDatabase db = helper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(ZHUANLANBEAN_SLUG, slug);
+        long id = db.insert(ZHUANLAN_TABLE, null, values);
+        db.close();
+        return id != -1;
     }
 }
