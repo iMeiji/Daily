@@ -101,9 +101,6 @@ class UseraddPresenter implements IUseradd.Presenter {
 
     @Override
     public void doSetAdapter() {
-        if (list.size() != 0) {
-            list.clear();
-        }
         list = dao.query(TYPE_USERADD);
         view.onSetAdapter(list);
         view.onHideRefreshing();
