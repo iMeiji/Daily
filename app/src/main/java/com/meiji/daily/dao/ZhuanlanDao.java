@@ -11,6 +11,7 @@ import com.meiji.daily.db.ZhuanlanHelper;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.R.attr.id;
 import static com.meiji.daily.bean.ZhuanlanBean.ZHUANLANBEAN_AVATARId;
 import static com.meiji.daily.bean.ZhuanlanBean.ZHUANLANBEAN_AVATARURL;
 import static com.meiji.daily.bean.ZhuanlanBean.ZHUANLANBEAN_FOLLOWERSCOUNT;
@@ -54,7 +55,6 @@ public class ZhuanlanDao {
         values.put(ZHUANLANBEAN_INTRO, intro);
         values.put(ZHUANLANBEAN_SLUG, slug);
         long id = db.insert(ZHUANLAN_TABLE, null, values);
-        db.query(ZHUANLAN_TABLE, null, "slug=?", new String[]{slug}, null, null, null);
         db.close();
         return id != -1;
     }
@@ -82,12 +82,10 @@ public class ZhuanlanDao {
         return list;
     }
 
-    public boolean addSlug(String slug) {
+    public boolean removeSlug(String slug) {
         ZhuanlanHelper helper = new ZhuanlanHelper(mContext, 1);
         SQLiteDatabase db = helper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(ZHUANLANBEAN_SLUG, slug);
-        long id = db.insert(ZHUANLAN_TABLE, null, values);
+        db.delete(ZHUANLAN_TABLE, "slug=?", new String[]{slug});
         db.close();
         return id != -1;
     }

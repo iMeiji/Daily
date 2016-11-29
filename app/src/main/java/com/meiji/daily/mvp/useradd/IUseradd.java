@@ -12,15 +12,20 @@ public interface IUseradd {
 
     interface View {
 
+        void onCheckInputId();
+
         void onSetAdapter(List<ZhuanlanBean> list);
 
         void onShowRefreshing();
 
         void onHideRefreshing();
 
-        void onFail();
+        void onAddFail();
 
-        void onSuccess();
+        void onAddSuccess();
+
+        void onRemoveItem(int adapterPosition, String slug);
+
     }
 
     interface Presenter {
@@ -35,8 +40,6 @@ public interface IUseradd {
          */
         void doSaveInputId();
 
-        void doRequestData();
-
         void doSetAdapter();
 
         void onFail();
@@ -44,6 +47,8 @@ public interface IUseradd {
         void doOnClickItem(int position);
 
         void doRefresh();
+
+        void doRemoveItem(int position);
     }
 
     interface Model {

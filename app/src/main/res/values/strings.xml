@@ -102,5 +102,6 @@
     <string name="md_zhuanlan_add_title">添加专栏ID</string>
     <string name="md_zhuanlan_add_content">在下面输入专栏的ID,如wooyun</string>
     <string name="md_zhuanlan_add_help">什么是专栏id</string>
+    <string name="add_zhuanlan_id_remove">是否删除</string>
 
 </resources>

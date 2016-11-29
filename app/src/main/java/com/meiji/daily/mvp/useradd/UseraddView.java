@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -24,6 +25,7 @@ import com.meiji.daily.adapter.ZhuanlanAdapter;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.interfaces.IOnItemClickListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,6 +43,7 @@ public class UseraddView extends Fragment implements IUseradd.View, View.OnClick
 
     private IUseradd.Presenter presenter;
     private ZhuanlanAdapter adapter;
+    private List<ZhuanlanBean> list = new ArrayList<>();
 
     @Nullable
     @Override
@@ -84,6 +87,26 @@ public class UseraddView extends Fragment implements IUseradd.View, View.OnClick
         refresh_layout.setOnRefreshListener(this);
 
         fab_add.setOnClickListener(this);
+
+        ItemTouchHelper helper = new ItemTouchHelper(
+                new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+                    @Override
+                    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                        return false;
+                    }
+
+                    @Override
+                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                        int pos = viewHolder.getAdapterPosition();
+                        onRemoveItem(pos, list.get(pos).getName());
+                        //list.remove(pos);
+                        adapter.notifyDataSetChanged();
+                        if (list.size() == 0) {
+                            tv_description.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
+        helper.attachToRecyclerView(recycler_view);
     }
 
     @Override
@@ -139,7 +162,8 @@ public class UseraddView extends Fragment implements IUseradd.View, View.OnClick
         dialog.show();
     }
 
-    private void onCheckInputId() {
+    @Override
+    public void onCheckInputId() {
         String input = dialog.getInputEditText().getText().toString();
         if (!TextUtils.isEmpty(input)) {
             presenter.doCheckInputId(input);
@@ -147,12 +171,14 @@ public class UseraddView extends Fragment implements IUseradd.View, View.OnClick
     }
 
     @Override
-    public void onSetAdapter(List<ZhuanlanBean> list) {
+    public void onSetAdapter(final List<ZhuanlanBean> mlist) {
+        list = mlist;
+
         adapter = new ZhuanlanAdapter(getActivity(), list);
         recycler_view.setAdapter(adapter);
         adapter.setItemClickListener(new IOnItemClickListener() {
             @Override
-            public void onClick(android.view.View view, int position) {
+            public void onClick(View view, int position) {
                 presenter.doOnClickItem(position);
             }
         });
@@ -161,13 +187,13 @@ public class UseraddView extends Fragment implements IUseradd.View, View.OnClick
     @Override
     public void onShowRefreshing() {
         refresh_layout.setRefreshing(true);
-        recycler_view.setVisibility(android.view.View.GONE);
+        recycler_view.setVisibility(View.GONE);
     }
 
     @Override
     public void onHideRefreshing() {
         refresh_layout.setRefreshing(false);
-        recycler_view.setVisibility(android.view.View.VISIBLE);
+        recycler_view.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -176,13 +202,26 @@ public class UseraddView extends Fragment implements IUseradd.View, View.OnClick
     }
 
     @Override
-    public void onFail() {
-        Snackbar.make(refresh_layout, R.string.add_zhuanlan_id_error, Snackbar.LENGTH_SHORT).show();
+    public void onAddFail() {
+        Snackbar.make(recycler_view, R.string.add_zhuanlan_id_error, Snackbar.LENGTH_SHORT).show();
         refresh_layout.setEnabled(true);
     }
 
     @Override
-    public void onSuccess() {
-        Snackbar.make(refresh_layout, R.string.add_zhuanlan_id_success, Snackbar.LENGTH_SHORT).show();
+    public void onAddSuccess() {
+        Snackbar.make(recycler_view, R.string.add_zhuanlan_id_success, Snackbar.LENGTH_SHORT).show();
+        tv_description.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onRemoveItem(final int adapterPosition, String name) {
+        Snackbar.make(recycler_view, "是否删除 " + name, Snackbar.LENGTH_LONG)
+                .setAction(R.string.ok, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        presenter.doRemoveItem(adapterPosition);
+                    }
+                })
+                .show();
     }
 }

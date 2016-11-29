@@ -95,26 +95,24 @@ class UseraddPresenter implements IUseradd.Presenter {
             String slug = bean.getSlug();
             dao.add(type, avatarUrl, avatarId, name, followersCount, postsCount, intro, slug);
         }
-        view.onSuccess();
+        view.onAddSuccess();
         doSetAdapter();
     }
 
     @Override
     public void doSetAdapter() {
+        if (list.size() != 0) {
+            list.clear();
+        }
         list = dao.query(TYPE_USERADD);
         view.onSetAdapter(list);
         view.onHideRefreshing();
     }
 
     @Override
-    public void doRequestData() {
-
-    }
-
-    @Override
     public void onFail() {
         view.onHideRefreshing();
-        view.onFail();
+        view.onAddFail();
     }
 
     @Override
@@ -133,7 +131,14 @@ class UseraddPresenter implements IUseradd.Presenter {
     @Override
     public void doRefresh() {
         view.onShowRefreshing();
-        doRequestData();
+        doSetAdapter();
         view.onHideRefreshing();
+    }
+
+    @Override
+    public void doRemoveItem(final int position) {
+        final ZhuanlanBean bean = list.get(position);
+        dao.removeSlug(bean.getSlug());
+        doSetAdapter();
     }
 }
