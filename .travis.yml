@@ -1,5 +1,4 @@
 language: android
-jdk: openjdk8
 sudo: false
 android:
   components:
