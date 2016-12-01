@@ -21,13 +21,20 @@
         </activity>
         <activity
             android:name=".mvp.postslist.PostsListView"
+            android:label="专栏"
             android:theme="@style/AppTheme.NoActionBar">
-
         </activity>
         <activity
             android:name=".mvp.postscontent.PostsContentView"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:label="文章"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".AddActivity"
+            android:label="添加专栏"
+            android:theme="@style/AppTheme.NoActionBar">
 
+        </activity>
     </application>
 
 </manifest>
