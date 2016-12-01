@@ -15,6 +15,16 @@
 ## Daily
 第三方[知乎专栏](https://zhuanlan.zhihu.com/)Android App,风格采用了Material Design  
 
+### 已实现的功能
+- 专栏内容阅读
+- 添加自定义专栏
+- 删除自定义专栏
+- 自定义主题颜色
+
+### 待实现的功能
+- 收藏夹
+- 清除缓存
+
 ### API
 [数据来源](https://github.com/shanelau/zhihu)  
 

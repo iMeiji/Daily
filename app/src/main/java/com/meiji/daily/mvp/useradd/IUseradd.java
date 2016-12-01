@@ -24,8 +24,6 @@ public interface IUseradd {
 
         void onAddSuccess();
 
-        void onRemoveItem(int adapterPosition, String slug);
-
     }
 
     interface Presenter {
@@ -49,6 +47,8 @@ public interface IUseradd {
         void doRefresh();
 
         void doRemoveItem(int position);
+
+        void doRemoveItemCancel(ZhuanlanBean bean);
     }
 
     interface Model {

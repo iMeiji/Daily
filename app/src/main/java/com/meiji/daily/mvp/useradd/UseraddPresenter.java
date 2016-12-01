@@ -138,4 +138,18 @@ class UseraddPresenter implements IUseradd.Presenter {
         dao.removeSlug(bean.getSlug());
         doSetAdapter();
     }
+
+    @Override
+    public void doRemoveItemCancel(ZhuanlanBean bean) {
+        String type = String.valueOf(TYPE_USERADD);
+        String avatarUrl = bean.getAvatar().getTemplate();
+        String avatarId = bean.getAvatar().getId();
+        String name = bean.getName();
+        String followersCount = String.valueOf(bean.getFollowersCount());
+        String postsCount = String.valueOf(bean.getPostsCount());
+        String intro = bean.getIntro();
+        String slug = bean.getSlug();
+        dao.add(type, avatarUrl, avatarId, name, followersCount, postsCount, intro, slug);
+        doSetAdapter();
+    }
 }

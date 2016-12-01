@@ -56,11 +56,7 @@ public class UseraddView extends Fragment implements IUseradd.View, View.OnClick
     }
 
     private void initData() {
-        if (presenter.doQueryDB()) {
-            tv_description.setVisibility(View.GONE);
-        } else {
-            tv_description.setVisibility(View.VISIBLE);
-        }
+        presenter.doQueryDB();
     }
 
     private void initView(View view) {
@@ -97,13 +93,19 @@ public class UseraddView extends Fragment implements IUseradd.View, View.OnClick
 
                     @Override
                     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                        int pos = viewHolder.getAdapterPosition();
-                        onRemoveItem(pos, list.get(pos).getName());
-                        //list.remove(pos);
-                        adapter.notifyDataSetChanged();
-                        if (list.size() == 0) {
-                            tv_description.setVisibility(View.VISIBLE);
-                        }
+                        int position = viewHolder.getAdapterPosition();
+                        final ZhuanlanBean bean = list.get(position);
+                        final String name = list.get(position).getName();
+                        adapter.notifyItemRemoved(position);
+                        presenter.doRemoveItem(position);
+                        Snackbar.make(recycler_view, "已删除 " + name, Snackbar.LENGTH_LONG)
+                                .setAction("撤销", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        presenter.doRemoveItemCancel(bean);
+                                    }
+                                })
+                                .show();
                     }
                 });
         helper.attachToRecyclerView(recycler_view);
@@ -173,7 +175,6 @@ public class UseraddView extends Fragment implements IUseradd.View, View.OnClick
     @Override
     public void onSetAdapter(final List<ZhuanlanBean> mlist) {
         list = mlist;
-
         adapter = new ZhuanlanAdapter(getActivity(), list);
         recycler_view.setAdapter(adapter);
         adapter.setItemClickListener(new IOnItemClickListener() {
@@ -182,6 +183,12 @@ public class UseraddView extends Fragment implements IUseradd.View, View.OnClick
                 presenter.doOnClickItem(position);
             }
         });
+
+        if (list.size() == 0) {
+            tv_description.setVisibility(View.VISIBLE);
+        } else {
+            tv_description.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -211,17 +218,5 @@ public class UseraddView extends Fragment implements IUseradd.View, View.OnClick
     public void onAddSuccess() {
         Snackbar.make(recycler_view, R.string.add_zhuanlan_id_success, Snackbar.LENGTH_SHORT).show();
         tv_description.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onRemoveItem(final int adapterPosition, String name) {
-        Snackbar.make(recycler_view, "是否删除 " + name, Snackbar.LENGTH_LONG)
-                .setAction(R.string.ok, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        presenter.doRemoveItem(adapterPosition);
-                    }
-                })
-                .show();
     }
 }

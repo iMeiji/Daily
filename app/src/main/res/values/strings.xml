@@ -76,7 +76,7 @@
 
 
     <!--add ZhuanlanBean id-->
-    <string name="add_id_description">当前没有已添加的专栏，点击加号按钮添加</string>
+    <string name="add_id_description">点击加号按钮添加专栏 \t 左右滑动可删除</string>
     <string name="zhuanlan_id_help">什么是专栏的ID</string>
     <string name="add_zhuanlan_id_help">http://marktony.github.io/2016/05/27/%E5%85%B3%E4%BA%8E%E7%9F%A5%E4%B9%8E%E4%B8%93%E6%A0%8FID%E7%9A%84%E4%B8%80%E4%BA%9B%E8%AF%B4%E6%98%8E/</string>
     <string name="add_zhuanlan_id_error">添加失败</string>
