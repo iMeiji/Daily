@@ -51,14 +51,10 @@ class PostsListPresenter implements IPostsList.Presenter {
             public void run() {
                 boolean result = model.getRequestData(url);
                 if (result) {
-                    Message message;
-                    message = handler.obtainMessage();
-                    message.what = 1;
+                    Message message = handler.obtainMessage(1);
                     message.sendToTarget();
                 } else {
-                    Message message;
-                    message = handler.obtainMessage();
-                    message.what = 0;
+                    Message message = handler.obtainMessage(0);
                     message.sendToTarget();
                 }
             }

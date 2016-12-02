@@ -33,7 +33,12 @@
             android:name=".AddActivity"
             android:label="添加专栏"
             android:theme="@style/AppTheme.NoActionBar">
-
+            <!--接收文本-->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="text/plain"/>
+            </intent-filter>
         </activity>
     </application>
 

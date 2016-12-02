@@ -29,7 +29,10 @@
 [数据来源](https://github.com/shanelau/zhihu)  
 
 ### 截图
-<img src="/screenshots/1.jpg" width="200" height="355.5"/> 
+<img src="/screenshots/daily_1.gif"/>
+<img src="/screenshots/daily_2.gif"/>
+<img src="/screenshots/daily_3.gif"/>
+<img src="/screenshots/daily_4.gif"/>
 
 ### 下载
 [GitHub Release](https://github.com/iMeiji/Daily/releases)
