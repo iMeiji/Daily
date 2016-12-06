@@ -98,8 +98,8 @@ public class UseraddView extends Fragment implements IUseradd.View, View.OnClick
                         final String name = list.get(position).getName();
                         adapter.notifyItemRemoved(position);
                         presenter.doRemoveItem(position);
-                        Snackbar.make(recycler_view, "已删除 " + name, Snackbar.LENGTH_LONG)
-                                .setAction("撤销", new View.OnClickListener() {
+                        Snackbar.make(recycler_view, getString(R.string.deleted) + name, Snackbar.LENGTH_LONG)
+                                .setAction(getString(R.string.undo), new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
                                         presenter.doRemoveItemCancel(bean);
@@ -134,8 +134,8 @@ public class UseraddView extends Fragment implements IUseradd.View, View.OnClick
                 .build();
 
         // 设置3个按键
-        dialog.setActionButton(DialogAction.NEGATIVE, R.string.cancel);
-        dialog.setActionButton(DialogAction.POSITIVE, R.string.ok);
+        dialog.setActionButton(DialogAction.NEGATIVE, R.string.md_cancel);
+        dialog.setActionButton(DialogAction.POSITIVE, R.string.md_ok);
         dialog.setActionButton(DialogAction.NEUTRAL, R.string.md_zhuanlan_add_help);
 
         dialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(new View.OnClickListener() {

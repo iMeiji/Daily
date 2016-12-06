@@ -33,7 +33,7 @@
             android:title="@string/nav_user_define"/>
     </group>
 
-    <item android:title="@string/others">
+    <item android:title="@string/nav_other">
         <menu>
             <item
                 android:id="@+id/nav_color_chooser"
@@ -42,7 +42,7 @@
             <item
                 android:id="@+id/nav_about"
                 android:icon="@drawable/ic_photo_info"
-                android:title="@string/title_activity_about"/>
+                android:title="@string/nav_activity_about"/>
         </menu>
     </item>
 </menu>

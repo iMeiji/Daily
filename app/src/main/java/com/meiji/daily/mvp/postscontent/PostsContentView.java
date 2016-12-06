@@ -130,7 +130,7 @@ public class PostsContentView extends BaseActivity implements View.OnClickListen
 
         progressDialog = new MaterialDialog.Builder(this)
                 .progress(true, 0)
-                .content(R.string.loading)
+                .content(R.string.md_loading)
                 .cancelable(true)
                 .build();
         progressDialog.show();

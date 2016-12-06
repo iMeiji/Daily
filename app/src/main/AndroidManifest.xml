@@ -15,23 +15,22 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".mvp.postslist.PostsListView"
-            android:label="专栏"
+            android:label="@string/zhuanlan"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
             android:name=".mvp.postscontent.PostsContentView"
-            android:label="文章"
+            android:label="@string/postslist"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
             android:name=".AddActivity"
-            android:label="添加专栏"
+            android:label="@string/add_zhuanlan"
             android:theme="@style/AppTheme.NoActionBar">
             <!--接收文本-->
             <intent-filter>
@@ -39,6 +38,11 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <data android:mimeType="text/plain"/>
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".AboutActivity"
+            android:label="@string/about"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>
 

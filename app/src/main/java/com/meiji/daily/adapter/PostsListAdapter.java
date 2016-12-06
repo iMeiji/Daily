@@ -2,6 +2,7 @@ package com.meiji.daily.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,10 +48,16 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
         String publishedTime = bean.getPublishedTime().substring(0, 10);
         String likesCount = bean.getLikesCount() + "赞";
         String commentsCount = bean.getCommentsCount() + "条评论";
-        String titleImage = bean.getTitleImage().replace("r.jpg", "b.jpg");
+        String titleImage = bean.getTitleImage();
         String title = bean.getTitle();
 
-        Glide.with(mContext).load(titleImage).asBitmap().centerCrop().into(holder.iv_titleImage);
+        if (!TextUtils.isEmpty(titleImage)) {
+            titleImage = bean.getTitleImage().replace("r.jpg", "b.jpg");
+            Glide.with(mContext).load(titleImage).asBitmap().centerCrop().into(holder.iv_titleImage);
+        } else {
+            holder.iv_titleImage.setImageResource(R.drawable.error_image);
+            holder.iv_titleImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        }
         holder.tv_publishedTime.setText(publishedTime);
         holder.tv_likesCount.setText(likesCount);
         holder.tv_commentsCount.setText(commentsCount);

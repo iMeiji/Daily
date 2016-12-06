@@ -1,5 +1,6 @@
 package com.meiji.daily;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -12,23 +13,14 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.color.CircleView;
 import com.afollestad.materialdialogs.color.ColorChooserDialog;
 import com.meiji.daily.mvp.useradd.UseraddView;
 import com.meiji.daily.mvp.zhuanlan.ZhuanlanModel;
 import com.meiji.daily.mvp.zhuanlan.ZhuanlanView;
 import com.meiji.daily.utils.ColorUtil;
-
-import de.psdev.licensesdialog.LicensesDialog;
-import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
-import de.psdev.licensesdialog.licenses.MITLicense;
-import de.psdev.licensesdialog.model.Notice;
-import de.psdev.licensesdialog.model.Notices;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, ColorChooserDialog.ColorCallback {
@@ -69,42 +61,9 @@ public class MainActivity extends BaseActivity
         } else if ((currentTime - exitTime) < 2000) {
             super.onBackPressed();
         } else {
-            Snackbar.make(drawerLayout, "再按一次退出程序", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(drawerLayout, getString(R.string.double_click_exit), Snackbar.LENGTH_SHORT).show();
             exitTime = currentTime;
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_copyright) {
-            MaterialDialog dialog = new MaterialDialog.Builder(MainActivity.this)
-                    .title(R.string.action_copyright)
-                    .content(R.string.copyright_content)
-                    .neutralText(R.string.got_it)
-                    .onNeutral(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            dialog.dismiss();
-                        }
-                    }).build();
-
-            dialog.show();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -138,7 +97,7 @@ public class MainActivity extends BaseActivity
             createColorChooserDialog();
 
         } else if (id == R.id.nav_about) {
-            createLicenseDialog();
+            startActivity(new Intent(this, AboutActivity.class));
 
         }
 
@@ -157,7 +116,7 @@ public class MainActivity extends BaseActivity
     }
 
     private void createColorChooserDialog() {
-        new ColorChooserDialog.Builder(this, R.string.color_chooser_title)
+        new ColorChooserDialog.Builder(this, R.string.md_color_chooser_title)
                 .doneButton(R.string.md_done)
                 .cancelButton(R.string.md_cancel)
                 .allowUserColorInput(true)
@@ -176,20 +135,5 @@ public class MainActivity extends BaseActivity
         if (!dialog.isAccentMode()) {
             ColorUtil.setColor(this, selectedColor);
         }
-    }
-
-    private void createLicenseDialog() {
-        Notices notices = new Notices();
-        notices.addNotice(new Notice("material-dialogs", "https://github.com/afollestad/material-dialogs", "Copyright (c) 2014-2016 Aidan Michael Follestad", new MITLicense()));
-        notices.addNotice(new Notice("okhttp", "https://github.com/square/okhttp", "Copyright 2016 Square, Inc.", new ApacheSoftwareLicense20()));
-        notices.addNotice(new Notice("gson", "https://github.com/google/gson", "Copyright 2008 Google Inc.", new ApacheSoftwareLicense20()));
-        notices.addNotice(new Notice("glide", "https://github.com/bumptech/glide", "Sam Judd - @sjudd on GitHub, @samajudd on Twitter", new ApacheSoftwareLicense20()));
-        notices.addNotice(new Notice("CircleImageView", "https://github.com/hdodenhof/CircleImageView", "Copyright 2014 - 2016 Henning Dodenhof", new ApacheSoftwareLicense20()));
-
-        new LicensesDialog.Builder(this)
-                .setNotices(notices)
-                .setIncludeOwnLicense(true)
-                .build()
-                .show();
     }
 }

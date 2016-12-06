@@ -54,7 +54,7 @@ public class AddActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         materialDialog = new MaterialDialog.Builder(this)
                 .progress(true, 0)
-                .content(R.string.loading)
+                .content(R.string.md_loading)
                 .cancelable(true)
                 .build();
         materialDialog.show();
@@ -70,7 +70,7 @@ public class AddActivity extends BaseActivity {
                 }
             }
         } else {
-            onFinish("格式不正确");
+            onFinish(getString(R.string.formal_incorrect));
         }
     }
 
@@ -82,7 +82,7 @@ public class AddActivity extends BaseActivity {
             List<ZhuanlanBean> query = dao.query(TYPE_USERADD);
             for (ZhuanlanBean bean : query) {
                 if (bean.getSlug().equals(slug)) {
-                    onFinish("已近添加过了");
+                    onFinish(getString(R.string.has_been_added));
                     return;
                 }
             }
@@ -117,7 +117,7 @@ public class AddActivity extends BaseActivity {
                 }
             }).start();
         } else {
-            onFinish("链接不正确");
+            onFinish(getString(R.string.incorrect_link));
         }
     }
 

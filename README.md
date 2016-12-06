@@ -38,7 +38,7 @@
 [GitHub Release](https://github.com/iMeiji/Daily/releases)
 
 
-### 开源项目
+### 开源库
 - [Material Dialogs](https://github.com/afollestad/material-dialogs)
 - [OkHttp](https://github.com/square/okhttp)
 - [Gson](https://github.com/google/gson)

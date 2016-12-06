@@ -2,6 +2,7 @@ package com.meiji.daily.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,13 +48,13 @@ public class ZhuanlanAdapter extends RecyclerView.Adapter<ZhuanlanAdapter.Zhuanl
         String followersCount = bean.getFollowersCount() + "人关注TA";
         String postsCount = bean.getPostsCount() + "篇文章";
         String avatarUrl = bean.getAvatar().getTemplate();
-        if (avatarUrl != null) {
+        if (!TextUtils.isEmpty(avatarUrl)) {
             // 拼凑avatar链接
             avatarUrl = avatarUrl
                     .replace("{id}", bean.getAvatar().getId())
                     .replace("{size}", "m");
+            Glide.with(mContext).load(avatarUrl).asBitmap().into(holder.cv_avatar);
         }
-        Glide.with(mContext).load(avatarUrl).asBitmap().into(holder.cv_avatar);
         holder.tv_name.setText(bean.getName());
         holder.tv_followersCount.setText(followersCount);
         holder.tv_postsCount.setText(postsCount);

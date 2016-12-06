@@ -8,12 +8,11 @@ android {
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 1
-        versionName '1.3'
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        versionName '1.3.5'
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             applicationVariants.all { variant ->
                 variant.outputs.each { output ->
