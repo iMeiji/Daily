@@ -52,17 +52,12 @@ interface IZhuanlan {
          * 成功 -> 保存到数据库
          * 不成功 -> 显示查询数据失败
          */
-        void doRequestData();
 
         /**
          * 设置适配器
          */
-        void doSetAdapter();
 
-        /**
-         * 保存到数据库
-         */
-        void doSaveData();
+        void doSetAdapter(List<ZhuanlanBean> list);
 
         /**
          * 获取点击栏信息
@@ -90,16 +85,19 @@ interface IZhuanlan {
         /**
          * 请求数据
          */
-        boolean getRequestData(String[] ids);
+        List<ZhuanlanBean> httpRequest(String[] ids);
 
         /**
          * 返回数据
+         * @param type
          */
-        List<ZhuanlanBean> getList();
+        List<ZhuanlanBean> getList(int type);
 
         /**
          * 结束
          */
         void onDestroy();
+
+        void getData(int type);
     }
 }

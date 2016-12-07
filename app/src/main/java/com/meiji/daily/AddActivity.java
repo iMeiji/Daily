@@ -11,7 +11,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.gson.Gson;
 import com.meiji.daily.bean.ZhuanlanBean;
-import com.meiji.daily.dao.ZhuanlanDao;
+import com.meiji.daily.database.dao.ZhuanlanDao;
 import com.meiji.daily.utils.Api;
 
 import java.io.IOException;
@@ -32,7 +32,7 @@ import static com.meiji.daily.mvp.zhuanlan.ZhuanlanModel.TYPE_USERADD;
 public class AddActivity extends BaseActivity {
 
     private Gson gson = new Gson();
-    private ZhuanlanDao dao = new ZhuanlanDao(this);
+    private ZhuanlanDao zhuanlanDao = new ZhuanlanDao();
     private boolean result = false;
     private MaterialDialog materialDialog;
     private Handler handler = new Handler(new Handler.Callback() {
@@ -79,7 +79,7 @@ public class AddActivity extends BaseActivity {
         final Matcher matcher = Pattern.compile(regex).matcher(shareText);
         if (matcher.find()) {
             String slug = matcher.group(1);
-            List<ZhuanlanBean> query = dao.query(TYPE_USERADD);
+            List<ZhuanlanBean> query = zhuanlanDao.query(TYPE_USERADD);
             for (ZhuanlanBean bean : query) {
                 if (bean.getSlug().equals(slug)) {
                     onFinish(getString(R.string.has_been_added));
@@ -103,7 +103,7 @@ public class AddActivity extends BaseActivity {
                         String postsCount = String.valueOf(bean.getPostsCount());
                         String intro = bean.getIntro();
                         String slug = bean.getSlug();
-                        result = dao.add(type, avatarUrl, avatarId, name, followersCount, postsCount, intro, slug);
+                        result = zhuanlanDao.add(type, avatarUrl, avatarId, name, followersCount, postsCount, intro, slug);
                         if (result) {
                             Message message = handler.obtainMessage(1);
                             message.sendToTarget();

@@ -6,7 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.meiji.daily.bean.ZhuanlanBean;
-import com.meiji.daily.dao.ZhuanlanDao;
+import com.meiji.daily.database.dao.ZhuanlanDao;
 import com.meiji.daily.mvp.postslist.PostsListView;
 import com.meiji.daily.utils.Api;
 
@@ -26,7 +26,7 @@ class UseraddPresenter implements IUseradd.Presenter {
     private IUseradd.View view;
     private IUseradd.Model model;
     private Context mContext;
-    private ZhuanlanDao dao;
+    private ZhuanlanDao zhuanlanDao;
     private List<ZhuanlanBean> list;
     private Handler handler = new Handler(new Handler.Callback() {
         @Override
@@ -45,12 +45,12 @@ class UseraddPresenter implements IUseradd.Presenter {
         this.view = view;
         this.model = new UseraddModel();
         this.mContext = mContext;
-        dao = new ZhuanlanDao(mContext);
+        zhuanlanDao = new ZhuanlanDao();
     }
 
     @Override
     public boolean doQueryDB() {
-        list = dao.query(TYPE_USERADD);
+        list = zhuanlanDao.query(TYPE_USERADD);
         if (list.size() != 0) {
             doSetAdapter();
         }
@@ -89,7 +89,7 @@ class UseraddPresenter implements IUseradd.Presenter {
             String postsCount = String.valueOf(bean.getPostsCount());
             String intro = bean.getIntro();
             String slug = bean.getSlug();
-            dao.add(type, avatarUrl, avatarId, name, followersCount, postsCount, intro, slug);
+            zhuanlanDao.add(type, avatarUrl, avatarId, name, followersCount, postsCount, intro, slug);
         }
         view.onAddSuccess();
         doSetAdapter();
@@ -97,7 +97,7 @@ class UseraddPresenter implements IUseradd.Presenter {
 
     @Override
     public void doSetAdapter() {
-        list = dao.query(TYPE_USERADD);
+        list = zhuanlanDao.query(TYPE_USERADD);
         view.onSetAdapter(list);
         view.onHideRefreshing();
     }
@@ -131,7 +131,7 @@ class UseraddPresenter implements IUseradd.Presenter {
     @Override
     public void doRemoveItem(final int position) {
         final ZhuanlanBean bean = list.get(position);
-        dao.removeSlug(bean.getSlug());
+        zhuanlanDao.removeSlug(bean.getSlug());
         doSetAdapter();
     }
 
@@ -145,7 +145,7 @@ class UseraddPresenter implements IUseradd.Presenter {
         String postsCount = String.valueOf(bean.getPostsCount());
         String intro = bean.getIntro();
         String slug = bean.getSlug();
-        dao.add(type, avatarUrl, avatarId, name, followersCount, postsCount, intro, slug);
+        zhuanlanDao.add(type, avatarUrl, avatarId, name, followersCount, postsCount, intro, slug);
         doSetAdapter();
     }
 }

@@ -1,6 +1,8 @@
 package com.meiji.daily.mvp.useradd;
 
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -33,7 +35,6 @@ import java.util.List;
  */
 
 public class UseraddView extends Fragment implements IUseradd.View, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
-
 
     private TextView tv_description;
     private RecyclerView recycler_view;
@@ -158,6 +159,8 @@ public class UseraddView extends Fragment implements IUseradd.View, View.OnClick
             @Override
             public void onClick(View view) {
                 // 什么是专栏 id
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.add_zhuanlan_id_help_url))));
+                dialog.dismiss();
             }
         });
 

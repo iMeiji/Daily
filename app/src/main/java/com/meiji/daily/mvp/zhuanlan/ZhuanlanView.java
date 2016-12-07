@@ -55,7 +55,7 @@ public class ZhuanlanView extends Fragment implements IZhuanlan.View, SwipeRefre
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_zhuanlan, container, false);
-        presenter = new ZhuanlanPresenter(this, getActivity());
+        presenter = new ZhuanlanPresenter(this);
         initViews(view);
         onRequestData();
         return view;
