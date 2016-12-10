@@ -1,6 +1,7 @@
 package com.meiji.daily.mvp.postscontent;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.meiji.daily.bean.PostsContentBean;
 import com.meiji.daily.utils.Api;
 
@@ -39,7 +40,7 @@ class PostsContentModel implements IPostsContent.Model {
             }
             String responseJson = response.body().string();
             bean = gson.fromJson(responseJson, PostsContentBean.class);
-        } catch (IOException e) {
+        } catch (IOException | JsonSyntaxException e) {
             e.printStackTrace();
         }
         return flag;

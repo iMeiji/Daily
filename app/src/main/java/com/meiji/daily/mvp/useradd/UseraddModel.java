@@ -1,6 +1,7 @@
 package com.meiji.daily.mvp.useradd;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.meiji.daily.bean.ZhuanlanBean;
 
 import java.io.IOException;
@@ -45,7 +46,7 @@ class UseraddModel implements IUseradd.Model {
             String responseJson = response.body().string();
             ZhuanlanBean bean = gson.fromJson(responseJson, ZhuanlanBean.class);
             list.add(bean);
-        } catch (IOException e) {
+        } catch (IOException | JsonSyntaxException e) {
             e.printStackTrace();
         }
         return true;

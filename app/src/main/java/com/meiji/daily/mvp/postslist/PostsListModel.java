@@ -1,6 +1,7 @@
 package com.meiji.daily.mvp.postslist;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.meiji.daily.bean.PostsListBean;
 
 import org.json.JSONArray;
@@ -49,7 +50,7 @@ class PostsListModel implements IPostsList.Model {
                 PostsListBean bean = gson.fromJson(jsonObject.toString(), PostsListBean.class);
                 list.add(bean);
             }
-        } catch (IOException | JSONException e) {
+        } catch (IOException | JSONException | JsonSyntaxException e) {
             e.printStackTrace();
         }
         return flag;

@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.meiji.daily.InitApp;
 import com.meiji.daily.R;
 import com.meiji.daily.bean.ZhuanlanBean;
@@ -121,7 +122,7 @@ public class ZhuanlanModel implements IZhuanlan.Model {
                     ZhuanlanBean bean = gson.fromJson(responseJson, ZhuanlanBean.class);
                     list.add(bean);
                 }
-            } catch (IOException e) {
+            } catch (IOException | JsonSyntaxException e) {
                 e.printStackTrace();
             }
         }

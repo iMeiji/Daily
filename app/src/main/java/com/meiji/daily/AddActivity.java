@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.database.dao.ZhuanlanDao;
 import com.meiji.daily.utils.Api;
@@ -111,8 +112,10 @@ public class AddActivity extends BaseActivity {
                             Message message = handler.obtainMessage(0);
                             message.sendToTarget();
                         }
-                    } catch (IOException e) {
+                    } catch (IOException | JsonSyntaxException e) {
                         e.printStackTrace();
+                        Message message = handler.obtainMessage(0);
+                        message.sendToTarget();
                     }
                 }
             }).start();
