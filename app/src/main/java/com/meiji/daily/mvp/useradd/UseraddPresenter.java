@@ -1,10 +1,10 @@
 package com.meiji.daily.mvp.useradd;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 
+import com.meiji.daily.InitApp;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.database.dao.ZhuanlanDao;
 import com.meiji.daily.mvp.postslist.PostsListView;
@@ -25,7 +25,6 @@ class UseraddPresenter implements IUseradd.Presenter {
 
     private IUseradd.View view;
     private IUseradd.Model model;
-    private Context mContext;
     private ZhuanlanDao zhuanlanDao;
     private List<ZhuanlanBean> list;
     private Handler handler = new Handler(new Handler.Callback() {
@@ -41,10 +40,9 @@ class UseraddPresenter implements IUseradd.Presenter {
         }
     });
 
-    UseraddPresenter(IUseradd.View view, Context mContext) {
+    UseraddPresenter(IUseradd.View view) {
         this.view = view;
         this.model = new UseraddModel();
-        this.mContext = mContext;
         zhuanlanDao = new ZhuanlanDao();
     }
 
@@ -114,11 +112,12 @@ class UseraddPresenter implements IUseradd.Presenter {
         String name = list.get(position).getName();
         int postsCount = list.get(position).getPostsCount();
 
-        Intent intent = new Intent(mContext, PostsListView.class);
+        Intent intent = new Intent(InitApp.AppContext, PostsListView.class);
         intent.putExtra(ZHUANLANBEAN_SLUG, slug);
         intent.putExtra(ZHUANLANBEAN_NAME, name);
         intent.putExtra(ZHUANLANBEAN_POSTSCOUNT, postsCount);
-        mContext.startActivity(intent);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        InitApp.AppContext.startActivity(intent);
     }
 
     @Override

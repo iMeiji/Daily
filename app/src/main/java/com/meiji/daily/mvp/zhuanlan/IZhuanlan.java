@@ -46,17 +46,8 @@ interface IZhuanlan {
         void doGetType(int type);
 
         /**
-         * 请求数据,首先从数据库查询 list ,通过判断 List.size 与 ids.length
-         * 相等 -> 设置适配器
-         * 不相等 -> 从网络请求数据,判断是否成功
-         * 成功 -> 保存到数据库
-         * 不成功 -> 显示查询数据失败
-         */
-
-        /**
          * 设置适配器
          */
-
         void doSetAdapter(List<ZhuanlanBean> list);
 
         /**
@@ -89,6 +80,7 @@ interface IZhuanlan {
 
         /**
          * 返回数据
+         *
          * @param type
          */
         List<ZhuanlanBean> getList(int type);

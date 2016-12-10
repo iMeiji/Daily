@@ -133,7 +133,7 @@ public class MainActivity extends BaseActivity
             getWindow().setNavigationBarColor(selectedColor);
         }
         if (!dialog.isAccentMode()) {
-            ColorUtil.setColor(this, selectedColor);
+            ColorUtil.setColor(selectedColor);
         }
     }
 }

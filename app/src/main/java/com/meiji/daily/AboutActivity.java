@@ -66,14 +66,15 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
     public void onClick(View view) {
         switch (view.getId()) {
             case changelogView:
-                String changelog = "支持添加自定义专栏 \n" +
-                        "方法1: 手动输入专栏id \n" +
-                        "方法2: 已\"分享方式\"把专栏链接添加到自定义专栏";
-                new MaterialDialog.Builder(this)
-                        .title(R.string.changelog)
-                        .content(changelog)
-                        .positiveText(android.R.string.ok)
-                        .show();
+//                String changelog = "支持添加自定义专栏 \n" +
+//                        "方法1: 手动输入专栏id \n" +
+//                        "方法2: 已\"分享方式\"把专栏链接添加到自定义专栏";
+//                new MaterialDialog.Builder(this)
+//                        .title(R.string.changelog)
+//                        .content(changelog)
+//                        .positiveText(android.R.string.ok)
+//                        .show();
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.changelog_url))));
                 break;
             case R.id.developersView:
                 new MaterialDialog.Builder(this)

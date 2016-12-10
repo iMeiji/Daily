@@ -50,7 +50,7 @@ public class UseraddView extends Fragment implements IUseradd.View, View.OnClick
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_useradd, container, false);
-        presenter = new UseraddPresenter(this, getActivity());
+        presenter = new UseraddPresenter(this);
         initView(view);
         initData();
         return view;

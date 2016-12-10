@@ -1,10 +1,10 @@
 package com.meiji.daily.mvp.postslist;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 
+import com.meiji.daily.InitApp;
 import com.meiji.daily.bean.PostsListBean;
 import com.meiji.daily.mvp.postscontent.PostsContentView;
 
@@ -20,7 +20,6 @@ import static com.meiji.daily.bean.PostsListBean.POSTSLISTBEAN_TITLEIMAGE;
 
 class PostsListPresenter implements IPostsList.Presenter {
 
-    private Context mContext;
     private IPostsList.View view;
     private IPostsList.Model model;
     private List<PostsListBean> list;
@@ -37,9 +36,8 @@ class PostsListPresenter implements IPostsList.Presenter {
         }
     });
 
-    PostsListPresenter(IPostsList.View view, Context mContext) {
+    PostsListPresenter(IPostsList.View view) {
         this.view = view;
-        this.mContext = mContext;
         this.model = new PostsListModel();
     }
 
@@ -82,11 +80,12 @@ class PostsListPresenter implements IPostsList.Presenter {
         String title = list.get(position).getTitle();
         int slug = list.get(position).getSlug();
 
-        Intent intent = new Intent(mContext, PostsContentView.class);
+        Intent intent = new Intent(InitApp.AppContext, PostsContentView.class);
         intent.putExtra(POSTSLISTBEAN_TITLEIMAGE, titleImage);
         intent.putExtra(POSTSLISTBEAN_TITLE, title);
         intent.putExtra(POSTSLISTBEAN_SLUG, slug);
-        mContext.startActivity(intent);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        InitApp.AppContext.startActivity(intent);
     }
 
     @Override

@@ -26,6 +26,7 @@
 
     <!--About Activity-->
     <string name="changelog">更新日志</string>
+    <string name="changelog_url">https://github.com/iMeiji/Daily/releases</string>
     <string name="about_developers_label">主要开发者</string>
     <string name="about_developers"><a href="https://github.com/iMeiji">iMeiji</a></string>
     <string name="share_app_text">来瞧瞧这个：适配了质感设计的 知乎专栏！</string>

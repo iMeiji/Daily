@@ -44,7 +44,7 @@ public class PostsListView extends BaseActivity implements IPostsList.View, Swip
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_postslist);
-        presenter = new PostsListPresenter(this, this);
+        presenter = new PostsListPresenter(this);
         initView();
         initData();
         onRequestData();
