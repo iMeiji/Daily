@@ -91,7 +91,7 @@ public class MainActivity extends BaseActivity
             replaceFragment(ZhuanlanModel.TYPE_ZHIHU);
 
         } else if (id == R.id.nav_user_add) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.app_bar_main, new UseraddView()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.content_main, new UseraddView()).commit();
 
         } else if (id == R.id.nav_color_chooser) {
             createColorChooserDialog();
@@ -107,7 +107,7 @@ public class MainActivity extends BaseActivity
 
     private void replaceFragment(int type) {
         ZhuanlanView fragment = ZhuanlanView.newInstance(type);
-        getSupportFragmentManager().beginTransaction().replace(R.id.app_bar_main, fragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.content_main, fragment).commit();
     }
 
     @Override

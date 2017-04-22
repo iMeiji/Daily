@@ -76,7 +76,7 @@ interface IZhuanlan {
         /**
          * 请求数据
          */
-        List<ZhuanlanBean> httpRequest(String[] ids);
+//        List<ZhuanlanBean> httpRequest(String[] ids);
 
         /**
          * 返回数据
@@ -91,5 +91,7 @@ interface IZhuanlan {
         void onDestroy();
 
         void getData(int type);
+
+        List<ZhuanlanBean> RetrofitRequest(String[] ids);
     }
 }
