@@ -1,16 +1,13 @@
 package com.meiji.daily.mvp.postscontent;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
+import com.meiji.daily.RetrofitFactory;
 import com.meiji.daily.bean.PostsContentBean;
 import com.meiji.daily.utils.Api;
 
 import java.io.IOException;
 
-import okhttp3.Call;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import retrofit2.Call;
+import retrofit2.Response;
 
 /**
  * Created by Meiji on 2016/11/23.
@@ -18,29 +15,22 @@ import okhttp3.Response;
 
 class PostsContentModel implements IPostsContent.Model {
 
-    private OkHttpClient client = new OkHttpClient();
-    private Call call;
-    private Gson gson = new Gson();
+    private static final String TAG = "PostsContentModel";
     private PostsContentBean bean;
+    private Call<PostsContentBean> call;
 
     @Override
-    public boolean getRequestData(int slug) {
+    public boolean retrofitRequest(int slug) {
         boolean flag = false;
-        String url = Api.POST_URL + slug;
-        Request request;
-        Response response;
+        Api api = RetrofitFactory.getRetrofit().create(Api.class);
+        call = api.getPostsContentBean(slug);
         try {
-            request = new Request.Builder()
-                    .url(url)
-                    .build();
-            call = client.newCall(request);
-            response = call.execute();
+            Response<PostsContentBean> response = call.execute();
             if (response.isSuccessful()) {
                 flag = true;
+                bean = response.body();
             }
-            String responseJson = response.body().string();
-            bean = gson.fromJson(responseJson, PostsContentBean.class);
-        } catch (IOException | JsonSyntaxException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return flag;

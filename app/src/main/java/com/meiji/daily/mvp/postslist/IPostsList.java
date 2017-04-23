@@ -43,7 +43,7 @@ interface IPostsList {
         /**
          * 请求数据
          */
-        void doRequestData(String url);
+        void doRequestData(String url, int offset);
 
         /**
          * 设置适配器
@@ -77,7 +77,7 @@ interface IPostsList {
         /**
          * 请求数据
          */
-        boolean getRequestData(String url);
+        boolean retrofitRequest(String slug, int offset);
 
         /**
          * 返回数据

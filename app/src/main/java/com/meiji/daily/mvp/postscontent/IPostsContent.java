@@ -47,7 +47,7 @@ interface IPostsContent {
         /**
          * 请求数据
          */
-        boolean getRequestData(int slug);
+        boolean retrofitRequest(int slug);
 
         /**
          * 返回内容

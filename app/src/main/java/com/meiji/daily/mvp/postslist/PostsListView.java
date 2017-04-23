@@ -16,7 +16,6 @@ import com.meiji.daily.R;
 import com.meiji.daily.adapter.PostsListAdapter;
 import com.meiji.daily.bean.PostsListBean;
 import com.meiji.daily.interfaces.IOnItemClickListener;
-import com.meiji.daily.utils.Api;
 
 import java.util.List;
 
@@ -30,15 +29,16 @@ import static com.meiji.daily.bean.ZhuanlanBean.ZHUANLANBEAN_SLUG;
 
 public class PostsListView extends BaseActivity implements IPostsList.View, SwipeRefreshLayout.OnRefreshListener {
 
-    private Toolbar toolbar; // 双击 toolbar 返回顶部 待写
+    private static final String TAG = "PostsListView";
+    private Toolbar toolbar;
     private SwipeRefreshLayout refresh_layout;
     private RecyclerView recycler_view;
 
-    private String url;
     private PostsListAdapter adapter;
     private int postCount;
     private boolean flag = false;
     private IPostsList.Presenter presenter;
+    private String slug;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,13 +52,12 @@ public class PostsListView extends BaseActivity implements IPostsList.View, Swip
 
     private void initData() {
         Intent intent = getIntent();
-        String slug = intent.getStringExtra(ZHUANLANBEAN_SLUG);
+        slug = intent.getStringExtra(ZHUANLANBEAN_SLUG);
         postCount = intent.getIntExtra(ZHUANLANBEAN_POSTSCOUNT, 0);
         String title = intent.getStringExtra(ZHUANLANBEAN_NAME);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(title);
         }
-        url = Api.BASE_URL + slug + "/posts?limit=10";
     }
 
     @Override
@@ -72,7 +71,7 @@ public class PostsListView extends BaseActivity implements IPostsList.View, Swip
 
     @Override
     public void onRequestData() {
-        presenter.doRequestData(url);
+        presenter.doRequestData(slug, 0);
     }
 
     @Override
@@ -99,8 +98,7 @@ public class PostsListView extends BaseActivity implements IPostsList.View, Swip
                     if (!recyclerView.canScrollVertically(1)) {
                         // 列表文章 < 总文章 继续加载 这里要判断recyclerview是否滚动到底再执行 不然后台一直加载
                         if ((list.size() < postCount) && flag) {
-                            onShowRefreshing();
-                            presenter.doRequestData(url + "&offset=" + list.size());
+                            presenter.doRequestData(slug, list.size());
                             flag = false;
                         } else if ((list.size() == postCount)) {
                             Snackbar.make(refresh_layout, R.string.no_more, Snackbar.LENGTH_SHORT).show();
@@ -140,6 +138,12 @@ public class PostsListView extends BaseActivity implements IPostsList.View, Swip
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        toolbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recycler_view.smoothScrollToPosition(0);
+            }
+        });
         recycler_view.setLayoutManager(new LinearLayoutManager(this));
         recycler_view.setHasFixedSize(true);
         // 设置下拉刷新的按钮的颜色

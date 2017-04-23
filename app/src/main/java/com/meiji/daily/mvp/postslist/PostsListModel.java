@@ -1,21 +1,16 @@
 package com.meiji.daily.mvp.postslist;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
+import com.meiji.daily.RetrofitFactory;
 import com.meiji.daily.bean.PostsListBean;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.meiji.daily.utils.Api;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import okhttp3.Call;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import retrofit2.Call;
+import retrofit2.Response;
+
 
 /**
  * Created by Meiji on 2016/11/19.
@@ -23,38 +18,9 @@ import okhttp3.Response;
 
 class PostsListModel implements IPostsList.Model {
 
-    private OkHttpClient okHttpClient = new OkHttpClient();
-    private Gson gson = new Gson();
+    private static final String TAG = "PostsListModel";
     private List<PostsListBean> list = new ArrayList<>();
-    private Call call;
-
-    @Override
-    public boolean getRequestData(String url) {
-        boolean flag = false;
-        Response response;
-        Request request;
-        try {
-            request = new Request.Builder()
-                    .url(url)
-                    .get()
-                    .build();
-            call = okHttpClient.newCall(request);
-            response = call.execute();
-            if (response.isSuccessful()) {
-                flag = true;
-            }
-            String responseJson = response.body().string();
-            JSONArray jsonArray = new JSONArray(responseJson);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                PostsListBean bean = gson.fromJson(jsonObject.toString(), PostsListBean.class);
-                list.add(bean);
-            }
-        } catch (IOException | JSONException | JsonSyntaxException e) {
-            e.printStackTrace();
-        }
-        return flag;
-    }
+    private Call<List<PostsListBean>> call;
 
     @Override
     public List<PostsListBean> getList() {
@@ -76,5 +42,22 @@ class PostsListModel implements IPostsList.Model {
         if (call != null && call.isCanceled()) {
             call.cancel();
         }
+    }
+
+    @Override
+    public boolean retrofitRequest(String slug, int offset) {
+        boolean flag = false;
+        Api api = RetrofitFactory.getRetrofit().create(Api.class);
+        call = api.getPostsList(slug, offset);
+        try {
+            Response<List<PostsListBean>> response = call.execute();
+            if (response.isSuccessful()) {
+                list.addAll(response.body());
+                flag = true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return flag;
     }
 }

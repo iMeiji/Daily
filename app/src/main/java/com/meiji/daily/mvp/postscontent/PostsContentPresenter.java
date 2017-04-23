@@ -34,7 +34,7 @@ class PostsContentPresenter implements IPostsContent.Presenter {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                boolean result = model.getRequestData(slug);
+                boolean result = model.retrofitRequest(slug);
                 if (result) {
                     Message message = handler.obtainMessage(1);
                     message.sendToTarget();

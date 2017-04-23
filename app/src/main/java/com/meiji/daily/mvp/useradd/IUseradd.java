@@ -53,18 +53,13 @@ public interface IUseradd {
 
     interface Model {
 
-        boolean getRequestData(String url);
-
-        /**
-         * 返回数据
-         */
-        List<ZhuanlanBean> getList();
+        boolean retrofitRequest(String slug);
 
         /**
          * 结束
          */
         void onDestroy();
+
+        ZhuanlanBean getBean();
     }
-
-
 }

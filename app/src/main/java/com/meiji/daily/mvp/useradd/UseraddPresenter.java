@@ -8,7 +8,6 @@ import com.meiji.daily.InitApp;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.database.dao.ZhuanlanDao;
 import com.meiji.daily.mvp.postslist.PostsListView;
-import com.meiji.daily.utils.Api;
 
 import java.util.List;
 
@@ -56,14 +55,13 @@ class UseraddPresenter implements IUseradd.Presenter {
     }
 
     @Override
-    public void doCheckInputId(String input) {
+    public void doCheckInputId(final String input) {
         view.onShowRefreshing();
-        final String url = Api.BASE_URL + input;
-        System.out.println(url);
+//        final String url = Api.COLUMN_URL + input;
         new Thread(new Runnable() {
             @Override
             public void run() {
-                boolean result = model.getRequestData(url);
+                boolean result = model.retrofitRequest(input);
                 if (result) {
                     Message message = handler.obtainMessage(1);
                     message.sendToTarget();
@@ -77,8 +75,8 @@ class UseraddPresenter implements IUseradd.Presenter {
 
     @Override
     public void doSaveInputId() {
-        list = model.getList();
-        for (ZhuanlanBean bean : list) {
+        try {
+            ZhuanlanBean bean = model.getBean();
             String type = String.valueOf(TYPE_USERADD);
             String avatarUrl = bean.getAvatar().getTemplate();
             String avatarId = bean.getAvatar().getId();
@@ -88,6 +86,8 @@ class UseraddPresenter implements IUseradd.Presenter {
             String intro = bean.getIntro();
             String slug = bean.getSlug();
             zhuanlanDao.add(type, avatarUrl, avatarId, name, followersCount, postsCount, intro, slug);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         }
         view.onAddSuccess();
         doSetAdapter();

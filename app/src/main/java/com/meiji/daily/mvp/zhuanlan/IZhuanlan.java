@@ -73,10 +73,6 @@ interface IZhuanlan {
 
     interface Model {
 
-        /**
-         * 请求数据
-         */
-//        List<ZhuanlanBean> httpRequest(String[] ids);
 
         /**
          * 返回数据
@@ -92,6 +88,6 @@ interface IZhuanlan {
 
         void getData(int type);
 
-        List<ZhuanlanBean> RetrofitRequest(String[] ids);
+        List<ZhuanlanBean> retrofitRequest(String[] ids);
     }
 }

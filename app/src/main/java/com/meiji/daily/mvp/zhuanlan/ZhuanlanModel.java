@@ -32,9 +32,6 @@ public class ZhuanlanModel implements IZhuanlan.Model {
     public static final int TYPE_USERADD = 6;
     private static final String TAG = "ZhuanlanModel";
     private IZhuanlan.Presenter presenter;
-    //    private OkHttpClient okHttpClient = new OkHttpClient();
-//    private Gson gson = new Gson();
-//    private Call call;
     private ZhuanlanDao zhuanlanDao;
     private String[] ids;
     private int type;
@@ -86,8 +83,7 @@ public class ZhuanlanModel implements IZhuanlan.Model {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-//                    List<ZhuanlanBean> requestList = httpRequest(ids);
-                    List<ZhuanlanBean> requestList = RetrofitRequest(ids);
+                    List<ZhuanlanBean> requestList = retrofitRequest(ids);
                     if (requestList.size() != 0) {
                         saveData(requestList);
                         Message message = handler.obtainMessage(1);
@@ -101,32 +97,6 @@ public class ZhuanlanModel implements IZhuanlan.Model {
             }).start();
         }
     }
-
-//    @Override
-//    public List<ZhuanlanBean> httpRequest(String[] ids) {
-//        List<ZhuanlanBean> list = new ArrayList<>();
-//        Request request;
-//        Response response;
-//        for (String id : ids) {
-//            request = new Request.Builder()
-//                    .url(Api.BASE_URL + id)
-//                    .get()
-//                    .build();
-//
-//            try {
-//                call = okHttpClient.newCall(request);
-//                response = call.execute();
-//                if (response.isSuccessful()) {
-//                    String responseJson = response.body().string();
-//                    ZhuanlanBean bean = gson.fromJson(responseJson, ZhuanlanBean.class);
-//                    list.add(bean);
-//                }
-//            } catch (IOException | JsonSyntaxException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//        return list;
-//    }
 
     @Override
     public List<ZhuanlanBean> getList(int type) {
@@ -155,11 +125,11 @@ public class ZhuanlanModel implements IZhuanlan.Model {
     }
 
     @Override
-    public List<ZhuanlanBean> RetrofitRequest(String[] ids) {
+    public List<ZhuanlanBean> retrofitRequest(String[] ids) {
         List<ZhuanlanBean> list = new ArrayList<>();
         Api api = RetrofitFactory.getRetrofit().create(Api.class);
         for (String id : ids) {
-            call = api.getZhuanlan(id);
+            call = api.getZhuanlanBean(id);
             try {
                 Response<ZhuanlanBean> response = call.execute();
                 if (response.isSuccessful()) {

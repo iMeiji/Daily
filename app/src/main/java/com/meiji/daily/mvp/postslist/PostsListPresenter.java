@@ -42,12 +42,12 @@ class PostsListPresenter implements IPostsList.Presenter {
     }
 
     @Override
-    public void doRequestData(final String url) {
+    public void doRequestData(final String slug, final int offset) {
         view.onShowRefreshing();
         new Thread(new Runnable() {
             @Override
             public void run() {
-                boolean result = model.getRequestData(url);
+                boolean result = model.retrofitRequest(slug, offset);
                 if (result) {
                     Message message = handler.obtainMessage(1);
                     message.sendToTarget();

@@ -1,17 +1,13 @@
 package com.meiji.daily.mvp.useradd;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
+import com.meiji.daily.RetrofitFactory;
 import com.meiji.daily.bean.ZhuanlanBean;
+import com.meiji.daily.utils.Api;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-import okhttp3.Call;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import retrofit2.Call;
+import retrofit2.Response;
 
 /**
  * Created by Meiji on 2016/11/27.
@@ -19,34 +15,20 @@ import okhttp3.Response;
 
 class UseraddModel implements IUseradd.Model {
 
-    private OkHttpClient okHttpClient = new OkHttpClient();
-    private Gson gson = new Gson();
-    private Call call;
-    private List<ZhuanlanBean> list = new ArrayList<>();
+    private ZhuanlanBean bean;
+    private Call<ZhuanlanBean> call;
 
     @Override
-    public boolean getRequestData(String url) {
-
-        if (list.size() != 0) {
-            list.clear();
-        }
-        Request request;
-        Response response;
-        request = new Request.Builder()
-                .url(url)
-                .get()
-                .build();
-
+    public boolean retrofitRequest(String slug) {
+        Api api = RetrofitFactory.getRetrofit().create(Api.class);
+        call = api.getZhuanlanBean(slug.toLowerCase());
         try {
-            call = okHttpClient.newCall(request);
-            response = call.execute();
+            Response<ZhuanlanBean> response = call.execute();
             if (response.code() == 404) {
                 return false;
             }
-            String responseJson = response.body().string();
-            ZhuanlanBean bean = gson.fromJson(responseJson, ZhuanlanBean.class);
-            list.add(bean);
-        } catch (IOException | JsonSyntaxException e) {
+            bean = response.body();
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return true;
@@ -60,7 +42,7 @@ class UseraddModel implements IUseradd.Model {
     }
 
     @Override
-    public List<ZhuanlanBean> getList() {
-        return list;
+    public ZhuanlanBean getBean() {
+        return bean;
     }
 }
