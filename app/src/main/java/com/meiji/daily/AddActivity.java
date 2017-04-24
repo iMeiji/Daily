@@ -16,9 +16,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 import static com.meiji.daily.mvp.zhuanlan.ZhuanlanModel.TYPE_USERADD;
 
@@ -28,19 +31,20 @@ import static com.meiji.daily.mvp.zhuanlan.ZhuanlanModel.TYPE_USERADD;
 
 public class AddActivity extends BaseActivity {
 
+    private static final String TAG = "AddActivity";
     private ZhuanlanDao zhuanlanDao = new ZhuanlanDao();
     private boolean result = false;
-    private MaterialDialog materialDialog;
+    private MaterialDialog dialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        materialDialog = new MaterialDialog.Builder(this)
+        dialog = new MaterialDialog.Builder(this)
                 .progress(true, 0)
                 .content(R.string.md_loading)
                 .cancelable(true)
                 .build();
-        materialDialog.show();
+        dialog.show();
 
         Intent intent = getIntent();
         String action = intent.getAction();
@@ -70,37 +74,39 @@ public class AddActivity extends BaseActivity {
                 }
             }
 
-            Api api = RetrofitFactory.getRetrofit().create(Api.class);
-            Call<ZhuanlanBean> call = api.getZhuanlanBean(slug);
-            call.enqueue(new Callback<ZhuanlanBean>() {
-                @Override
-                public void onResponse(Call<ZhuanlanBean> call, Response<ZhuanlanBean> response) {
-                    try {
-                        ZhuanlanBean bean = response.body();
-                        String type = String.valueOf(TYPE_USERADD);
-                        String avatarUrl = bean.getAvatar().getTemplate();
-                        String avatarId = bean.getAvatar().getId();
-                        String name = bean.getName();
-                        String followersCount = String.valueOf(bean.getFollowersCount());
-                        String postsCount = String.valueOf(bean.getPostsCount());
-                        String intro = bean.getIntro();
-                        String slug = bean.getSlug();
-                        result = zhuanlanDao.add(type, avatarUrl, avatarId, name, followersCount, postsCount, intro, slug);
-                    } catch (NullPointerException e) {
-                        e.printStackTrace();
-                    }
-                    if (result) {
-                        onFinish("保存成功");
-                    } else {
-                        onFinish("保存失败");
-                    }
-                }
+            RxTest(slug);
 
-                @Override
-                public void onFailure(Call<ZhuanlanBean> call, Throwable t) {
-                    onFinish("保存失败");
-                }
-            });
+//            Api api = RetrofitFactory.getRetrofit().create(Api.class);
+//            Call<ZhuanlanBean> call = api.getZhuanlanBean(slug);
+//            call.enqueue(new Callback<ZhuanlanBean>() {
+//                @Override
+//                public void onResponse(Call<ZhuanlanBean> call, Response<ZhuanlanBean> response) {
+//                    try {
+//                        ZhuanlanBean bean = response.body();
+//                        String type = String.valueOf(TYPE_USERADD);
+//                        String avatarUrl = bean.getAvatar().getTemplate();
+//                        String avatarId = bean.getAvatar().getId();
+//                        String name = bean.getName();
+//                        String followersCount = String.valueOf(bean.getFollowersCount());
+//                        String postsCount = String.valueOf(bean.getPostsCount());
+//                        String intro = bean.getIntro();
+//                        String slug = bean.getSlug();
+//                        result = zhuanlanDao.add(type, avatarUrl, avatarId, name, followersCount, postsCount, intro, slug);
+//                    } catch (NullPointerException e) {
+//                        e.printStackTrace();
+//                    }
+//                    if (result) {
+//                        onFinish("保存成功");
+//                    } else {
+//                        onFinish("保存失败");
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(Call<ZhuanlanBean> call, Throwable t) {
+//                    onFinish("保存失败");
+//                }
+//            });
 
         } else {
             onFinish(getString(R.string.incorrect_link));
@@ -108,7 +114,7 @@ public class AddActivity extends BaseActivity {
     }
 
     private void onFinish(String message) {
-        materialDialog.dismiss();
+        dialog.dismiss();
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -116,5 +122,38 @@ public class AddActivity extends BaseActivity {
                 finish();
             }
         }, 800);
+    }
+
+    private void RxTest(final String slug) {
+        Api api = RetrofitFactory.getRetrofit().create(Api.class);
+        Observable<ZhuanlanBean> observable = api.getZhuanlanRx(slug);
+        observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ZhuanlanBean>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(@NonNull ZhuanlanBean bean) {
+                        result = zhuanlanDao.add(TYPE_USERADD, bean);
+                        if (result) {
+                            onFinish("保存成功");
+                        } else {
+                            onFinish("保存失败");
+                        }
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        onFinish("保存失败");
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        onFinish("保存成功");
+                    }
+                });
     }
 }

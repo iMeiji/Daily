@@ -105,15 +105,7 @@ public class ZhuanlanModel implements IZhuanlan.Model {
 
     private void saveData(List<ZhuanlanBean> list) {
         for (ZhuanlanBean bean : list) {
-            String type = String.valueOf(this.type);
-            String avatarUrl = bean.getAvatar().getTemplate();
-            String avatarId = bean.getAvatar().getId();
-            String name = bean.getName();
-            String followersCount = String.valueOf(bean.getFollowersCount());
-            String postsCount = String.valueOf(bean.getPostsCount());
-            String intro = bean.getIntro();
-            String slug = bean.getSlug();
-            zhuanlanDao.add(type, avatarUrl, avatarId, name, followersCount, postsCount, intro, slug);
+            zhuanlanDao.add(this.type, bean);
         }
     }
 

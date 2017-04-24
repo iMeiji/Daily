@@ -47,6 +47,24 @@ public class ZhuanlanDao {
         return result != -1;
     }
 
+    public boolean add(int type, ZhuanlanBean bean) {
+        boolean result = false;
+        try {
+            String type_ = String.valueOf(type);
+            String avatarUrl = bean.getAvatar().getTemplate();
+            String avatarId = bean.getAvatar().getId();
+            String name = bean.getName();
+            String followersCount = String.valueOf(bean.getFollowersCount());
+            String postsCount = String.valueOf(bean.getPostsCount());
+            String intro = bean.getIntro();
+            String slug = bean.getSlug();
+            result = add(type_, avatarUrl, avatarId, name, followersCount, postsCount, intro, slug);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
     public List<ZhuanlanBean> query(int type) {
         SQLiteDatabase db = DatabaseHelper.getDatabase();
         Cursor cursor = db.query(ZhuanlanTable.TABLENAME, null, "type=?", new String[]{type + ""}, null, null, null);
