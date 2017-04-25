@@ -1,6 +1,5 @@
 package com.meiji.daily.mvp.zhuanlan;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -29,26 +28,15 @@ public class ZhuanlanView extends Fragment implements IZhuanlan.View, SwipeRefre
     private RecyclerView recycler_view;
     private SwipeRefreshLayout refresh_layout;
 
-    private int type;
     private ZhuanlanAdapter adapter;
     private IZhuanlan.Presenter presenter;
 
-    public ZhuanlanView() {
-    }
-
     public static ZhuanlanView newInstance(int type) {
-        ZhuanlanView view = new ZhuanlanView();
-        view.setType(type);
-        return view;
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        Bundle args = new Bundle();
+        args.putInt("type", type);
+        ZhuanlanView fragment = new ZhuanlanView();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Nullable
@@ -67,23 +55,17 @@ public class ZhuanlanView extends Fragment implements IZhuanlan.View, SwipeRefre
         recycler_view.setHasFixedSize(true);
         recycler_view.setLayoutManager(new LinearLayoutManager(getActivity()));
         // 设置下拉刷新的按钮的颜色
-        refresh_layout.setColorSchemeResources(
-                android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
-        // 设置手指在屏幕上下拉多少距离开始刷新
-        refresh_layout.setDistanceToTriggerSync(300);
-        // 设置下拉刷新按钮的背景颜色
-        refresh_layout.setProgressBackgroundColorSchemeColor(Color.WHITE);
-        // 设置下拉刷新按钮的大小
-        refresh_layout.setSize(SwipeRefreshLayout.DEFAULT);
+        refresh_layout.setColorSchemeResources(R.color.primary);
         refresh_layout.setOnRefreshListener(this);
     }
 
     @Override
     public void onRequestData() {
-        presenter.doGetType(this.type);
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            int type = arguments.getInt("type");
+            presenter.doGetType(type);
+        }
     }
 
     @Override
@@ -93,7 +75,7 @@ public class ZhuanlanView extends Fragment implements IZhuanlan.View, SwipeRefre
             recycler_view.setAdapter(adapter);
             adapter.setItemClickListener(new IOnItemClickListener() {
                 @Override
-                public void onClick(android.view.View view, int position) {
+                public void onClick(View view, int position) {
                     presenter.doOnClickItem(position);
                 }
             });
@@ -105,13 +87,13 @@ public class ZhuanlanView extends Fragment implements IZhuanlan.View, SwipeRefre
     @Override
     public void onShowRefreshing() {
         refresh_layout.setRefreshing(true);
-        recycler_view.setVisibility(android.view.View.GONE);
+        recycler_view.setVisibility(View.GONE);
     }
 
     @Override
     public void onHideRefreshing() {
         refresh_layout.setRefreshing(false);
-        recycler_view.setVisibility(android.view.View.VISIBLE);
+        recycler_view.setVisibility(View.VISIBLE);
     }
 
     @Override

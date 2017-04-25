@@ -1,16 +1,18 @@
 package com.meiji.daily.mvp.zhuanlan;
 
-import android.content.Intent;
-
-import com.meiji.daily.InitApp;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.mvp.postslist.PostsListView;
 
 import java.util.List;
 
-import static com.meiji.daily.bean.ZhuanlanBean.ZHUANLANBEAN_NAME;
-import static com.meiji.daily.bean.ZhuanlanBean.ZHUANLANBEAN_POSTSCOUNT;
-import static com.meiji.daily.bean.ZhuanlanBean.ZHUANLANBEAN_SLUG;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Meiji on 2016/11/17.
@@ -28,14 +30,43 @@ class ZhuanlanPresenter implements IZhuanlan.Presenter {
     }
 
     @Override
-    public void doGetType(int type) {
+    public void doGetType(final int type) {
         view.onShowRefreshing();
-        list = model.getList(type);
-        if (list.size() != 0) {
-            doSetAdapter(list);
-        } else {
-            model.getData(type);
-        }
+//        list = model.getList(type);
+//        if (list.size() != 0) {
+//            doSetAdapter(list);
+//        } else {
+//            model.getData(type);
+//        }
+
+        Observable
+                .create(new ObservableOnSubscribe<List<ZhuanlanBean>>() {
+                    @Override
+                    public void subscribe(@NonNull ObservableEmitter<List<ZhuanlanBean>> e) throws Exception {
+                        list = model.getList(type);
+                        e.onNext(list);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Function<List<ZhuanlanBean>, Boolean>() {
+                    @Override
+                    public Boolean apply(@NonNull List<ZhuanlanBean> list) throws Exception {
+                        if (list.size() != 0) {
+                            doSetAdapter(list);
+                        }
+                        return list.size() != 0;
+                    }
+                })
+                .observeOn(Schedulers.io())
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(@NonNull Boolean aBoolean) throws Exception {
+                        if (!aBoolean) {
+                            model.getData(type);
+                        }
+                    }
+                });
     }
 
     @Override
@@ -50,13 +81,7 @@ class ZhuanlanPresenter implements IZhuanlan.Presenter {
         String slug = list.get(position).getSlug();
         String name = list.get(position).getName();
         int postsCount = list.get(position).getPostsCount();
-
-        Intent intent = new Intent(InitApp.AppContext, PostsListView.class);
-        intent.putExtra(ZHUANLANBEAN_SLUG, slug);
-        intent.putExtra(ZHUANLANBEAN_NAME, name);
-        intent.putExtra(ZHUANLANBEAN_POSTSCOUNT, postsCount);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        InitApp.AppContext.startActivity(intent);
+        PostsListView.launch(slug, name, postsCount);
     }
 
     @Override

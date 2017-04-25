@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.meiji.daily.BaseActivity;
+import com.meiji.daily.InitApp;
 import com.meiji.daily.R;
 import com.meiji.daily.adapter.PostsListAdapter;
 import com.meiji.daily.bean.PostsListBean;
@@ -39,6 +40,15 @@ public class PostsListView extends BaseActivity implements IPostsList.View, Swip
     private boolean flag = false;
     private IPostsList.Presenter presenter;
     private String slug;
+
+    public static void launch(String slug, String name, int postsCount) {
+        Intent intent = new Intent(InitApp.AppContext, PostsListView.class);
+        intent.putExtra(ZHUANLANBEAN_SLUG, slug);
+        intent.putExtra(ZHUANLANBEAN_NAME, name);
+        intent.putExtra(ZHUANLANBEAN_POSTSCOUNT, postsCount);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        InitApp.AppContext.startActivity(intent);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

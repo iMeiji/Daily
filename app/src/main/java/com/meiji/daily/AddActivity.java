@@ -61,7 +61,8 @@ public class AddActivity extends BaseActivity {
         }
     }
 
-    private void handleSendText(String shareText) {
+    private void handleSendText(final String shareText) {
+
         final String regex = "^.*http.*://zhuanlan.zhihu.com/(.*)$";
         final Matcher matcher = Pattern.compile(regex).matcher(shareText);
         if (matcher.find()) {
