@@ -15,26 +15,15 @@ import retrofit2.Response;
 /**
  * Created by Meiji on 2016/11/19.
  */
-
+@Deprecated
 class PostsListModel implements IPostsList.Model {
 
-    private static final String TAG = "PostsListModel";
     private List<PostsListBean> list = new ArrayList<>();
     private Call<List<PostsListBean>> call;
 
     @Override
     public List<PostsListBean> getList() {
         return this.list;
-    }
-
-    @Override
-    public void clearList() {
-        if (call != null && call.isCanceled()) {
-            call.cancel();
-        }
-        if (list.size() != 0) {
-            list.clear();
-        }
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 
 import com.afollestad.materialdialogs.color.CircleView;
 import com.meiji.daily.utils.ColorUtil;
@@ -30,5 +31,14 @@ public class BaseActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(CircleView.shiftColorDown(color));
             getWindow().setNavigationBarColor(color);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

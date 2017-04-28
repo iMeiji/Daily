@@ -2,12 +2,15 @@ package com.meiji.daily.mvp.useradd;
 
 import com.meiji.daily.RetrofitFactory;
 import com.meiji.daily.bean.ZhuanlanBean;
+import com.meiji.daily.database.dao.ZhuanlanDao;
 import com.meiji.daily.utils.Api;
 
 import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Response;
+
+import static com.meiji.daily.mvp.zhuanlan.ZhuanlanModel.TYPE_USERADD;
 
 /**
  * Created by Meiji on 2016/11/27.
@@ -28,6 +31,7 @@ class UseraddModel implements IUseradd.Model {
                 return false;
             }
             bean = response.body();
+            doSaveInputId(bean);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -41,8 +45,7 @@ class UseraddModel implements IUseradd.Model {
         }
     }
 
-    @Override
-    public ZhuanlanBean getBean() {
-        return bean;
+    private void doSaveInputId(ZhuanlanBean bean) {
+        new ZhuanlanDao().add(TYPE_USERADD, bean);
     }
 }

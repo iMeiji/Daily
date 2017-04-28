@@ -57,6 +57,26 @@ public interface Api {
     Call<PostsContentBean> getPostsContentBean(@Path("slug") int slug);
 
 
+    /**
+     * 获取专栏信息 Retrofit + RxJava
+     * https://zhuanlan.zhihu.com/api/columns/design
+     *
+     * @param slug
+     * @return
+     */
     @GET("api/columns/{slug}")
-    Observable<ZhuanlanBean> getZhuanlanRx(@Path("slug") String slug);
+    Observable<ZhuanlanBean> getZhuanlanBeanRx(@Path("slug") String slug);
+
+    /**
+     * 获取专栏文章 Retrofit + RxJava
+     * https://zhuanlan.zhihu.com/api/columns/design/posts?limit=10&offset=10
+     *
+     * @param slug   专栏ID
+     * @param offset 偏移量
+     * @return
+     */
+    @GET("api/columns/{slug}/posts?limit=10")
+    Observable<List<PostsListBean>> getPostsListRx(
+            @Path("slug") String slug,
+            @Query("offset") int offset);
 }

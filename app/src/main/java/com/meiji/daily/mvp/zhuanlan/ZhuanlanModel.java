@@ -17,7 +17,6 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -40,18 +39,6 @@ public class ZhuanlanModel implements IZhuanlan.Model {
     private ZhuanlanDao zhuanlanDao;
     private String[] ids;
     private int type;
-    //    private Handler handler = new Handler(new Handler.Callback() {
-//        @Override
-//        public boolean handleMessage(Message message) {
-//            if (message.what == 1) {
-//                presenter.doSetAdapter(getList(type));
-//            }
-//            if (message.what == 0) {
-//                presenter.onFail();
-//            }
-//            return false;
-//        }
-//    });
     private Call<ZhuanlanBean> call;
 
     ZhuanlanModel(IZhuanlan.Presenter presenter) {
@@ -83,60 +70,39 @@ public class ZhuanlanModel implements IZhuanlan.Model {
                 break;
         }
 
-        List<ZhuanlanBean> list = zhuanlanDao.query(this.type);
-        if (list.size() != ids.length) {
-
-            Observable
-                    .create(new ObservableOnSubscribe<List<ZhuanlanBean>>() {
-                        @Override
-                        public void subscribe(@NonNull ObservableEmitter<List<ZhuanlanBean>> e) throws Exception {
-                            e.onNext(retrofitRequest(ids));
+        Observable
+                .create(new ObservableOnSubscribe<List<ZhuanlanBean>>() {
+                    @Override
+                    public void subscribe(@NonNull ObservableEmitter<List<ZhuanlanBean>> e) throws Exception {
+                        e.onNext(retrofitRequest(ids));
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .doOnNext(new Consumer<List<ZhuanlanBean>>() {
+                    @Override
+                    public void accept(@NonNull List<ZhuanlanBean> list) throws Exception {
+                        if (list.size() != 0) {
+                            saveData(list);
                         }
-                    })
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(Schedulers.io())
-                    .map(new Function<List<ZhuanlanBean>, Boolean>() {
-                        @Override
-                        public Boolean apply(@NonNull List<ZhuanlanBean> list) throws Exception {
-                            if (list.size() != 0) {
-                                saveData(list);
-                            }
-                            return list.size() != 0;
-                        }
-                    })
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<Boolean>() {
-                        @Override
-                        public void accept(@NonNull Boolean b) throws Exception {
-                            if (b) {
-                                presenter.doSetAdapter(getList(type));
-                            } else {
-                                presenter.onFail();
-                            }
-                        }
-                    }, new Consumer<Throwable>() {
-                        @Override
-                        public void accept(@NonNull Throwable throwable) throws Exception {
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<ZhuanlanBean>>() {
+                    @Override
+                    public void accept(@NonNull List<ZhuanlanBean> list) throws Exception {
+                        if (list.size() != 0) {
+                            presenter.doSetAdapter(list);
+                        } else {
                             presenter.onFail();
                         }
-                    });
-
-//            new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    List<ZhuanlanBean> requestList = retrofitRequest(ids);
-//                    if (requestList.size() != 0) {
-//                        saveData(requestList);
-//                        Message message = handler.obtainMessage(1);
-//                        message.sendToTarget();
-//                    } else {
-//                        // error network
-//                        Message message = handler.obtainMessage(0);
-//                        message.sendToTarget();
-//                    }
-//                }
-//            }).start();
-        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(@NonNull Throwable throwable) throws Exception {
+                        presenter.onFail();
+                    }
+                });
     }
 
     @Override

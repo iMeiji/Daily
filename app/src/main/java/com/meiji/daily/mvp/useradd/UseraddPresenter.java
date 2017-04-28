@@ -1,19 +1,19 @@
 package com.meiji.daily.mvp.useradd;
 
-import android.content.Intent;
-import android.os.Handler;
-import android.os.Message;
-
-import com.meiji.daily.InitApp;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.database.dao.ZhuanlanDao;
 import com.meiji.daily.mvp.postslist.PostsListView;
 
 import java.util.List;
 
-import static com.meiji.daily.bean.ZhuanlanBean.ZHUANLANBEAN_NAME;
-import static com.meiji.daily.bean.ZhuanlanBean.ZHUANLANBEAN_POSTSCOUNT;
-import static com.meiji.daily.bean.ZhuanlanBean.ZHUANLANBEAN_SLUG;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+
 import static com.meiji.daily.mvp.zhuanlan.ZhuanlanModel.TYPE_USERADD;
 
 /**
@@ -26,18 +26,6 @@ class UseraddPresenter implements IUseradd.Presenter {
     private IUseradd.Model model;
     private ZhuanlanDao zhuanlanDao;
     private List<ZhuanlanBean> list;
-    private Handler handler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message message) {
-            if (message.what == 1) {
-                doSaveInputId();
-            }
-            if (message.what == 0) {
-                onFail();
-            }
-            return false;
-        }
-    });
 
     UseraddPresenter(IUseradd.View view) {
         this.view = view;
@@ -46,50 +34,49 @@ class UseraddPresenter implements IUseradd.Presenter {
     }
 
     @Override
-    public boolean doQueryDB() {
-        list = zhuanlanDao.query(TYPE_USERADD);
-        if (list.size() != 0) {
-            doSetAdapter();
-        }
-        return list.size() != 0;
-    }
-
-    @Override
     public void doCheckInputId(final String input) {
         view.onShowRefreshing();
-//        final String url = Api.COLUMN_URL + input;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                boolean result = model.retrofitRequest(input);
-                if (result) {
-                    Message message = handler.obtainMessage(1);
-                    message.sendToTarget();
-                } else {
-                    Message message = handler.obtainMessage(0);
-                    message.sendToTarget();
-                }
-            }
-        }).start();
-    }
-
-    @Override
-    public void doSaveInputId() {
-        try {
-            ZhuanlanBean bean = model.getBean();
-            zhuanlanDao.add(TYPE_USERADD, bean);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-        view.onAddSuccess();
-        doSetAdapter();
+        Observable
+                .create(new ObservableOnSubscribe<Boolean>() {
+                    @Override
+                    public void subscribe(@NonNull ObservableEmitter<Boolean> e) throws Exception {
+                        e.onNext(model.retrofitRequest(input));
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(@NonNull Boolean aBoolean) throws Exception {
+                        if (aBoolean) {
+                            view.onAddSuccess();
+                            doSetAdapter();
+                        } else {
+                            onFail();
+                        }
+                    }
+                });
     }
 
     @Override
     public void doSetAdapter() {
-        list = zhuanlanDao.query(TYPE_USERADD);
-        view.onSetAdapter(list);
-        view.onHideRefreshing();
+        Observable
+                .create(new ObservableOnSubscribe<List<ZhuanlanBean>>() {
+                    @Override
+                    public void subscribe(@NonNull ObservableEmitter<List<ZhuanlanBean>> e) throws Exception {
+                        list = zhuanlanDao.query(TYPE_USERADD);
+                        e.onNext(list);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<ZhuanlanBean>>() {
+                    @Override
+                    public void accept(@NonNull List<ZhuanlanBean> list) throws Exception {
+                        view.onSetAdapter(list);
+                        view.onHideRefreshing();
+                    }
+                });
     }
 
     @Override
@@ -103,13 +90,7 @@ class UseraddPresenter implements IUseradd.Presenter {
         String slug = list.get(position).getSlug();
         String name = list.get(position).getName();
         int postsCount = list.get(position).getPostsCount();
-
-        Intent intent = new Intent(InitApp.AppContext, PostsListView.class);
-        intent.putExtra(ZHUANLANBEAN_SLUG, slug);
-        intent.putExtra(ZHUANLANBEAN_NAME, name);
-        intent.putExtra(ZHUANLANBEAN_POSTSCOUNT, postsCount);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        InitApp.AppContext.startActivity(intent);
+        PostsListView.launch(slug, name, postsCount);
     }
 
     @Override

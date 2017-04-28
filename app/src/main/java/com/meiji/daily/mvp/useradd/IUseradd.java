@@ -28,15 +28,7 @@ public interface IUseradd {
 
     interface Presenter {
 
-
-        boolean doQueryDB();
-
         void doCheckInputId(String input);
-
-        /**
-         * 保存到数据库
-         */
-        void doSaveInputId();
 
         void doSetAdapter();
 
@@ -59,7 +51,5 @@ public interface IUseradd {
          * 结束
          */
         void onDestroy();
-
-        ZhuanlanBean getBean();
     }
 }

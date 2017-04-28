@@ -11,7 +11,6 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -32,12 +31,6 @@ class ZhuanlanPresenter implements IZhuanlan.Presenter {
     @Override
     public void doGetType(final int type) {
         view.onShowRefreshing();
-//        list = model.getList(type);
-//        if (list.size() != 0) {
-//            doSetAdapter(list);
-//        } else {
-//            model.getData(type);
-//        }
 
         Observable
                 .create(new ObservableOnSubscribe<List<ZhuanlanBean>>() {
@@ -49,20 +42,12 @@ class ZhuanlanPresenter implements IZhuanlan.Presenter {
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Function<List<ZhuanlanBean>, Boolean>() {
+                .subscribe(new Consumer<List<ZhuanlanBean>>() {
                     @Override
-                    public Boolean apply(@NonNull List<ZhuanlanBean> list) throws Exception {
+                    public void accept(@NonNull List<ZhuanlanBean> list) throws Exception {
                         if (list.size() != 0) {
                             doSetAdapter(list);
-                        }
-                        return list.size() != 0;
-                    }
-                })
-                .observeOn(Schedulers.io())
-                .subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(@NonNull Boolean aBoolean) throws Exception {
-                        if (!aBoolean) {
+                        } else {
                             model.getData(type);
                         }
                     }

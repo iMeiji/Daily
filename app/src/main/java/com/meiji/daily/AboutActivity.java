@@ -124,9 +124,6 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                break;
             case R.id.share:
                 Intent shareIntent = new Intent()
                         .setAction(Intent.ACTION_SEND)

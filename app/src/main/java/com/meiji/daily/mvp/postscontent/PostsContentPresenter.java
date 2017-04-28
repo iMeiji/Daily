@@ -1,7 +1,12 @@
 package com.meiji.daily.mvp.postscontent;
 
-import android.os.Handler;
-import android.os.Message;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by Meiji on 2016/11/23.
@@ -11,18 +16,6 @@ class PostsContentPresenter implements IPostsContent.Presenter {
 
     private IPostsContent.View view;
     private IPostsContent.Model model;
-    private Handler handler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message message) {
-            if (message.what == 1) {
-                doSetWebView();
-            }
-            if (message.what == 0) {
-                onFail();
-            }
-            return false;
-        }
-    });
 
     PostsContentPresenter(IPostsContent.View view) {
         this.view = view;
@@ -31,19 +24,25 @@ class PostsContentPresenter implements IPostsContent.Presenter {
 
     @Override
     public void doRequestData(final int slug) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                boolean result = model.retrofitRequest(slug);
-                if (result) {
-                    Message message = handler.obtainMessage(1);
-                    message.sendToTarget();
-                } else {
-                    Message message = handler.obtainMessage(0);
-                    message.sendToTarget();
-                }
-            }
-        }).start();
+        Observable
+                .create(new ObservableOnSubscribe<Boolean>() {
+                    @Override
+                    public void subscribe(@NonNull ObservableEmitter<Boolean> e) throws Exception {
+                        e.onNext(model.retrofitRequest(slug));
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(@NonNull Boolean aBoolean) throws Exception {
+                        if (aBoolean) {
+                            doSetWebView();
+                        } else {
+                            onFail();
+                        }
+                    }
+                });
     }
 
     @Override

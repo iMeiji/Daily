@@ -61,17 +61,13 @@ interface IPostsList {
         void doRefresh();
 
         /**
-         * 结束
-         */
-        void onDestroy();
-
-        /**
          * 请求数据失败
          */
         void onFail();
 
     }
 
+    @Deprecated
     interface Model {
 
         /**
@@ -83,11 +79,6 @@ interface IPostsList {
          * 返回数据
          */
         List<PostsListBean> getList();
-
-        /**
-         * 清空数据
-         */
-        void clearList();
 
         /**
          * 结束

@@ -127,7 +127,7 @@ public class AddActivity extends BaseActivity {
 
     private void RxTest(final String slug) {
         Api api = RetrofitFactory.getRetrofit().create(Api.class);
-        Observable<ZhuanlanBean> observable = api.getZhuanlanRx(slug);
+        Observable<ZhuanlanBean> observable = api.getZhuanlanBeanRx(slug);
         observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ZhuanlanBean>() {

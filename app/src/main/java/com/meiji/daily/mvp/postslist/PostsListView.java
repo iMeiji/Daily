@@ -1,14 +1,12 @@
 package com.meiji.daily.mvp.postslist;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.meiji.daily.BaseActivity;
@@ -30,7 +28,6 @@ import static com.meiji.daily.bean.ZhuanlanBean.ZHUANLANBEAN_SLUG;
 
 public class PostsListView extends BaseActivity implements IPostsList.View, SwipeRefreshLayout.OnRefreshListener {
 
-    private static final String TAG = "PostsListView";
     private Toolbar toolbar;
     private SwipeRefreshLayout refresh_layout;
     private RecyclerView recycler_view;
@@ -42,12 +39,11 @@ public class PostsListView extends BaseActivity implements IPostsList.View, Swip
     private String slug;
 
     public static void launch(String slug, String name, int postsCount) {
-        Intent intent = new Intent(InitApp.AppContext, PostsListView.class);
-        intent.putExtra(ZHUANLANBEAN_SLUG, slug);
-        intent.putExtra(ZHUANLANBEAN_NAME, name);
-        intent.putExtra(ZHUANLANBEAN_POSTSCOUNT, postsCount);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        InitApp.AppContext.startActivity(intent);
+        InitApp.AppContext.startActivity(new Intent(InitApp.AppContext, PostsListView.class)
+                .putExtra(ZHUANLANBEAN_SLUG, slug)
+                .putExtra(ZHUANLANBEAN_NAME, name)
+                .putExtra(ZHUANLANBEAN_POSTSCOUNT, postsCount)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     @Override
@@ -68,15 +64,6 @@ public class PostsListView extends BaseActivity implements IPostsList.View, Swip
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(title);
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            onBackPressed();
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -116,11 +103,6 @@ public class PostsListView extends BaseActivity implements IPostsList.View, Swip
                     }
                 }
             }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-            }
         });
     }
 
@@ -137,7 +119,6 @@ public class PostsListView extends BaseActivity implements IPostsList.View, Swip
     @Override
     public void onFail() {
         Snackbar.make(refresh_layout, R.string.network_error, Snackbar.LENGTH_SHORT).show();
-        refresh_layout.setEnabled(true);
     }
 
     private void initView() {
@@ -157,30 +138,12 @@ public class PostsListView extends BaseActivity implements IPostsList.View, Swip
         recycler_view.setLayoutManager(new LinearLayoutManager(this));
         recycler_view.setHasFixedSize(true);
         // 设置下拉刷新的按钮的颜色
-        refresh_layout.setColorSchemeResources(
-                android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
-        // 设置手指在屏幕上下拉多少距离开始刷新
-        refresh_layout.setDistanceToTriggerSync(300);
-        // 设置下拉刷新按钮的背景颜色
-        refresh_layout.setProgressBackgroundColorSchemeColor(Color.WHITE);
-        // 设置下拉刷新按钮的大小
-        refresh_layout.setSize(SwipeRefreshLayout.DEFAULT);
+        refresh_layout.setColorSchemeResources(R.color.primary);
         refresh_layout.setOnRefreshListener(this);
     }
 
     @Override
     public void onRefresh() {
-        recycler_view.setVisibility(View.GONE);
         presenter.doRefresh();
-        recycler_view.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    protected void onDestroy() {
-        presenter.onDestroy();
-        super.onDestroy();
     }
 }

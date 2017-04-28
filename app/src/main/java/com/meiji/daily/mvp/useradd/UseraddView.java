@@ -1,7 +1,6 @@
 package com.meiji.daily.mvp.useradd;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -57,7 +56,7 @@ public class UseraddView extends Fragment implements IUseradd.View, View.OnClick
     }
 
     private void initData() {
-        presenter.doQueryDB();
+        presenter.doSetAdapter();
     }
 
     private void initView(View view) {
@@ -70,17 +69,7 @@ public class UseraddView extends Fragment implements IUseradd.View, View.OnClick
         recycler_view.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         // 设置下拉刷新的按钮的颜色
-        refresh_layout.setColorSchemeResources(
-                android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
-        // 设置手指在屏幕上下拉多少距离开始刷新
-        refresh_layout.setDistanceToTriggerSync(300);
-        // 设置下拉刷新按钮的背景颜色
-        refresh_layout.setProgressBackgroundColorSchemeColor(Color.WHITE);
-        // 设置下拉刷新按钮的大小
-        refresh_layout.setSize(SwipeRefreshLayout.DEFAULT);
+        refresh_layout.setColorSchemeResources(R.color.primary);
         refresh_layout.setOnRefreshListener(this);
 
         fab_add.setOnClickListener(this);
