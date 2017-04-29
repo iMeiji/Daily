@@ -43,6 +43,7 @@ public interface IUseradd {
         void doRemoveItemCancel(ZhuanlanBean bean);
     }
 
+    @Deprecated
     interface Model {
 
         boolean retrofitRequest(String slug);

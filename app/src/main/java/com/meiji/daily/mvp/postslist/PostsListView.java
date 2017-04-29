@@ -15,6 +15,7 @@ import com.meiji.daily.R;
 import com.meiji.daily.adapter.PostsListAdapter;
 import com.meiji.daily.bean.PostsListBean;
 import com.meiji.daily.interfaces.IOnItemClickListener;
+import com.meiji.daily.utils.ColorUtil;
 
 import java.util.List;
 
@@ -138,7 +139,7 @@ public class PostsListView extends BaseActivity implements IPostsList.View, Swip
         recycler_view.setLayoutManager(new LinearLayoutManager(this));
         recycler_view.setHasFixedSize(true);
         // 设置下拉刷新的按钮的颜色
-        refresh_layout.setColorSchemeResources(R.color.primary);
+        refresh_layout.setColorSchemeColors(ColorUtil.getColor());
         refresh_layout.setOnRefreshListener(this);
     }
 

@@ -1,8 +1,10 @@
 package com.meiji.daily.mvp.useradd;
 
+import com.meiji.daily.RetrofitFactory;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.database.dao.ZhuanlanDao;
 import com.meiji.daily.mvp.postslist.PostsListView;
+import com.meiji.daily.utils.Api;
 
 import java.util.List;
 
@@ -23,37 +25,36 @@ import static com.meiji.daily.mvp.zhuanlan.ZhuanlanModel.TYPE_USERADD;
 class UseraddPresenter implements IUseradd.Presenter {
 
     private IUseradd.View view;
-    private IUseradd.Model model;
-    private ZhuanlanDao zhuanlanDao;
+    private ZhuanlanDao dao = new ZhuanlanDao();
     private List<ZhuanlanBean> list;
 
     UseraddPresenter(IUseradd.View view) {
         this.view = view;
-        this.model = new UseraddModel();
-        zhuanlanDao = new ZhuanlanDao();
     }
 
     @Override
     public void doCheckInputId(final String input) {
         view.onShowRefreshing();
-        Observable
-                .create(new ObservableOnSubscribe<Boolean>() {
+        RetrofitFactory.getRetrofit().create(Api.class).getZhuanlanBeanRx(input)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .doOnNext(new Consumer<ZhuanlanBean>() {
                     @Override
-                    public void subscribe(@NonNull ObservableEmitter<Boolean> e) throws Exception {
-                        e.onNext(model.retrofitRequest(input));
+                    public void accept(@NonNull ZhuanlanBean bean) throws Exception {
+                        dao.add(TYPE_USERADD, bean);
                     }
                 })
-                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Boolean>() {
+                .subscribe(new Consumer<ZhuanlanBean>() {
                     @Override
-                    public void accept(@NonNull Boolean aBoolean) throws Exception {
-                        if (aBoolean) {
-                            view.onAddSuccess();
-                            doSetAdapter();
-                        } else {
-                            onFail();
-                        }
+                    public void accept(@NonNull ZhuanlanBean bean) throws Exception {
+                        view.onAddSuccess();
+                        doSetAdapter();
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(@NonNull Throwable throwable) throws Exception {
+                        onFail();
                     }
                 });
     }
@@ -64,7 +65,7 @@ class UseraddPresenter implements IUseradd.Presenter {
                 .create(new ObservableOnSubscribe<List<ZhuanlanBean>>() {
                     @Override
                     public void subscribe(@NonNull ObservableEmitter<List<ZhuanlanBean>> e) throws Exception {
-                        list = zhuanlanDao.query(TYPE_USERADD);
+                        list = dao.query(TYPE_USERADD);
                         e.onNext(list);
                     }
                 })
@@ -103,13 +104,13 @@ class UseraddPresenter implements IUseradd.Presenter {
     @Override
     public void doRemoveItem(final int position) {
         final ZhuanlanBean bean = list.get(position);
-        zhuanlanDao.removeSlug(bean.getSlug());
+        dao.removeSlug(bean.getSlug());
         doSetAdapter();
     }
 
     @Override
     public void doRemoveItemCancel(ZhuanlanBean bean) {
-        zhuanlanDao.add(TYPE_USERADD, bean);
+        dao.add(TYPE_USERADD, bean);
         doSetAdapter();
     }
 }

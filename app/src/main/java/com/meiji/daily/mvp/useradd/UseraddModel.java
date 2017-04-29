@@ -15,7 +15,7 @@ import static com.meiji.daily.mvp.zhuanlan.ZhuanlanModel.TYPE_USERADD;
 /**
  * Created by Meiji on 2016/11/27.
  */
-
+@Deprecated
 class UseraddModel implements IUseradd.Model {
 
     private ZhuanlanBean bean;

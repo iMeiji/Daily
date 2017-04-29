@@ -36,7 +36,7 @@
                 android:layout_margin="16dp"
                 android:background="@color/icons"
                 android:src="@drawable/ic_photo_add"
-                app:elevation="0dp"/>
+                app:elevation="8dp"/>
 
         </android.support.design.widget.CoordinatorLayout>
 
