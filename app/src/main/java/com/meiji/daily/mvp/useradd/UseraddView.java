@@ -38,7 +38,6 @@ public class UseraddView extends Fragment implements IUseradd.View, View.OnClick
 
     private TextView tv_description;
     private RecyclerView recycler_view;
-    private FloatingActionButton fab_add;
     private SwipeRefreshLayout refresh_layout;
     private MaterialDialog dialog;
 
@@ -63,7 +62,7 @@ public class UseraddView extends Fragment implements IUseradd.View, View.OnClick
     private void initView(View view) {
         tv_description = (TextView) view.findViewById(R.id.tv_description);
         recycler_view = (RecyclerView) view.findViewById(R.id.recycler_view);
-        fab_add = (FloatingActionButton) view.findViewById(R.id.fab_add);
+        FloatingActionButton fab_add = (FloatingActionButton) view.findViewById(R.id.fab_add);
         refresh_layout = (SwipeRefreshLayout) view.findViewById(R.id.refresh_layout);
 
         recycler_view.setHasFixedSize(true);
@@ -104,10 +103,8 @@ public class UseraddView extends Fragment implements IUseradd.View, View.OnClick
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.fab_add:
-                createDialog();
-                break;
+        if (v.getId() == R.id.fab_add) {
+            createDialog();
         }
     }
 
@@ -187,13 +184,11 @@ public class UseraddView extends Fragment implements IUseradd.View, View.OnClick
     @Override
     public void onShowRefreshing() {
         refresh_layout.setRefreshing(true);
-        recycler_view.setVisibility(View.GONE);
     }
 
     @Override
     public void onHideRefreshing() {
         refresh_layout.setRefreshing(false);
-        recycler_view.setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -12,7 +12,7 @@ import retrofit2.Response;
 /**
  * Created by Meiji on 2016/11/23.
  */
-
+@Deprecated
 class PostsContentModel implements IPostsContent.Model {
 
     private static final String TAG = "PostsContentModel";

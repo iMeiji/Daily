@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -68,7 +69,8 @@ public class PostsContentView extends BaseActivity implements View.OnClickListen
 
     @Override
     public void onFail() {
-        Snackbar.make(webView, R.string.network_error, Snackbar.LENGTH_SHORT);
+        dialog.dismiss();
+        Snackbar.make(webView, R.string.network_error, Snackbar.LENGTH_SHORT).show();
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -118,12 +120,20 @@ public class PostsContentView extends BaseActivity implements View.OnClickListen
         webView = (WebView) findViewById(R.id.webview_content);
         FloatingActionButton fab_share = (FloatingActionButton) findViewById(R.id.fab_share);
         CollapsingToolbarLayout toolbar_layout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_layout);
+        final NestedScrollView scrollView = (NestedScrollView) findViewById(R.id.scrollView);
 
         setSupportActionBar(toolbar_title);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        toolbar_title.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scrollView.smoothScrollTo(0, 0);
+            }
+        });
 
         fab_share.setOnClickListener(this);
 
@@ -158,11 +168,5 @@ public class PostsContentView extends BaseActivity implements View.OnClickListen
                 startActivity(Intent.createChooser(shareIntent, getString(R.string.share_to)));
                 break;
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        presenter.onDestroy();
-        super.onDestroy();
     }
 }

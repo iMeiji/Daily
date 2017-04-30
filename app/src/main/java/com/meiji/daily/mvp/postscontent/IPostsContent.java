@@ -25,23 +25,9 @@ interface IPostsContent {
          * 请求数据
          */
         void doRequestData(int slug);
-
-        /**
-         * 设置浏览器
-         */
-        void doSetWebView();
-
-        /**
-         * 请求数据失败
-         */
-        void onFail();
-
-        /**
-         * 结束
-         */
-        void onDestroy();
     }
 
+    @Deprecated
     interface Model {
 
         /**

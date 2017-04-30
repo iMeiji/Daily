@@ -98,19 +98,28 @@ class UseraddPresenter implements IUseradd.Presenter {
     public void doRefresh() {
         view.onShowRefreshing();
         doSetAdapter();
-        view.onHideRefreshing();
     }
 
     @Override
     public void doRemoveItem(final int position) {
-        final ZhuanlanBean bean = list.get(position);
-        dao.removeSlug(bean.getSlug());
-        doSetAdapter();
+        Observable.create(new ObservableOnSubscribe<Object>() {
+            @Override
+            public void subscribe(@NonNull ObservableEmitter<Object> e) throws Exception {
+                final ZhuanlanBean bean = list.get(position);
+                dao.removeSlug(bean.getSlug());
+                doSetAdapter();
+            }
+        }).subscribeOn(Schedulers.io()).subscribe();
     }
 
     @Override
-    public void doRemoveItemCancel(ZhuanlanBean bean) {
-        dao.add(TYPE_USERADD, bean);
-        doSetAdapter();
+    public void doRemoveItemCancel(final ZhuanlanBean bean) {
+        Observable.create(new ObservableOnSubscribe<Object>() {
+            @Override
+            public void subscribe(@NonNull ObservableEmitter<Object> e) throws Exception {
+                dao.add(TYPE_USERADD, bean);
+                doSetAdapter();
+            }
+        }).subscribeOn(Schedulers.io()).subscribe();
     }
 }

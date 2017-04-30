@@ -136,4 +136,9 @@ public class MainActivity extends BaseActivity
             ColorUtil.setColor(selectedColor);
         }
     }
+
+    @Override
+    public void onColorChooserDismissed(@NonNull ColorChooserDialog dialog) {
+
+    }
 }

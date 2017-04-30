@@ -17,9 +17,28 @@
 #}
 
 -keep class !android.support.v7.internal.view.menu.**,** {*;}
--dontwarn okio.**
--dontwarn com.google.gson.stream**
 -ignorewarnings
+
+# support-v7-appcompat
+-keep public class android.support.v7.widget.** { *; }
+-keep public class android.support.v7.internal.widget.** { *; }
+-keep public class android.support.v7.internal.view.menu.** { *; }
+
+-keep public class * extends android.support.v4.view.ActionProvider {
+    public <init>(android.content.Context);
+}
+
+
+# support-v7-cardview
+-keep class android.support.v7.widget.RoundRectDrawable { *; }
+
+
+# support-design
+-dontwarn android.support.design.**
+-keep class android.support.design.** { *; }
+-keep interface android.support.design.** { *; }
+-keep public class android.support.design.R$* { *; }
+
 
 # Retrofit
 # Platform calls Class.forName on types which do not exist on Android to determine platform.
@@ -44,3 +63,17 @@
     java.lang.Object writeReplace();
     java.lang.Object readResolve();
 }
+
+
+# Glide
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
+# for DexGuard only
+#-keepresourcexmlelements manifest/application/meta-data@value=GlideModule
+
+
+## OkHttp
+-dontwarn okio.**

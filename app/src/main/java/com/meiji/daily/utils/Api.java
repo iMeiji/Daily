@@ -48,6 +48,7 @@ public interface Api {
             @Query("offset") int offset);
 
     /**
+     * 获取文章内容
      * https://zhuanlan.zhihu.com/api/posts/25982605
      *
      * @param slug 文章ID
@@ -79,4 +80,14 @@ public interface Api {
     Observable<List<PostsListBean>> getPostsListRx(
             @Path("slug") String slug,
             @Query("offset") int offset);
+
+    /**
+     * 获取文章内容 Retrofit + RxJava
+     * https://zhuanlan.zhihu.com/api/posts/25982605
+     *
+     * @param slug 文章ID
+     * @return
+     */
+    @GET("api/posts/{slug}")
+    Observable<PostsContentBean> getPostsContentBeanRx(@Path("slug") int slug);
 }
