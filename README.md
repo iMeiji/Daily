@@ -25,6 +25,19 @@
 - 收藏夹
 - 清除缓存
 
+### 更新日志
+```
+2017-5-2
+增加缓存机制
+Gradle 差异化构建
+
+2017-4-25
+引入 Retrofit, RxJava
+
+2017-4-22
+重启项目
+```
+
 ### API
 [数据来源](https://github.com/shanelau/zhihu)  
 

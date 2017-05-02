@@ -15,8 +15,8 @@ public class InitApp extends Application {
     public void onCreate() {
         super.onCreate();
         AppContext = getApplicationContext();
-//        if (BuildConfig.DEBUG) {
-//            Stetho.initializeWithDefaults(this);
-//        }
+        if (BuildConfig.DEBUG) {
+            SdkManager.initStetho(AppContext);
+        }
     }
 }

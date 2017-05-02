@@ -33,7 +33,7 @@ import static com.meiji.daily.bean.PostsListBean.POSTSLISTBEAN_TITLEIMAGE;
  * Created by Meiji on 2016/11/22.
  */
 
-public class PostsContentView extends BaseActivity implements View.OnClickListener, IPostsContent.View {
+public class PostsContentView extends BaseActivity implements IPostsContent.View {
 
     private WebView webView;
     private MaterialDialog dialog;
@@ -63,8 +63,8 @@ public class PostsContentView extends BaseActivity implements View.OnClickListen
 
     @Override
     public void onSetWebView(String url) {
-        webView.loadDataWithBaseURL(null, url, "text/html", "utf-8", null);
         dialog.dismiss();
+        webView.loadDataWithBaseURL(null, url, "text/html", "utf-8", null);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class PostsContentView extends BaseActivity implements View.OnClickListen
         // 缩放,设置为不能缩放可以防止页面上出现放大和缩小的图标
         settings.setBuiltInZoomControls(false);
         // 缓存
-        settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        settings.setCacheMode(WebSettings.LOAD_DEFAULT);
         // 开启DOM storage API功能
         settings.setDomStorageEnabled(true);
         // 开启application Cache功能
@@ -135,7 +135,17 @@ public class PostsContentView extends BaseActivity implements View.OnClickListen
             }
         });
 
-        fab_share.setOnClickListener(this);
+        fab_share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent shareIntent = new Intent()
+                        .setAction(Intent.ACTION_SEND)
+                        .setType("text/plain");
+                String shareText = title + " " + Api.POST_URL + slug;
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
+                startActivity(Intent.createChooser(shareIntent, getString(R.string.share_to)));
+            }
+        });
 
         toolbar_layout.setTitle(title);
         toolbar_layout.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
@@ -153,20 +163,6 @@ public class PostsContentView extends BaseActivity implements View.OnClickListen
             iv_header.setScaleType(ImageView.ScaleType.CENTER_CROP);
         } else {
             Glide.with(this).load(titleImage).centerCrop().into(iv_header);
-        }
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.fab_share:
-                Intent shareIntent = new Intent()
-                        .setAction(Intent.ACTION_SEND)
-                        .setType("text/plain");
-                String shareText = title + " " + Api.POST_URL + slug;
-                shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
-                startActivity(Intent.createChooser(shareIntent, getString(R.string.share_to)));
-                break;
         }
     }
 }

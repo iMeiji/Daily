@@ -20,7 +20,7 @@ import com.afollestad.materialdialogs.color.ColorChooserDialog;
 import com.meiji.daily.mvp.useradd.UseraddView;
 import com.meiji.daily.mvp.zhuanlan.ZhuanlanModel;
 import com.meiji.daily.mvp.zhuanlan.ZhuanlanView;
-import com.meiji.daily.utils.ColorUtil;
+import com.meiji.daily.utils.ColorUtils;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, ColorChooserDialog.ColorCallback {
@@ -133,7 +133,7 @@ public class MainActivity extends BaseActivity
             getWindow().setNavigationBarColor(selectedColor);
         }
         if (!dialog.isAccentMode()) {
-            ColorUtil.setColor(selectedColor);
+            ColorUtils.setColor(selectedColor);
         }
     }
 

@@ -10,7 +10,7 @@ import static android.content.Context.MODE_PRIVATE;
  * Created by Meiji on 2016/11/26.
  */
 
-public class ColorUtil {
+public class ColorUtils {
 
     public static int getColor() {
         SharedPreferences prefs = InitApp.AppContext.getSharedPreferences(InitApp.AppContext.getPackageName(), MODE_PRIVATE);

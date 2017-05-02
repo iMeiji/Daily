@@ -25,7 +25,7 @@ import com.meiji.daily.R;
 import com.meiji.daily.adapter.ZhuanlanAdapter;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.interfaces.IOnItemClickListener;
-import com.meiji.daily.utils.ColorUtil;
+import com.meiji.daily.utils.ColorUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +69,7 @@ public class UseraddView extends Fragment implements IUseradd.View, View.OnClick
         recycler_view.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         // 设置下拉刷新的按钮的颜色
-        refresh_layout.setColorSchemeColors(ColorUtil.getColor());
+        refresh_layout.setColorSchemeColors(ColorUtils.getColor());
         refresh_layout.setOnRefreshListener(this);
 
         fab_add.setOnClickListener(this);

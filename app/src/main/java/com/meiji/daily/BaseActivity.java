@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.afollestad.materialdialogs.color.CircleView;
-import com.meiji.daily.utils.ColorUtil;
+import com.meiji.daily.utils.ColorUtils;
 
 /**
  * Created by Meiji on 2016/11/27.
@@ -24,7 +24,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        int color = ColorUtil.getColor();
+        int color = ColorUtils.getColor();
         if (getSupportActionBar() != null)
             getSupportActionBar().setBackgroundDrawable(new ColorDrawable(color));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
