@@ -7,19 +7,20 @@ import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.database.dao.ZhuanlanDao;
 import com.meiji.daily.utils.Api;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
-import retrofit2.Response;
 
 /**
  * Created by Meiji on 2016/11/17.
@@ -36,14 +37,14 @@ public class ZhuanlanModel implements IZhuanlan.Model {
     public static final int TYPE_USERADD = 6;
     private static final String TAG = "ZhuanlanModel";
     private IZhuanlan.Presenter presenter;
-    private ZhuanlanDao zhuanlanDao;
+    private ZhuanlanDao dao;
     private String[] ids;
     private int type;
     private Call<ZhuanlanBean> call;
 
     ZhuanlanModel(IZhuanlan.Presenter presenter) {
         this.presenter = presenter;
-        this.zhuanlanDao = new ZhuanlanDao();
+        this.dao = new ZhuanlanDao();
     }
 
     @Override
@@ -78,15 +79,6 @@ public class ZhuanlanModel implements IZhuanlan.Model {
                     }
                 })
                 .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .doOnNext(new Consumer<List<ZhuanlanBean>>() {
-                    @Override
-                    public void accept(@NonNull List<ZhuanlanBean> list) throws Exception {
-                        if (list.size() != 0) {
-                            saveData(list);
-                        }
-                    }
-                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<List<ZhuanlanBean>>() {
                     @Override
@@ -97,47 +89,44 @@ public class ZhuanlanModel implements IZhuanlan.Model {
                             presenter.onFail();
                         }
                     }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(@NonNull Throwable throwable) throws Exception {
-                        presenter.onFail();
-                    }
                 });
     }
 
     @Override
     public List<ZhuanlanBean> getList(int type) {
-        return zhuanlanDao.query(type);
-    }
-
-    private void saveData(List<ZhuanlanBean> list) {
-        for (ZhuanlanBean bean : list) {
-            zhuanlanDao.add(this.type, bean);
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        if (call != null && call.isCanceled()) {
-            call.cancel();
-        }
+        return dao.query(type);
     }
 
     @Override
     public List<ZhuanlanBean> retrofitRequest(String[] ids) {
-        List<ZhuanlanBean> list = new ArrayList<>();
-        Api api = RetrofitFactory.getRetrofit().create(Api.class);
-        for (String id : ids) {
-            call = api.getZhuanlanBean(id);
-            try {
-                Response<ZhuanlanBean> response = call.execute();
-                if (response.isSuccessful()) {
-                    list.add(response.body());
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        final List<ZhuanlanBean> list = new ArrayList<>();
+
+        Observable.fromArray(ids)
+                .flatMap(new Function<String, ObservableSource<ZhuanlanBean>>() {
+                    @Override
+                    public ObservableSource<ZhuanlanBean> apply(@NonNull String s) throws Exception {
+                        return RetrofitFactory.getRetrofit().create(Api.class).getZhuanlanBeanRx(s);
+                    }
+                })
+                .filter(new Predicate<ZhuanlanBean>() {
+                    @Override
+                    public boolean test(@NonNull ZhuanlanBean bean) throws Exception {
+                        return null != bean.getName();
+                    }
+                })
+                .subscribe(new Consumer<ZhuanlanBean>() {
+                    @Override
+                    public void accept(@NonNull ZhuanlanBean bean) throws Exception {
+                        dao.add(type, bean);
+                        list.add(bean);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(@NonNull Throwable throwable) throws Exception {
+
+                    }
+                });
+
         return list;
     }
 }

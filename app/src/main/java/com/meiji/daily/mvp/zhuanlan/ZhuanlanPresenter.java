@@ -70,12 +70,6 @@ class ZhuanlanPresenter implements IZhuanlan.Presenter {
     }
 
     @Override
-    public void onDestroy() {
-        view.onHideRefreshing();
-        model.onDestroy();
-    }
-
-    @Override
     public void onFail() {
         view.onHideRefreshing();
         view.onFail();

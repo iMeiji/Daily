@@ -56,11 +56,6 @@ interface IZhuanlan {
         void doOnClickItem(int position);
 
         /**
-         * 结束
-         */
-        void onDestroy();
-
-        /**
          * 显示查询数据失败
          */
         void onFail();
@@ -80,11 +75,6 @@ interface IZhuanlan {
          * @param type
          */
         List<ZhuanlanBean> getList(int type);
-
-        /**
-         * 结束
-         */
-        void onDestroy();
 
         void getData(int type);
 

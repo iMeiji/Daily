@@ -107,10 +107,4 @@ public class ZhuanlanView extends Fragment implements IZhuanlan.View, SwipeRefre
         Snackbar.make(refresh_layout, R.string.network_error, Snackbar.LENGTH_SHORT).show();
         refresh_layout.setEnabled(true);
     }
-
-    @Override
-    public void onDestroy() {
-        presenter.onDestroy();
-        super.onDestroy();
-    }
 }

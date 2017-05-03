@@ -17,10 +17,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.meiji.daily.mvp.zhuanlan.ZhuanlanModel.TYPE_USERADD;
@@ -75,40 +74,26 @@ public class AddActivity extends BaseActivity {
                 }
             }
 
-            RxTest(slug);
-
-//            Api api = RetrofitFactory.getRetrofit().create(Api.class);
-//            Call<ZhuanlanBean> call = api.getZhuanlanBean(slug);
-//            call.enqueue(new Callback<ZhuanlanBean>() {
-//                @Override
-//                public void onResponse(Call<ZhuanlanBean> call, Response<ZhuanlanBean> response) {
-//                    try {
-//                        ZhuanlanBean bean = response.body();
-//                        String type = String.valueOf(TYPE_USERADD);
-//                        String avatarUrl = bean.getAvatar().getTemplate();
-//                        String avatarId = bean.getAvatar().getId();
-//                        String name = bean.getName();
-//                        String followersCount = String.valueOf(bean.getFollowersCount());
-//                        String postsCount = String.valueOf(bean.getPostsCount());
-//                        String intro = bean.getIntro();
-//                        String slug = bean.getSlug();
-//                        result = zhuanlanDao.add(type, avatarUrl, avatarId, name, followersCount, postsCount, intro, slug);
-//                    } catch (NullPointerException e) {
-//                        e.printStackTrace();
-//                    }
-//                    if (result) {
-//                        onFinish("保存成功");
-//                    } else {
-//                        onFinish("保存失败");
-//                    }
-//                }
-//
-//                @Override
-//                public void onFailure(Call<ZhuanlanBean> call, Throwable t) {
-//                    onFinish("保存失败");
-//                }
-//            });
-
+            Api api = RetrofitFactory.getRetrofit().create(Api.class);
+            Observable<ZhuanlanBean> observable = api.getZhuanlanBeanRx(slug);
+            observable.subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<ZhuanlanBean>() {
+                        @Override
+                        public void accept(@NonNull ZhuanlanBean bean) throws Exception {
+                            result = zhuanlanDao.add(TYPE_USERADD, bean);
+                            if (result) {
+                                onFinish(getString(R.string.add_zhuanlan_id_success));
+                            } else {
+                                onFinish(getString(R.string.add_zhuanlan_id_error));
+                            }
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(@NonNull Throwable throwable) throws Exception {
+                            onFinish(getString(R.string.add_zhuanlan_id_error));
+                        }
+                    });
         } else {
             onFinish(getString(R.string.incorrect_link));
         }
@@ -123,38 +108,5 @@ public class AddActivity extends BaseActivity {
                 finish();
             }
         }, 800);
-    }
-
-    private void RxTest(final String slug) {
-        Api api = RetrofitFactory.getRetrofit().create(Api.class);
-        Observable<ZhuanlanBean> observable = api.getZhuanlanBeanRx(slug);
-        observable.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ZhuanlanBean>() {
-                    @Override
-                    public void onSubscribe(@NonNull Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(@NonNull ZhuanlanBean bean) {
-                        result = zhuanlanDao.add(TYPE_USERADD, bean);
-                        if (result) {
-                            onFinish("保存成功");
-                        } else {
-                            onFinish("保存失败");
-                        }
-                    }
-
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-                        onFinish("保存失败");
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        onFinish("保存成功");
-                    }
-                });
     }
 }
