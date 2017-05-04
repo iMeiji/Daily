@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.database.dao.ZhuanlanDao;
+import com.meiji.daily.mvp.zhuanlan.ZhuanlanPresenter;
 import com.meiji.daily.utils.Api;
 
 import java.util.List;
@@ -21,8 +22,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-
-import static com.meiji.daily.mvp.zhuanlan.ZhuanlanModel.TYPE_USERADD;
 
 /**
  * Created by Meiji on 2016/12/1.
@@ -66,7 +65,7 @@ public class AddActivity extends BaseActivity {
         final Matcher matcher = Pattern.compile(regex).matcher(shareText);
         if (matcher.find()) {
             final String slug = matcher.group(1).toLowerCase();
-            List<ZhuanlanBean> query = zhuanlanDao.query(TYPE_USERADD);
+            List<ZhuanlanBean> query = zhuanlanDao.query(ZhuanlanPresenter.TYPE_USERADD);
             for (ZhuanlanBean bean : query) {
                 if (bean.getSlug().equals(slug)) {
                     onFinish(getString(R.string.has_been_added));
@@ -81,7 +80,7 @@ public class AddActivity extends BaseActivity {
                     .subscribe(new Consumer<ZhuanlanBean>() {
                         @Override
                         public void accept(@NonNull ZhuanlanBean bean) throws Exception {
-                            result = zhuanlanDao.add(TYPE_USERADD, bean);
+                            result = zhuanlanDao.add(ZhuanlanPresenter.TYPE_USERADD, bean);
                             if (result) {
                                 onFinish(getString(R.string.add_zhuanlan_id_success));
                             } else {

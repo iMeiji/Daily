@@ -1,6 +1,7 @@
 package com.meiji.daily.mvp.zhuanlan;
 
 import com.meiji.daily.bean.ZhuanlanBean;
+import com.trello.rxlifecycle2.LifecycleTransformer;
 
 import java.util.List;
 
@@ -36,6 +37,14 @@ interface IZhuanlan {
          * 请求数据失败
          */
         void onFail();
+
+        /**
+         * 绑定生命周期
+         *
+         * @param <T>
+         * @return
+         */
+        <T> LifecycleTransformer<T> bindToLife();
     }
 
     interface Presenter {
@@ -64,8 +73,11 @@ interface IZhuanlan {
          * 正在刷新
          */
         void doRefresh();
+
+        void onDestroy();
     }
 
+    @Deprecated
     interface Model {
 
 
@@ -79,5 +91,7 @@ interface IZhuanlan {
         void getData(int type);
 
         List<ZhuanlanBean> retrofitRequest(String[] ids);
+
+        void onDestroy();
     }
 }

@@ -18,6 +18,7 @@ import com.afollestad.materialdialogs.color.CircleView;
 import com.afollestad.materialdialogs.color.ColorChooserDialog;
 import com.meiji.daily.mvp.useradd.UseraddView;
 import com.meiji.daily.mvp.zhuanlan.ZhuanlanModel;
+import com.meiji.daily.mvp.zhuanlan.ZhuanlanPresenter;
 import com.meiji.daily.mvp.zhuanlan.ZhuanlanView;
 import com.meiji.daily.utils.ColorUtils;
 
@@ -72,22 +73,22 @@ public class MainActivity extends BaseActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_product) {
-            replaceFragment(ZhuanlanModel.TYPE_PRODUCT);
+            replaceFragment(ZhuanlanPresenter.TYPE_PRODUCT);
 
         } else if (id == R.id.nav_life) {
-            replaceFragment(ZhuanlanModel.TYPE_LIFE);
+            replaceFragment(ZhuanlanPresenter.TYPE_LIFE);
 
         } else if (id == R.id.nav_music) {
-            replaceFragment(ZhuanlanModel.TYPE_MUSIC);
+            replaceFragment(ZhuanlanPresenter.TYPE_MUSIC);
 
         } else if (id == R.id.nav_emotion) {
-            replaceFragment(ZhuanlanModel.TYPE_EMOTION);
+            replaceFragment(ZhuanlanPresenter.TYPE_EMOTION);
 
         } else if (id == R.id.nav_profession) {
-            replaceFragment(ZhuanlanModel.TYPE_FINANCE);
+            replaceFragment(ZhuanlanPresenter.TYPE_FINANCE);
 
         } else if (id == R.id.nav_zhihu) {
-            replaceFragment(ZhuanlanModel.TYPE_ZHIHU);
+            replaceFragment(ZhuanlanPresenter.TYPE_ZHIHU);
 
         } else if (id == R.id.nav_user_add) {
             getSupportFragmentManager().beginTransaction().replace(R.id.content_main, new UseraddView()).commit();

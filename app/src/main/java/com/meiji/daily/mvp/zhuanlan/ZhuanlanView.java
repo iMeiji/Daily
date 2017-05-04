@@ -3,7 +3,6 @@ package com.meiji.daily.mvp.zhuanlan;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +15,8 @@ import com.meiji.daily.adapter.ZhuanlanAdapter;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.interfaces.IOnItemClickListener;
 import com.meiji.daily.utils.ColorUtils;
+import com.trello.rxlifecycle2.LifecycleTransformer;
+import com.trello.rxlifecycle2.components.support.RxFragment;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ import java.util.List;
  * Created by Meiji on 2016/11/17.
  */
 
-public class ZhuanlanView extends Fragment implements IZhuanlan.View, SwipeRefreshLayout.OnRefreshListener {
+public class ZhuanlanView extends RxFragment implements IZhuanlan.View, SwipeRefreshLayout.OnRefreshListener {
 
     private RecyclerView recycler_view;
     private SwipeRefreshLayout refresh_layout;
@@ -107,4 +108,17 @@ public class ZhuanlanView extends Fragment implements IZhuanlan.View, SwipeRefre
         Snackbar.make(refresh_layout, R.string.network_error, Snackbar.LENGTH_SHORT).show();
         refresh_layout.setEnabled(true);
     }
+
+    @Override
+    public <T> LifecycleTransformer<T> bindToLife() {
+        return this.bindToLifecycle();
+    }
+
+    @Override
+    public void onStop() {
+        presenter.onDestroy();
+        super.onStop();
+    }
+
+
 }

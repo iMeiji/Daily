@@ -4,6 +4,7 @@ import com.meiji.daily.RetrofitFactory;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.database.dao.ZhuanlanDao;
 import com.meiji.daily.mvp.postslist.PostsListView;
+import com.meiji.daily.mvp.zhuanlan.ZhuanlanPresenter;
 import com.meiji.daily.utils.Api;
 
 import java.util.List;
@@ -15,8 +16,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-
-import static com.meiji.daily.mvp.zhuanlan.ZhuanlanModel.TYPE_USERADD;
 
 /**
  * Created by Meiji on 2016/11/27.
@@ -41,7 +40,7 @@ class UseraddPresenter implements IUseradd.Presenter {
                 .doOnNext(new Consumer<ZhuanlanBean>() {
                     @Override
                     public void accept(@NonNull ZhuanlanBean bean) throws Exception {
-                        dao.add(TYPE_USERADD, bean);
+                        dao.add(ZhuanlanPresenter.TYPE_USERADD, bean);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -65,7 +64,7 @@ class UseraddPresenter implements IUseradd.Presenter {
                 .create(new ObservableOnSubscribe<List<ZhuanlanBean>>() {
                     @Override
                     public void subscribe(@NonNull ObservableEmitter<List<ZhuanlanBean>> e) throws Exception {
-                        list = dao.query(TYPE_USERADD);
+                        list = dao.query(ZhuanlanPresenter.TYPE_USERADD);
                         e.onNext(list);
                     }
                 })
@@ -117,7 +116,7 @@ class UseraddPresenter implements IUseradd.Presenter {
         Observable.create(new ObservableOnSubscribe<Object>() {
             @Override
             public void subscribe(@NonNull ObservableEmitter<Object> e) throws Exception {
-                dao.add(TYPE_USERADD, bean);
+                dao.add(ZhuanlanPresenter.TYPE_USERADD, bean);
                 doSetAdapter();
             }
         }).subscribeOn(Schedulers.io()).subscribe();
