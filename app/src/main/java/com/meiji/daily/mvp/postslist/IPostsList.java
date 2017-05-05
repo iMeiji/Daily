@@ -1,6 +1,7 @@
 package com.meiji.daily.mvp.postslist;
 
 import com.meiji.daily.bean.PostsListBean;
+import com.meiji.daily.mvp.base.IBaseView;
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ import java.util.List;
 
 interface IPostsList {
 
-    interface View {
+    interface View extends IBaseView {
 
         /**
          * 请求数据
@@ -21,21 +22,6 @@ interface IPostsList {
          * 设置适配器
          */
         void onSetAdapter(List<PostsListBean> list);
-
-        /**
-         * 正在刷新
-         */
-        void onShowRefreshing();
-
-        /**
-         * 完成刷新
-         */
-        void onHideRefreshing();
-
-        /**
-         * 请求数据失败
-         */
-        void onFail();
     }
 
     interface Presenter {
@@ -65,24 +51,5 @@ interface IPostsList {
          */
         void onFail();
 
-    }
-
-    @Deprecated
-    interface Model {
-
-        /**
-         * 请求数据
-         */
-        boolean retrofitRequest(String slug, int offset);
-
-        /**
-         * 返回数据
-         */
-        List<PostsListBean> getList();
-
-        /**
-         * 结束
-         */
-        void onDestroy();
     }
 }

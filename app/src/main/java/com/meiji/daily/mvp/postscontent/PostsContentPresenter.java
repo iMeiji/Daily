@@ -2,7 +2,7 @@ package com.meiji.daily.mvp.postscontent;
 
 import com.meiji.daily.RetrofitFactory;
 import com.meiji.daily.bean.PostsContentBean;
-import com.meiji.daily.utils.Api;
+import com.meiji.daily.utils.IApi;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
@@ -23,18 +23,22 @@ class PostsContentPresenter implements IPostsContent.Presenter {
 
     @Override
     public void doRequestData(final int slug) {
-        RetrofitFactory.getRetrofit().create(Api.class).getPostsContentBeanRx(slug)
+        view.onShowLoading();
+
+        RetrofitFactory.getRetrofit().create(IApi.class).getPostsContentBeanRx(slug)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .compose(view.<PostsContentBean>bindToLife())
                 .subscribe(new Consumer<PostsContentBean>() {
                     @Override
                     public void accept(@NonNull PostsContentBean bean) throws Exception {
+                        view.onHideLoading();
                         view.onSetWebView(getContent(bean.getContent()));
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(@NonNull Throwable throwable) throws Exception {
-                        view.onFail();
+                        view.onShowNetError();
                     }
                 });
     }

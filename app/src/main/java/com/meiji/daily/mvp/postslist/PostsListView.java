@@ -9,12 +9,12 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.meiji.daily.BaseActivity;
 import com.meiji.daily.InitApp;
 import com.meiji.daily.R;
 import com.meiji.daily.adapter.PostsListAdapter;
 import com.meiji.daily.bean.PostsListBean;
 import com.meiji.daily.interfaces.IOnItemClickListener;
+import com.meiji.daily.mvp.base.BaseActivity;
 import com.meiji.daily.utils.ColorUtils;
 
 import java.util.List;
@@ -107,21 +107,6 @@ public class PostsListView extends BaseActivity implements IPostsList.View, Swip
         });
     }
 
-    @Override
-    public void onShowRefreshing() {
-        refresh_layout.setRefreshing(true);
-    }
-
-    @Override
-    public void onHideRefreshing() {
-        refresh_layout.setRefreshing(false);
-    }
-
-    @Override
-    public void onFail() {
-        Snackbar.make(refresh_layout, R.string.network_error, Snackbar.LENGTH_SHORT).show();
-    }
-
     private void initView() {
         toolbar = (Toolbar) findViewById(R.id.toolbar_title);
         recycler_view = (RecyclerView) findViewById(R.id.recycler_view);
@@ -146,5 +131,20 @@ public class PostsListView extends BaseActivity implements IPostsList.View, Swip
     @Override
     public void onRefresh() {
         presenter.doRefresh();
+    }
+
+    @Override
+    public void onShowLoading() {
+        refresh_layout.setRefreshing(true);
+    }
+
+    @Override
+    public void onHideLoading() {
+        refresh_layout.setRefreshing(false);
+    }
+
+    @Override
+    public void onShowNetError() {
+        Snackbar.make(refresh_layout, R.string.network_error, Snackbar.LENGTH_SHORT).show();
     }
 }

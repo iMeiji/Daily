@@ -14,9 +14,8 @@ import com.meiji.daily.R;
 import com.meiji.daily.adapter.ZhuanlanAdapter;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.interfaces.IOnItemClickListener;
+import com.meiji.daily.mvp.base.BaseFragment;
 import com.meiji.daily.utils.ColorUtils;
-import com.trello.rxlifecycle2.LifecycleTransformer;
-import com.trello.rxlifecycle2.components.support.RxFragment;
 
 import java.util.List;
 
@@ -25,7 +24,7 @@ import java.util.List;
  * Created by Meiji on 2016/11/17.
  */
 
-public class ZhuanlanView extends RxFragment implements IZhuanlan.View, SwipeRefreshLayout.OnRefreshListener {
+public class ZhuanlanView extends BaseFragment implements IZhuanlan.View, SwipeRefreshLayout.OnRefreshListener {
 
     private RecyclerView recycler_view;
     private SwipeRefreshLayout refresh_layout;
@@ -51,7 +50,7 @@ public class ZhuanlanView extends RxFragment implements IZhuanlan.View, SwipeRef
         return view;
     }
 
-    private void initViews(android.view.View view) {
+    private void initViews(View view) {
         recycler_view = (RecyclerView) view.findViewById(R.id.recycler_view);
         refresh_layout = (SwipeRefreshLayout) view.findViewById(R.id.refresh_layout);
         recycler_view.setHasFixedSize(true);
@@ -87,31 +86,26 @@ public class ZhuanlanView extends RxFragment implements IZhuanlan.View, SwipeRef
     }
 
     @Override
-    public void onShowRefreshing() {
-        refresh_layout.setRefreshing(true);
-        recycler_view.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onHideRefreshing() {
-        refresh_layout.setRefreshing(false);
-        recycler_view.setVisibility(View.VISIBLE);
-    }
-
-    @Override
     public void onRefresh() {
         presenter.doRefresh();
     }
 
     @Override
-    public void onFail() {
-        Snackbar.make(refresh_layout, R.string.network_error, Snackbar.LENGTH_SHORT).show();
-        refresh_layout.setEnabled(true);
+    public void onShowLoading() {
+        refresh_layout.setRefreshing(true);
+        recycler_view.setVisibility(View.GONE);
     }
 
     @Override
-    public <T> LifecycleTransformer<T> bindToLife() {
-        return this.bindToLifecycle();
+    public void onHideLoading() {
+        refresh_layout.setRefreshing(false);
+        recycler_view.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onShowNetError() {
+        Snackbar.make(refresh_layout, R.string.network_error, Snackbar.LENGTH_SHORT).show();
+        refresh_layout.setEnabled(true);
     }
 
     @Override
@@ -119,6 +113,5 @@ public class ZhuanlanView extends RxFragment implements IZhuanlan.View, SwipeRef
         presenter.onDestroy();
         super.onStop();
     }
-
 
 }

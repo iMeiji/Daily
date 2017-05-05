@@ -1,25 +1,19 @@
-package com.meiji.daily;
+package com.meiji.daily.mvp.base;
 
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.afollestad.materialdialogs.color.CircleView;
 import com.meiji.daily.utils.ColorUtils;
+import com.trello.rxlifecycle2.LifecycleTransformer;
+import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 /**
  * Created by Meiji on 2016/11/27.
  */
 
-public class BaseActivity extends AppCompatActivity {
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+public abstract class BaseActivity extends RxAppCompatActivity implements IBaseView {
 
     @Override
     protected void onResume() {
@@ -40,5 +34,10 @@ public class BaseActivity extends AppCompatActivity {
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public <T> LifecycleTransformer<T> bindToLife() {
+        return this.bindToLifecycle();
     }
 }

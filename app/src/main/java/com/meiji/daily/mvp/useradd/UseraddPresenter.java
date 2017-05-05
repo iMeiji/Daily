@@ -5,7 +5,7 @@ import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.database.dao.ZhuanlanDao;
 import com.meiji.daily.mvp.postslist.PostsListView;
 import com.meiji.daily.mvp.zhuanlan.ZhuanlanPresenter;
-import com.meiji.daily.utils.Api;
+import com.meiji.daily.utils.IApi;
 
 import java.util.List;
 
@@ -33,8 +33,8 @@ class UseraddPresenter implements IUseradd.Presenter {
 
     @Override
     public void doCheckInputId(final String input) {
-        view.onShowRefreshing();
-        RetrofitFactory.getRetrofit().create(Api.class).getZhuanlanBeanRx(input)
+        view.onShowLoading();
+        RetrofitFactory.getRetrofit().create(IApi.class).getZhuanlanBeanRx(input)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .doOnNext(new Consumer<ZhuanlanBean>() {
@@ -70,19 +70,20 @@ class UseraddPresenter implements IUseradd.Presenter {
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .compose(view.<List<ZhuanlanBean>>bindToLife())
                 .subscribe(new Consumer<List<ZhuanlanBean>>() {
                     @Override
                     public void accept(@NonNull List<ZhuanlanBean> list) throws Exception {
                         view.onSetAdapter(list);
-                        view.onHideRefreshing();
+                        view.onHideLoading();
                     }
                 });
     }
 
     @Override
     public void onFail() {
-        view.onHideRefreshing();
-        view.onAddFail();
+        view.onHideLoading();
+        view.onShowNetError();
     }
 
     @Override
@@ -95,7 +96,7 @@ class UseraddPresenter implements IUseradd.Presenter {
 
     @Override
     public void doRefresh() {
-        view.onShowRefreshing();
+        view.onShowLoading();
         doSetAdapter();
     }
 

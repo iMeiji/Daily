@@ -4,7 +4,7 @@ import com.franmontiel.persistentcookiejar.ClearableCookieJar;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
-import com.meiji.daily.utils.Api;
+import com.meiji.daily.utils.IApi;
 import com.meiji.daily.utils.NetWorkUtils;
 
 import java.io.File;
@@ -91,7 +91,7 @@ public class RetrofitFactory {
                 }
 
                 retrofit = new Retrofit.Builder()
-                        .baseUrl(Api.API_BASE)
+                        .baseUrl(IApi.API_BASE)
                         .client(builder.build())
                         .addConverterFactory(GsonConverterFactory.create())
                         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

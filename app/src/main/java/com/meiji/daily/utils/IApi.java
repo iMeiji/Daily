@@ -16,7 +16,7 @@ import retrofit2.http.Query;
  * Created by Meiji on 2016/11/16.
  */
 
-public interface Api {
+public interface IApi {
     String COLUMN_URL = "https://zhuanlan.zhihu.com/api/columns/";
 
     String POST_URL = "https://zhuanlan.zhihu.com/api/posts/";

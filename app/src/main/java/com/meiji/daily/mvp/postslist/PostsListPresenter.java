@@ -3,7 +3,7 @@ package com.meiji.daily.mvp.postslist;
 import com.meiji.daily.RetrofitFactory;
 import com.meiji.daily.bean.PostsListBean;
 import com.meiji.daily.mvp.postscontent.PostsContentView;
-import com.meiji.daily.utils.Api;
+import com.meiji.daily.utils.IApi;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +28,12 @@ class PostsListPresenter implements IPostsList.Presenter {
 
     @Override
     public void doRequestData(final String slug, final int offset) {
-        view.onShowRefreshing();
+        view.onShowLoading();
 
-        RetrofitFactory.getRetrofit().create(Api.class).getPostsListRx(slug, offset)
+        RetrofitFactory.getRetrofit().create(IApi.class).getPostsListRx(slug, offset)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .compose(view.<List<PostsListBean>>bindToLife())
                 .subscribe(new Consumer<List<PostsListBean>>() {
                     @Override
                     public void accept(@NonNull List<PostsListBean> postsListBeen) throws Exception {
@@ -55,7 +56,7 @@ class PostsListPresenter implements IPostsList.Presenter {
 
     @Override
     public void doSetAdapter() {
-        view.onHideRefreshing();
+        view.onHideLoading();
         view.onSetAdapter(list);
     }
 
@@ -69,7 +70,7 @@ class PostsListPresenter implements IPostsList.Presenter {
 
     @Override
     public void onFail() {
-        view.onHideRefreshing();
-        view.onFail();
+        view.onHideLoading();
+        view.onShowNetError();
     }
 }

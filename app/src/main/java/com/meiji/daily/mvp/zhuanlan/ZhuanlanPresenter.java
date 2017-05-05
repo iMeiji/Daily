@@ -6,7 +6,7 @@ import com.meiji.daily.RetrofitFactory;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.database.dao.ZhuanlanDao;
 import com.meiji.daily.mvp.postslist.PostsListView;
-import com.meiji.daily.utils.Api;
+import com.meiji.daily.utils.IApi;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,7 +38,6 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
     public static final int TYPE_USERADD = 6;
 
     private IZhuanlan.View view;
-    //    private IZhuanlan.Model model;
     private List<ZhuanlanBean> list;
     private ZhuanlanDao dao = new ZhuanlanDao();
     private Call<ZhuanlanBean> call;
@@ -47,12 +46,11 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
 
     ZhuanlanPresenter(IZhuanlan.View view) {
         this.view = view;
-//        this.model = new ZhuanlanModel(this);
     }
 
     @Override
     public void doGetType(final int type) {
-        view.onShowRefreshing();
+        view.onShowLoading();
 
         Observable
                 .create(new ObservableOnSubscribe<List<ZhuanlanBean>>() {
@@ -118,9 +116,9 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
 
         final List<ZhuanlanBean> list = new ArrayList<>();
 
-        Api api = RetrofitFactory.getRetrofit().create(Api.class);
+        IApi IApi = RetrofitFactory.getRetrofit().create(IApi.class);
         for (String id : ids) {
-            call = api.getZhuanlanBean(id);
+            call = IApi.getZhuanlanBean(id);
             try {
                 Response<ZhuanlanBean> response = call.execute();
                 if (response.isSuccessful()) {
@@ -142,7 +140,7 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
     public void doSetAdapter(List<ZhuanlanBean> list) {
         this.list = list;
         view.onSetAdapter(list);
-        view.onHideRefreshing();
+        view.onHideLoading();
     }
 
     @Override
@@ -155,13 +153,13 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
 
     @Override
     public void onFail() {
-        view.onHideRefreshing();
-        view.onFail();
+        view.onHideLoading();
+        view.onShowNetError();
     }
 
     @Override
     public void doRefresh() {
-        view.onShowRefreshing();
+        view.onShowLoading();
         view.onRequestData();
     }
 
@@ -171,4 +169,5 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
             call.cancel();
         }
     }
+
 }

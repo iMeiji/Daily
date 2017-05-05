@@ -20,10 +20,10 @@ import android.widget.ImageView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
-import com.meiji.daily.BaseActivity;
 import com.meiji.daily.InitApp;
 import com.meiji.daily.R;
-import com.meiji.daily.utils.Api;
+import com.meiji.daily.mvp.base.BaseActivity;
+import com.meiji.daily.utils.IApi;
 
 import static com.meiji.daily.bean.PostsListBean.POSTSLISTBEAN_SLUG;
 import static com.meiji.daily.bean.PostsListBean.POSTSLISTBEAN_TITLE;
@@ -59,18 +59,12 @@ public class PostsContentView extends BaseActivity implements IPostsContent.View
         initData();
         initView();
         initWebClient();
+        presenter.doRequestData(slug);
     }
 
     @Override
     public void onSetWebView(String url) {
-        dialog.dismiss();
         webView.loadDataWithBaseURL(null, url, "text/html", "utf-8", null);
-    }
-
-    @Override
-    public void onFail() {
-        dialog.dismiss();
-        Snackbar.make(webView, R.string.network_error, Snackbar.LENGTH_SHORT).show();
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -111,7 +105,6 @@ public class PostsContentView extends BaseActivity implements IPostsContent.View
         titleImage = intent.getStringExtra(POSTSLISTBEAN_TITLEIMAGE);
         title = intent.getStringExtra(POSTSLISTBEAN_TITLE);
         slug = intent.getIntExtra(POSTSLISTBEAN_SLUG, 0);
-        presenter.doRequestData(slug);
     }
 
     private void initView() {
@@ -141,7 +134,7 @@ public class PostsContentView extends BaseActivity implements IPostsContent.View
                 Intent shareIntent = new Intent()
                         .setAction(Intent.ACTION_SEND)
                         .setType("text/plain");
-                String shareText = title + " " + Api.POST_URL + slug;
+                String shareText = title + " " + IApi.POST_URL + slug;
                 shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
                 startActivity(Intent.createChooser(shareIntent, getString(R.string.share_to)));
             }
@@ -156,7 +149,6 @@ public class PostsContentView extends BaseActivity implements IPostsContent.View
                 .content(R.string.md_loading)
                 .cancelable(true)
                 .build();
-        dialog.show();
 
         if (TextUtils.isEmpty(titleImage)) {
             iv_header.setImageResource(R.drawable.error_image);
@@ -164,5 +156,21 @@ public class PostsContentView extends BaseActivity implements IPostsContent.View
         } else {
             Glide.with(this).load(titleImage).centerCrop().into(iv_header);
         }
+    }
+
+    @Override
+    public void onShowLoading() {
+        dialog.show();
+    }
+
+    @Override
+    public void onHideLoading() {
+        dialog.dismiss();
+    }
+
+    @Override
+    public void onShowNetError() {
+        dialog.dismiss();
+        Snackbar.make(webView, R.string.network_error, Snackbar.LENGTH_SHORT).show();
     }
 }

@@ -11,7 +11,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.database.dao.ZhuanlanDao;
 import com.meiji.daily.mvp.zhuanlan.ZhuanlanPresenter;
-import com.meiji.daily.utils.Api;
+import com.meiji.daily.utils.IApi;
+import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -27,7 +28,7 @@ import io.reactivex.schedulers.Schedulers;
  * Created by Meiji on 2016/12/1.
  */
 
-public class AddActivity extends BaseActivity {
+public class AddActivity extends RxAppCompatActivity {
 
     private static final String TAG = "AddActivity";
     private ZhuanlanDao zhuanlanDao = new ZhuanlanDao();
@@ -73,10 +74,11 @@ public class AddActivity extends BaseActivity {
                 }
             }
 
-            Api api = RetrofitFactory.getRetrofit().create(Api.class);
-            Observable<ZhuanlanBean> observable = api.getZhuanlanBeanRx(slug);
+            IApi IApi = RetrofitFactory.getRetrofit().create(IApi.class);
+            Observable<ZhuanlanBean> observable = IApi.getZhuanlanBeanRx(slug);
             observable.subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
+                    .compose(this.<ZhuanlanBean>bindToLifecycle())
                     .subscribe(new Consumer<ZhuanlanBean>() {
                         @Override
                         public void accept(@NonNull ZhuanlanBean bean) throws Exception {

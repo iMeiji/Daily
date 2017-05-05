@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.meiji.daily.mvp.base.BaseActivity;
 
 import de.psdev.licensesdialog.LicensesDialog;
 import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
@@ -133,5 +134,20 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onShowLoading() {
+
+    }
+
+    @Override
+    public void onHideLoading() {
+
+    }
+
+    @Override
+    public void onShowNetError() {
+
     }
 }

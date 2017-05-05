@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,6 +24,7 @@ import com.meiji.daily.R;
 import com.meiji.daily.adapter.ZhuanlanAdapter;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.interfaces.IOnItemClickListener;
+import com.meiji.daily.mvp.base.BaseFragment;
 import com.meiji.daily.utils.ColorUtils;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ import java.util.List;
  * Created by Meiji on 2016/11/27.
  */
 
-public class UseraddView extends Fragment implements IUseradd.View, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class UseraddView extends BaseFragment implements IUseradd.View, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     private TextView tv_description;
     private RecyclerView recycler_view;
@@ -182,29 +182,29 @@ public class UseraddView extends Fragment implements IUseradd.View, View.OnClick
     }
 
     @Override
-    public void onShowRefreshing() {
-        refresh_layout.setRefreshing(true);
-    }
-
-    @Override
-    public void onHideRefreshing() {
-        refresh_layout.setRefreshing(false);
-    }
-
-    @Override
     public void onRefresh() {
         presenter.doRefresh();
-    }
-
-    @Override
-    public void onAddFail() {
-        Snackbar.make(recycler_view, R.string.add_zhuanlan_id_error, Snackbar.LENGTH_SHORT).show();
-        refresh_layout.setEnabled(true);
     }
 
     @Override
     public void onAddSuccess() {
         Snackbar.make(recycler_view, R.string.add_zhuanlan_id_success, Snackbar.LENGTH_SHORT).show();
         tv_description.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onShowLoading() {
+        refresh_layout.setRefreshing(true);
+    }
+
+    @Override
+    public void onHideLoading() {
+        refresh_layout.setRefreshing(false);
+    }
+
+    @Override
+    public void onShowNetError() {
+        Snackbar.make(recycler_view, R.string.add_zhuanlan_id_error, Snackbar.LENGTH_SHORT).show();
+        refresh_layout.setEnabled(true);
     }
 }

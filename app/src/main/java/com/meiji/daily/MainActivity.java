@@ -16,8 +16,8 @@ import android.view.MenuItem;
 
 import com.afollestad.materialdialogs.color.CircleView;
 import com.afollestad.materialdialogs.color.ColorChooserDialog;
+import com.meiji.daily.mvp.base.BaseActivity;
 import com.meiji.daily.mvp.useradd.UseraddView;
-import com.meiji.daily.mvp.zhuanlan.ZhuanlanModel;
 import com.meiji.daily.mvp.zhuanlan.ZhuanlanPresenter;
 import com.meiji.daily.mvp.zhuanlan.ZhuanlanView;
 import com.meiji.daily.utils.ColorUtils;
@@ -35,7 +35,7 @@ public class MainActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
-        replaceFragment(ZhuanlanModel.TYPE_PRODUCT);
+        replaceFragment(ZhuanlanPresenter.TYPE_PRODUCT);
         navigationView.setCheckedItem(R.id.nav_product);
     }
 
@@ -134,6 +134,21 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void onColorChooserDismissed(@NonNull ColorChooserDialog dialog) {
+
+    }
+
+    @Override
+    public void onShowLoading() {
+
+    }
+
+    @Override
+    public void onHideLoading() {
+
+    }
+
+    @Override
+    public void onShowNetError() {
 
     }
 }
