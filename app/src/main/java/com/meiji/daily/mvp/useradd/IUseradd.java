@@ -1,6 +1,7 @@
 package com.meiji.daily.mvp.useradd;
 
 import com.meiji.daily.bean.ZhuanlanBean;
+import com.meiji.daily.mvp.base.IBasePresenter;
 import com.meiji.daily.mvp.base.IBaseView;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
 
 public interface IUseradd {
 
-    interface View extends IBaseView {
+    interface View extends IBaseView<Presenter> {
 
         void onCheckInputId();
 
@@ -19,9 +20,23 @@ public interface IUseradd {
 
         void onAddSuccess();
 
+        /**
+         * 显示加载动画
+         */
+        void onShowLoading();
+
+        /**
+         * 隐藏加载
+         */
+        void onHideLoading();
+
+        /**
+         * 显示网络错误
+         */
+        void onShowNetError();
     }
 
-    interface Presenter {
+    interface Presenter extends IBasePresenter {
 
         void doCheckInputId(String input);
 

@@ -1,14 +1,11 @@
 package com.meiji.daily.mvp.zhuanlan;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.meiji.daily.R;
 import com.meiji.daily.adapter.ZhuanlanAdapter;
@@ -24,13 +21,13 @@ import java.util.List;
  * Created by Meiji on 2016/11/17.
  */
 
-public class ZhuanlanView extends BaseFragment implements IZhuanlan.View, SwipeRefreshLayout.OnRefreshListener {
+public class ZhuanlanView extends BaseFragment<IZhuanlan.Presenter> implements IZhuanlan.View, SwipeRefreshLayout.OnRefreshListener {
 
     private RecyclerView recycler_view;
     private SwipeRefreshLayout refresh_layout;
 
     private ZhuanlanAdapter adapter;
-    private IZhuanlan.Presenter presenter;
+    private int type;
 
     public static ZhuanlanView newInstance(int type) {
         Bundle args = new Bundle();
@@ -40,17 +37,13 @@ public class ZhuanlanView extends BaseFragment implements IZhuanlan.View, SwipeR
         return fragment;
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_zhuanlan, container, false);
-        presenter = new ZhuanlanPresenter(this);
-        initViews(view);
-        onRequestData();
-        return view;
+    protected int attachLayoutId() {
+        return R.layout.fragment_zhuanlan;
     }
 
-    private void initViews(View view) {
+    @Override
+    protected void initViews(View view) {
         recycler_view = (RecyclerView) view.findViewById(R.id.recycler_view);
         refresh_layout = (SwipeRefreshLayout) view.findViewById(R.id.refresh_layout);
         recycler_view.setHasFixedSize(true);
@@ -61,12 +54,17 @@ public class ZhuanlanView extends BaseFragment implements IZhuanlan.View, SwipeR
     }
 
     @Override
-    public void onRequestData() {
+    protected void initData() {
         Bundle arguments = getArguments();
         if (arguments != null) {
-            int type = arguments.getInt("type");
-            presenter.doGetType(type);
+            type = arguments.getInt("type");
         }
+        onRequestData();
+    }
+
+    @Override
+    public void onRequestData() {
+        presenter.doGetType(type);
     }
 
     @Override
@@ -114,4 +112,10 @@ public class ZhuanlanView extends BaseFragment implements IZhuanlan.View, SwipeR
         super.onStop();
     }
 
+    @Override
+    public void setPresenter(IZhuanlan.Presenter presenter) {
+        if (null == presenter) {
+            this.presenter = new ZhuanlanPresenter(this);
+        }
+    }
 }

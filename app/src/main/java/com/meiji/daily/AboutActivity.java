@@ -3,9 +3,6 @@ package com.meiji.daily;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +12,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.meiji.daily.mvp.base.BaseActivity;
+import com.meiji.daily.mvp.base.IBasePresenter;
 
 import de.psdev.licensesdialog.LicensesDialog;
 import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
@@ -28,34 +26,35 @@ import static com.meiji.daily.R.id.changelogView;
  * Created by Meiji on 2016/12/3.
  */
 
-public class AboutActivity extends BaseActivity implements View.OnClickListener {
+public class AboutActivity extends BaseActivity<IBasePresenter> implements View.OnClickListener {
+
+    private TextView tv_version;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_about);
-        initView();
+    protected int attachLayoutId() {
+        return R.layout.activity_about;
     }
 
-    private void initView() {
-        TextView tv_version = (TextView) findViewById(R.id.tv_version);
+    @Override
+    protected void initData() {
+        try {
+            String version = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+            tv_version.setText(version);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void initViews() {
+        tv_version = (TextView) findViewById(R.id.tv_version);
         LinearLayout changelogView = (LinearLayout) findViewById(R.id.changelogView);
         LinearLayout developersView = (LinearLayout) findViewById(R.id.developersView);
         LinearLayout licensesView = (LinearLayout) findViewById(R.id.licensesView);
         LinearLayout sourceCodeView = (LinearLayout) findViewById(R.id.sourceCodeView);
         LinearLayout copyRightView = (LinearLayout) findViewById(R.id.copyRightView);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            try {
-                String version = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
-                tv_version.setText(version);
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
+        initToolBar((Toolbar) findViewById(R.id.toolbar), true, null);
+
         changelogView.setOnClickListener(this);
         developersView.setOnClickListener(this);
         licensesView.setOnClickListener(this);
@@ -67,14 +66,6 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
     public void onClick(View view) {
         switch (view.getId()) {
             case changelogView:
-//                String changelog = "支持添加自定义专栏 \n" +
-//                        "方法1: 手动输入专栏id \n" +
-//                        "方法2: 已\"分享方式\"把专栏链接添加到自定义专栏";
-//                new MaterialDialog.Builder(this)
-//                        .title(R.string.changelog)
-//                        .content(changelog)
-//                        .positiveText(android.R.string.ok)
-//                        .show();
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.changelog_url))));
                 break;
             case R.id.developersView:
@@ -137,17 +128,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
     }
 
     @Override
-    public void onShowLoading() {
-
-    }
-
-    @Override
-    public void onHideLoading() {
-
-    }
-
-    @Override
-    public void onShowNetError() {
+    public void setPresenter(IBasePresenter presenter) {
 
     }
 }

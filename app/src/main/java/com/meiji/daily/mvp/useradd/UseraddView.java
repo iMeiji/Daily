@@ -2,9 +2,7 @@ package com.meiji.daily.mvp.useradd;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -13,9 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -34,32 +30,28 @@ import java.util.List;
  * Created by Meiji on 2016/11/27.
  */
 
-public class UseraddView extends BaseFragment implements IUseradd.View, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class UseraddView extends BaseFragment<IUseradd.Presenter> implements IUseradd.View, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     private TextView tv_description;
     private RecyclerView recycler_view;
     private SwipeRefreshLayout refresh_layout;
     private MaterialDialog dialog;
 
-    private IUseradd.Presenter presenter;
     private ZhuanlanAdapter adapter;
     private List<ZhuanlanBean> list = new ArrayList<>();
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_useradd, container, false);
-        presenter = new UseraddPresenter(this);
-        initView(view);
-        initData();
-        return view;
+    protected int attachLayoutId() {
+        return R.layout.fragment_useradd;
     }
 
-    private void initData() {
+    @Override
+    protected void initData() {
         presenter.doSetAdapter();
     }
 
-    private void initView(View view) {
+    @Override
+    protected void initViews(View view) {
         tv_description = (TextView) view.findViewById(R.id.tv_description);
         recycler_view = (RecyclerView) view.findViewById(R.id.recycler_view);
         FloatingActionButton fab_add = (FloatingActionButton) view.findViewById(R.id.fab_add);
@@ -206,5 +198,12 @@ public class UseraddView extends BaseFragment implements IUseradd.View, View.OnC
     public void onShowNetError() {
         Snackbar.make(recycler_view, R.string.add_zhuanlan_id_error, Snackbar.LENGTH_SHORT).show();
         refresh_layout.setEnabled(true);
+    }
+
+    @Override
+    public void setPresenter(IUseradd.Presenter presenter) {
+        if (null == presenter) {
+            this.presenter = new UseraddPresenter(this);
+        }
     }
 }

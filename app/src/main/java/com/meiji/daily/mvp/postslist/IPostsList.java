@@ -1,6 +1,7 @@
 package com.meiji.daily.mvp.postslist;
 
 import com.meiji.daily.bean.PostsListBean;
+import com.meiji.daily.mvp.base.IBasePresenter;
 import com.meiji.daily.mvp.base.IBaseView;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
 
 interface IPostsList {
 
-    interface View extends IBaseView {
+    interface View extends IBaseView<Presenter> {
 
         /**
          * 请求数据
@@ -22,9 +23,24 @@ interface IPostsList {
          * 设置适配器
          */
         void onSetAdapter(List<PostsListBean> list);
+
+        /**
+         * 显示加载动画
+         */
+        void onShowLoading();
+
+        /**
+         * 隐藏加载
+         */
+        void onHideLoading();
+
+        /**
+         * 显示网络错误
+         */
+        void onShowNetError();
     }
 
-    interface Presenter {
+    interface Presenter extends IBasePresenter {
 
         /**
          * 请求数据

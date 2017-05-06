@@ -2,13 +2,10 @@ package com.meiji.daily.mvp.postscontent;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -33,15 +30,15 @@ import static com.meiji.daily.bean.PostsListBean.POSTSLISTBEAN_TITLEIMAGE;
  * Created by Meiji on 2016/11/22.
  */
 
-public class PostsContentView extends BaseActivity implements IPostsContent.View {
+public class PostsContentView extends BaseActivity<IPostsContent.Presenter> implements IPostsContent.View {
 
     private WebView webView;
     private MaterialDialog dialog;
+    private CollapsingToolbarLayout toolbar_layout;
+    private ImageView iv_header;
 
-    private String titleImage;
     private String title;
     private int slug;
-    private IPostsContent.Presenter presenter;
 
     public static void launch(String titleImage, String title, int slug) {
         InitApp.AppContext.startActivity(new Intent(InitApp.AppContext, PostsContentView.class)
@@ -49,17 +46,6 @@ public class PostsContentView extends BaseActivity implements IPostsContent.View
                 .putExtra(POSTSLISTBEAN_TITLE, title)
                 .putExtra(POSTSLISTBEAN_SLUG, slug)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-    }
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_postscontent);
-        presenter = new PostsContentPresenter(this);
-        initData();
-        initView();
-        initWebClient();
-        presenter.doRequestData(slug);
     }
 
     @Override
@@ -100,26 +86,39 @@ public class PostsContentView extends BaseActivity implements IPostsContent.View
         });
     }
 
-    private void initData() {
-        Intent intent = getIntent();
-        titleImage = intent.getStringExtra(POSTSLISTBEAN_TITLEIMAGE);
-        title = intent.getStringExtra(POSTSLISTBEAN_TITLE);
-        slug = intent.getIntExtra(POSTSLISTBEAN_SLUG, 0);
+    @Override
+    protected int attachLayoutId() {
+        return R.layout.activity_postscontent;
     }
 
-    private void initView() {
-        ImageView iv_header = (ImageView) findViewById(R.id.iv_titleimage);
+    @Override
+    protected void initData() {
+        Intent intent = getIntent();
+        String titleImage = intent.getStringExtra(POSTSLISTBEAN_TITLEIMAGE);
+        title = intent.getStringExtra(POSTSLISTBEAN_TITLE);
+        slug = intent.getIntExtra(POSTSLISTBEAN_SLUG, 0);
+
+        toolbar_layout.setTitle(title);
+        if (TextUtils.isEmpty(titleImage)) {
+            iv_header.setImageResource(R.drawable.error_image);
+            iv_header.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        } else {
+            Glide.with(this).load(titleImage).centerCrop().into(iv_header);
+        }
+
+        presenter.doRequestData(slug);
+    }
+
+    @Override
+    protected void initViews() {
+        iv_header = (ImageView) findViewById(R.id.iv_titleimage);
         Toolbar toolbar_title = (Toolbar) findViewById(R.id.toolbar_title);
         webView = (WebView) findViewById(R.id.webview_content);
         FloatingActionButton fab_share = (FloatingActionButton) findViewById(R.id.fab_share);
-        CollapsingToolbarLayout toolbar_layout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_layout);
+        toolbar_layout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_layout);
         final NestedScrollView scrollView = (NestedScrollView) findViewById(R.id.scrollView);
 
-        setSupportActionBar(toolbar_title);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+        initToolBar(toolbar_title, true, null);
 
         toolbar_title.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,7 +139,6 @@ public class PostsContentView extends BaseActivity implements IPostsContent.View
             }
         });
 
-        toolbar_layout.setTitle(title);
         toolbar_layout.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
         toolbar_layout.setCollapsedTitleTextAppearance(R.style.CollapsedAppBar);
 
@@ -150,12 +148,7 @@ public class PostsContentView extends BaseActivity implements IPostsContent.View
                 .cancelable(true)
                 .build();
 
-        if (TextUtils.isEmpty(titleImage)) {
-            iv_header.setImageResource(R.drawable.error_image);
-            iv_header.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        } else {
-            Glide.with(this).load(titleImage).centerCrop().into(iv_header);
-        }
+        initWebClient();
     }
 
     @Override
@@ -172,5 +165,12 @@ public class PostsContentView extends BaseActivity implements IPostsContent.View
     public void onShowNetError() {
         dialog.dismiss();
         Snackbar.make(webView, R.string.network_error, Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void setPresenter(IPostsContent.Presenter presenter) {
+        if (null == presenter) {
+            this.presenter = new PostsContentPresenter(this);
+        }
     }
 }

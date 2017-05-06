@@ -43,7 +43,6 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
     private Call<ZhuanlanBean> call;
     private String[] ids;
 
-
     ZhuanlanPresenter(IZhuanlan.View view) {
         this.view = view;
     }
@@ -80,13 +79,13 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
                         if (list.size() != 0) {
                             doSetAdapter(list);
                         } else {
-                            onFail();
+                            doShowFail();
                         }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(@NonNull Throwable throwable) throws Exception {
-                        onFail();
+                        doShowFail();
                     }
                 });
     }
@@ -152,7 +151,7 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
     }
 
     @Override
-    public void onFail() {
+    public void doShowFail() {
         view.onHideLoading();
         view.onShowNetError();
     }
@@ -169,5 +168,4 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
             call.cancel();
         }
     }
-
 }

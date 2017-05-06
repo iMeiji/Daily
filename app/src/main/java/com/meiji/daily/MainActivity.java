@@ -3,7 +3,6 @@ package com.meiji.daily;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
-import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -17,31 +16,34 @@ import android.view.MenuItem;
 import com.afollestad.materialdialogs.color.CircleView;
 import com.afollestad.materialdialogs.color.ColorChooserDialog;
 import com.meiji.daily.mvp.base.BaseActivity;
+import com.meiji.daily.mvp.base.IBasePresenter;
 import com.meiji.daily.mvp.useradd.UseraddView;
 import com.meiji.daily.mvp.zhuanlan.ZhuanlanPresenter;
 import com.meiji.daily.mvp.zhuanlan.ZhuanlanView;
 import com.meiji.daily.utils.ColorUtils;
 
-public class MainActivity extends BaseActivity
+public class MainActivity extends BaseActivity<IBasePresenter>
         implements NavigationView.OnNavigationItemSelectedListener, ColorChooserDialog.ColorCallback {
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private long exitTime;
-    private Toolbar toolbar;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        initView();
+    protected int attachLayoutId() {
+        return R.layout.activity_main;
+    }
+
+    @Override
+    protected void initData() {
         replaceFragment(ZhuanlanPresenter.TYPE_PRODUCT);
         navigationView.setCheckedItem(R.id.nav_product);
     }
 
-    private void initView() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+    @Override
+    protected void initViews() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        initToolBar(toolbar, false, null);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -138,17 +140,7 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    public void onShowLoading() {
-
-    }
-
-    @Override
-    public void onHideLoading() {
-
-    }
-
-    @Override
-    public void onShowNetError() {
+    public void setPresenter(IBasePresenter presenter) {
 
     }
 }

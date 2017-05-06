@@ -1,7 +1,6 @@
 package com.meiji.daily.mvp.postslist;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,16 +26,14 @@ import static com.meiji.daily.bean.ZhuanlanBean.ZHUANLANBEAN_SLUG;
  * Created by Meiji on 2016/11/18.
  */
 
-public class PostsListView extends BaseActivity implements IPostsList.View, SwipeRefreshLayout.OnRefreshListener {
+public class PostsListView extends BaseActivity<IPostsList.Presenter> implements IPostsList.View, SwipeRefreshLayout.OnRefreshListener {
 
-    private Toolbar toolbar;
     private SwipeRefreshLayout refresh_layout;
     private RecyclerView recycler_view;
 
     private PostsListAdapter adapter;
     private int postCount;
     private boolean flag = false;
-    private IPostsList.Presenter presenter;
     private String slug;
 
     public static void launch(String slug, String name, int postsCount) {
@@ -48,16 +45,12 @@ public class PostsListView extends BaseActivity implements IPostsList.View, Swip
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_postslist);
-        presenter = new PostsListPresenter(this);
-        initView();
-        initData();
-        onRequestData();
+    protected int attachLayoutId() {
+        return R.layout.activity_postslist;
     }
 
-    private void initData() {
+    @Override
+    protected void initData() {
         Intent intent = getIntent();
         slug = intent.getStringExtra(ZHUANLANBEAN_SLUG);
         postCount = intent.getIntExtra(ZHUANLANBEAN_POSTSCOUNT, 0);
@@ -65,6 +58,7 @@ public class PostsListView extends BaseActivity implements IPostsList.View, Swip
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(title);
         }
+        onRequestData();
     }
 
     @Override
@@ -107,14 +101,12 @@ public class PostsListView extends BaseActivity implements IPostsList.View, Swip
         });
     }
 
-    private void initView() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar_title);
+    @Override
+    protected void initViews() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_title);
         recycler_view = (RecyclerView) findViewById(R.id.recycler_view);
         refresh_layout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        initToolBar(toolbar, true, null);
         toolbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,5 +138,12 @@ public class PostsListView extends BaseActivity implements IPostsList.View, Swip
     @Override
     public void onShowNetError() {
         Snackbar.make(refresh_layout, R.string.network_error, Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void setPresenter(IPostsList.Presenter presenter) {
+        if (null == presenter) {
+            this.presenter = new PostsListPresenter(this);
+        }
     }
 }

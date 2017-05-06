@@ -1,6 +1,7 @@
 package com.meiji.daily.mvp.zhuanlan;
 
 import com.meiji.daily.bean.ZhuanlanBean;
+import com.meiji.daily.mvp.base.IBasePresenter;
 import com.meiji.daily.mvp.base.IBaseView;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
 
 interface IZhuanlan {
 
-    interface View extends IBaseView {
+    interface View extends IBaseView<Presenter> {
 
         /**
          * 请求数据
@@ -22,9 +23,24 @@ interface IZhuanlan {
          * 设置适配器
          */
         void onSetAdapter(List<ZhuanlanBean> list);
+
+        /**
+         * 显示加载动画
+         */
+        void onShowLoading();
+
+        /**
+         * 隐藏加载
+         */
+        void onHideLoading();
+
+        /**
+         * 显示网络错误
+         */
+        void onShowNetError();
     }
 
-    interface Presenter {
+    interface Presenter extends IBasePresenter {
 
         /**
          * 获取专栏类型
@@ -44,13 +60,16 @@ interface IZhuanlan {
         /**
          * 显示查询数据失败
          */
-        void onFail();
+        void doShowFail();
 
         /**
          * 正在刷新
          */
         void doRefresh();
 
+        /**
+         * 取消网络请求
+         */
         void onDestroy();
     }
 }
