@@ -1,12 +1,11 @@
 package com.meiji.daily.mvp.zhuanlan;
 
+import com.meiji.daily.IApi;
 import com.meiji.daily.InitApp;
 import com.meiji.daily.R;
 import com.meiji.daily.RetrofitFactory;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.database.dao.ZhuanlanDao;
-import com.meiji.daily.mvp.postslist.PostsListView;
-import com.meiji.daily.utils.IApi;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -142,13 +141,13 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
         view.onHideLoading();
     }
 
-    @Override
-    public void doOnClickItem(int position) {
-        String slug = list.get(position).getSlug();
-        String name = list.get(position).getName();
-        int postsCount = list.get(position).getPostsCount();
-        PostsListView.launch(slug, name, postsCount);
-    }
+//    @Override
+//    public void doOnClickItem(int position) {
+//        String slug = list.get(position).getSlug();
+//        String name = list.get(position).getName();
+//        int postsCount = list.get(position).getPostsCount();
+//        PostsListView.launch(slug, name, postsCount);
+//    }
 
     @Override
     public void doShowFail() {

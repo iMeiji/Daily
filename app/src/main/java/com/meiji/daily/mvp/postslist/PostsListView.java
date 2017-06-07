@@ -3,20 +3,26 @@ package com.meiji.daily.mvp.postslist;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.meiji.daily.DiffCallback;
 import com.meiji.daily.InitApp;
 import com.meiji.daily.R;
-import com.meiji.daily.adapter.PostsListAdapter;
+import com.meiji.daily.bean.FooterBean;
 import com.meiji.daily.bean.PostsListBean;
-import com.meiji.daily.interfaces.IOnItemClickListener;
+import com.meiji.daily.binder.FooterViewBinder;
+import com.meiji.daily.binder.PostsListViewBinder;
 import com.meiji.daily.mvp.base.BaseActivity;
 import com.meiji.daily.utils.ColorUtils;
 
 import java.util.List;
+
+import me.drakeet.multitype.Items;
+import me.drakeet.multitype.MultiTypeAdapter;
 
 import static com.meiji.daily.bean.ZhuanlanBean.ZHUANLANBEAN_NAME;
 import static com.meiji.daily.bean.ZhuanlanBean.ZHUANLANBEAN_POSTSCOUNT;
@@ -31,10 +37,11 @@ public class PostsListView extends BaseActivity<IPostsList.Presenter> implements
     private SwipeRefreshLayout refresh_layout;
     private RecyclerView recycler_view;
 
-    private PostsListAdapter adapter;
+    private MultiTypeAdapter adapter;
     private int postCount;
     private boolean flag = false;
     private String slug;
+    private Items oldItems = new Items();
 
     public static void launch(String slug, String name, int postsCount) {
         InitApp.AppContext.startActivity(new Intent(InitApp.AppContext, PostsListView.class)
@@ -63,23 +70,21 @@ public class PostsListView extends BaseActivity<IPostsList.Presenter> implements
 
     @Override
     public void onRequestData() {
+        onShowLoading();
         presenter.doRequestData(slug, 0);
     }
 
     @Override
     public void onSetAdapter(final List<PostsListBean> list) {
-        if (adapter == null) {
-            adapter = new PostsListAdapter(list, this);
-            recycler_view.setAdapter(adapter);
-            adapter.setOnItemClickListener(new IOnItemClickListener() {
-                @Override
-                public void onClick(View view, int position) {
-                    presenter.doOnClickItem(position);
-                }
-            });
-        } else {
-            adapter.notifyItemInserted(list.size());
-        }
+
+        Items newItems = new Items(list);
+        newItems.add(new FooterBean());
+        DiffCallback diffCallback = new DiffCallback(oldItems, newItems, DiffCallback.POSTSLIST);
+        DiffUtil.DiffResult result = DiffUtil.calculateDiff(diffCallback, true);
+        result.dispatchUpdatesTo(adapter);
+        oldItems.clear();
+        oldItems.addAll(newItems);
+
         flag = true;
 
         recycler_view.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -118,6 +123,12 @@ public class PostsListView extends BaseActivity<IPostsList.Presenter> implements
         // 设置下拉刷新的按钮的颜色
         refresh_layout.setColorSchemeColors(ColorUtils.getColor());
         refresh_layout.setOnRefreshListener(this);
+
+        adapter = new MultiTypeAdapter();
+        adapter.register(PostsListBean.class, new PostsListViewBinder());
+        adapter.register(FooterBean.class, new FooterViewBinder());
+        adapter.setItems(oldItems);
+        recycler_view.setAdapter(adapter);
     }
 
     @Override
@@ -127,12 +138,22 @@ public class PostsListView extends BaseActivity<IPostsList.Presenter> implements
 
     @Override
     public void onShowLoading() {
-        refresh_layout.setRefreshing(true);
+        refresh_layout.post(new Runnable() {
+            @Override
+            public void run() {
+                refresh_layout.setRefreshing(true);
+            }
+        });
     }
 
     @Override
     public void onHideLoading() {
-        refresh_layout.setRefreshing(false);
+        refresh_layout.post(new Runnable() {
+            @Override
+            public void run() {
+                refresh_layout.setRefreshing(false);
+            }
+        });
     }
 
     @Override

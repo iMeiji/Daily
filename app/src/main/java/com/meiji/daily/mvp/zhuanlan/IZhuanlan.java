@@ -55,7 +55,7 @@ interface IZhuanlan {
         /**
          * 获取点击栏信息
          */
-        void doOnClickItem(int position);
+//        void doOnClickItem(int position);
 
         /**
          * 显示查询数据失败

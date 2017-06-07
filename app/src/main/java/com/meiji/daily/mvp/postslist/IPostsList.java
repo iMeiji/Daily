@@ -55,7 +55,7 @@ interface IPostsList {
         /**
          * 获取点击栏信息
          */
-        void doOnClickItem(int position);
+//        void doOnClickItem(int position);
 
         /**
          * 刷新 清空list

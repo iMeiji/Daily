@@ -17,14 +17,15 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.meiji.daily.R;
-import com.meiji.daily.adapter.ZhuanlanAdapter;
 import com.meiji.daily.bean.ZhuanlanBean;
-import com.meiji.daily.interfaces.IOnItemClickListener;
+import com.meiji.daily.binder.ZhuanlanViewBinder;
 import com.meiji.daily.mvp.base.BaseFragment;
 import com.meiji.daily.utils.ColorUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import me.drakeet.multitype.MultiTypeAdapter;
 
 /**
  * Created by Meiji on 2016/11/27.
@@ -37,7 +38,7 @@ public class UseraddView extends BaseFragment<IUseradd.Presenter> implements IUs
     private SwipeRefreshLayout refresh_layout;
     private MaterialDialog dialog;
 
-    private ZhuanlanAdapter adapter;
+    private MultiTypeAdapter adapter;
     private List<ZhuanlanBean> list = new ArrayList<>();
 
     @Override
@@ -63,6 +64,10 @@ public class UseraddView extends BaseFragment<IUseradd.Presenter> implements IUs
         // 设置下拉刷新的按钮的颜色
         refresh_layout.setColorSchemeColors(ColorUtils.getColor());
         refresh_layout.setOnRefreshListener(this);
+
+        adapter = new MultiTypeAdapter();
+        adapter.register(ZhuanlanBean.class, new ZhuanlanViewBinder());
+        recycler_view.setAdapter(adapter);
 
         fab_add.setOnClickListener(this);
 
@@ -157,14 +162,8 @@ public class UseraddView extends BaseFragment<IUseradd.Presenter> implements IUs
     @Override
     public void onSetAdapter(final List<ZhuanlanBean> mlist) {
         list = mlist;
-        adapter = new ZhuanlanAdapter(getActivity(), list);
-        recycler_view.setAdapter(adapter);
-        adapter.setItemClickListener(new IOnItemClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                presenter.doOnClickItem(position);
-            }
-        });
+        adapter.setItems(list);
+        adapter.notifyDataSetChanged();
 
         if (list.size() == 0) {
             tv_description.setVisibility(View.VISIBLE);

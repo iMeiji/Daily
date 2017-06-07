@@ -17,10 +17,10 @@ import android.widget.ImageView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
+import com.meiji.daily.IApi;
 import com.meiji.daily.InitApp;
 import com.meiji.daily.R;
 import com.meiji.daily.mvp.base.BaseActivity;
-import com.meiji.daily.utils.IApi;
 
 import static com.meiji.daily.bean.PostsListBean.POSTSLISTBEAN_SLUG;
 import static com.meiji.daily.bean.PostsListBean.POSTSLISTBEAN_TITLE;

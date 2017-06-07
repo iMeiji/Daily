@@ -8,13 +8,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.meiji.daily.R;
-import com.meiji.daily.adapter.ZhuanlanAdapter;
 import com.meiji.daily.bean.ZhuanlanBean;
-import com.meiji.daily.interfaces.IOnItemClickListener;
+import com.meiji.daily.binder.ZhuanlanViewBinder;
 import com.meiji.daily.mvp.base.BaseFragment;
 import com.meiji.daily.utils.ColorUtils;
 
 import java.util.List;
+
+import me.drakeet.multitype.MultiTypeAdapter;
 
 
 /**
@@ -26,7 +27,7 @@ public class ZhuanlanView extends BaseFragment<IZhuanlan.Presenter> implements I
     private RecyclerView recycler_view;
     private SwipeRefreshLayout refresh_layout;
 
-    private ZhuanlanAdapter adapter;
+    private MultiTypeAdapter adapter;
     private int type;
 
     public static ZhuanlanView newInstance(int type) {
@@ -70,14 +71,11 @@ public class ZhuanlanView extends BaseFragment<IZhuanlan.Presenter> implements I
     @Override
     public void onSetAdapter(List<ZhuanlanBean> list) {
         if (adapter == null) {
-            adapter = new ZhuanlanAdapter(getActivity(), list);
+            adapter = new MultiTypeAdapter();
+            adapter.register(ZhuanlanBean.class, new ZhuanlanViewBinder());
             recycler_view.setAdapter(adapter);
-            adapter.setItemClickListener(new IOnItemClickListener() {
-                @Override
-                public void onClick(View view, int position) {
-                    presenter.doOnClickItem(position);
-                }
-            });
+            adapter.setItems(list);
+            // 点击事件放到 ItemViewBinder 里
         } else {
             adapter.notifyItemInserted(list.size());
         }

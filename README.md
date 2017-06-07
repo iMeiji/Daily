@@ -27,6 +27,9 @@
 
 ### 更新日志
 ```
+2017-6-7
+引入 MultiTypeAdapter, DiffUtil
+
 2017-5-5
 引入 RxLiftcycle
 

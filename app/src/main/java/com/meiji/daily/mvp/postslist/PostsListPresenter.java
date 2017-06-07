@@ -1,9 +1,8 @@
 package com.meiji.daily.mvp.postslist;
 
+import com.meiji.daily.IApi;
 import com.meiji.daily.RetrofitFactory;
 import com.meiji.daily.bean.PostsListBean;
-import com.meiji.daily.mvp.postscontent.PostsContentView;
-import com.meiji.daily.utils.IApi;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +27,6 @@ class PostsListPresenter implements IPostsList.Presenter {
 
     @Override
     public void doRequestData(final String slug, final int offset) {
-        view.onShowLoading();
-
         RetrofitFactory.getRetrofit().create(IApi.class).getPostsListRx(slug, offset)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -56,17 +53,17 @@ class PostsListPresenter implements IPostsList.Presenter {
 
     @Override
     public void doSetAdapter() {
-        view.onHideLoading();
         view.onSetAdapter(list);
+        view.onHideLoading();
     }
 
-    @Override
-    public void doOnClickItem(int position) {
-        String titleImage = list.get(position).getTitleImage();
-        String title = list.get(position).getTitle();
-        int slug = list.get(position).getSlug();
-        PostsContentView.launch(titleImage, title, slug);
-    }
+//    @Override
+//    public void doOnClickItem(int position) {
+//        String titleImage = list.get(position).getTitleImage();
+//        String title = list.get(position).getTitle();
+//        int slug = list.get(position).getSlug();
+//        PostsContentView.launch(titleImage, title, slug);
+//    }
 
     @Override
     public void onFail() {

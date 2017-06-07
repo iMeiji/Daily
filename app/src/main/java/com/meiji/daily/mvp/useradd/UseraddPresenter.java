@@ -1,11 +1,10 @@
 package com.meiji.daily.mvp.useradd;
 
+import com.meiji.daily.IApi;
 import com.meiji.daily.RetrofitFactory;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.database.dao.ZhuanlanDao;
-import com.meiji.daily.mvp.postslist.PostsListView;
 import com.meiji.daily.mvp.zhuanlan.ZhuanlanPresenter;
-import com.meiji.daily.utils.IApi;
 
 import java.util.List;
 
@@ -86,13 +85,13 @@ class UseraddPresenter implements IUseradd.Presenter {
         view.onShowNetError();
     }
 
-    @Override
-    public void doOnClickItem(int position) {
-        String slug = list.get(position).getSlug();
-        String name = list.get(position).getName();
-        int postsCount = list.get(position).getPostsCount();
-        PostsListView.launch(slug, name, postsCount);
-    }
+//    @Override
+//    public void doOnClickItem(int position) {
+//        String slug = list.get(position).getSlug();
+//        String name = list.get(position).getName();
+//        int postsCount = list.get(position).getPostsCount();
+//        PostsListView.launch(slug, name, postsCount);
+//    }
 
     @Override
     public void doRefresh() {

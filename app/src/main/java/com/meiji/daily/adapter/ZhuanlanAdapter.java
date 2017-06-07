@@ -21,6 +21,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * Created by Meiji on 2016/11/16.
  */
+@Deprecated
 public class ZhuanlanAdapter extends RecyclerView.Adapter<ZhuanlanAdapter.ZhuanlanItemViewHolder> {
 
     private Context mContext;

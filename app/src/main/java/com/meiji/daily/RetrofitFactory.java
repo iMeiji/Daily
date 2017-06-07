@@ -4,7 +4,6 @@ import com.franmontiel.persistentcookiejar.ClearableCookieJar;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
-import com.meiji.daily.utils.IApi;
 import com.meiji.daily.utils.NetWorkUtils;
 
 import java.io.File;

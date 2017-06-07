@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -20,8 +21,11 @@ import java.util.List;
 /**
  * Created by Meiji on 2016/11/20.
  */
+@Deprecated
+public class PostsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.PostsListItemViewHolder> {
+    private final int TYPE_NORMAL = 1;
+    private final int TYPE_FOOTER = 0;
 
     private List<PostsListBean> list = new ArrayList<>();
     private Context mContext;
@@ -37,36 +41,65 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
     }
 
     @Override
-    public PostsListItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_postlist, parent, false);
-        return new PostsListItemViewHolder(view, listener);
+    public int getItemViewType(int position) {
+        if (position == list.size()) {
+            return TYPE_FOOTER;
+        }
+        return TYPE_NORMAL;
     }
 
     @Override
-    public void onBindViewHolder(PostsListItemViewHolder holder, int position) {
-        PostsListBean bean = list.get(position);
-        String publishedTime = bean.getPublishedTime().substring(0, 10);
-        String likesCount = bean.getLikesCount() + "赞";
-        String commentsCount = bean.getCommentsCount() + "条评论";
-        String titleImage = bean.getTitleImage();
-        String title = bean.getTitle();
-
-        if (!TextUtils.isEmpty(titleImage)) {
-            titleImage = bean.getTitleImage().replace("r.jpg", "b.jpg");
-            Glide.with(mContext).load(titleImage).asBitmap().centerCrop().into(holder.iv_titleImage);
-        } else {
-            holder.iv_titleImage.setImageResource(R.drawable.error_image);
-            holder.iv_titleImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == TYPE_NORMAL) {
+            View view = LayoutInflater.from(mContext).inflate(R.layout.item_postlist, parent, false);
+            return new PostsListItemViewHolder(view, listener);
         }
-        holder.tv_publishedTime.setText(publishedTime);
-        holder.tv_likesCount.setText(likesCount);
-        holder.tv_commentsCount.setText(commentsCount);
-        holder.tv_title.setText(title);
+        if (viewType == TYPE_FOOTER) {
+            View view = LayoutInflater.from(mContext).inflate(R.layout.item_loading, parent, false);
+            return new FooterViewHolder(view);
+        }
+        return null;
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof PostsListItemViewHolder) {
+            PostsListItemViewHolder viewHolder = (PostsListItemViewHolder) holder;
+            PostsListBean bean = list.get(position);
+            String publishedTime = bean.getPublishedTime().substring(0, 10);
+            String likesCount = bean.getLikesCount() + "赞";
+            String commentsCount = bean.getCommentsCount() + "条评论";
+            String titleImage = bean.getTitleImage();
+            String title = bean.getTitle();
+
+            if (!TextUtils.isEmpty(titleImage)) {
+                titleImage = bean.getTitleImage().replace("r.jpg", "b.jpg");
+                Glide.with(mContext).load(titleImage).asBitmap().centerCrop().into(viewHolder.iv_titleImage);
+            } else {
+                viewHolder.iv_titleImage.setImageResource(R.drawable.error_image);
+                viewHolder.iv_titleImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            }
+            viewHolder.tv_publishedTime.setText(publishedTime);
+            viewHolder.tv_likesCount.setText(likesCount);
+            viewHolder.tv_commentsCount.setText(commentsCount);
+            viewHolder.tv_title.setText(title);
+        }
+
+//        if (holder instanceof FooterViewHolder) {
+//            final FooterViewHolder viewHolder = (FooterViewHolder) holder;
+//            viewHolder.swipeRefreshLayout.autoRefresh();
+////            viewHolder.swipeRefreshLayout.post(new Runnable() {
+////                @Override
+////                public void run() {
+////                    viewHolder.swipeRefreshLayout.setRefreshing(true);
+////                }
+////            });
+//        }
     }
 
     @Override
     public int getItemCount() {
-        return list != null ? list.size() : 0;
+        return list != null ? list.size() + 1 : 0;
     }
 
     public class PostsListItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -94,6 +127,16 @@ public class PostsListAdapter extends RecyclerView.Adapter<PostsListAdapter.Post
             if (listener != null) {
                 listener.onClick(view, getLayoutPosition());
             }
+        }
+    }
+
+    private class FooterViewHolder extends RecyclerView.ViewHolder {
+
+        private ProgressBar mProgressBar;
+
+        public FooterViewHolder(View itemView) {
+            super(itemView);
+            mProgressBar = (ProgressBar) itemView.findViewById(R.id.loading);
         }
     }
 }

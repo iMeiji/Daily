@@ -11,7 +11,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.database.dao.ZhuanlanDao;
 import com.meiji.daily.mvp.zhuanlan.ZhuanlanPresenter;
-import com.meiji.daily.utils.IApi;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import java.util.List;

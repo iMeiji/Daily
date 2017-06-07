@@ -44,7 +44,7 @@ public interface IUseradd {
 
         void onFail();
 
-        void doOnClickItem(int position);
+//        void doOnClickItem(int position);
 
         void doRefresh();
 
