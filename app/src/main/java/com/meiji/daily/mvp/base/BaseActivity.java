@@ -12,6 +12,8 @@ import com.meiji.daily.utils.ColorUtils;
 import com.trello.rxlifecycle2.LifecycleTransformer;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
+import me.drakeet.multitype.MultiTypeAdapter;
+
 /**
  * Created by Meiji on 2016/11/27.
  */
@@ -19,6 +21,8 @@ import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 public abstract class BaseActivity<T extends IBasePresenter> extends RxAppCompatActivity implements IBaseView<T> {
 
     protected T presenter;
+    protected MultiTypeAdapter adapter;
+    protected boolean canLoadMore;
 
     /**
      * 绑定布局文件

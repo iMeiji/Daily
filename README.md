@@ -27,6 +27,9 @@
 
 ### 更新日志
 ```
+2017-6-8
+封装加载更多, Diff等
+
 2017-6-7
 引入 MultiTypeAdapter, DiffUtil
 

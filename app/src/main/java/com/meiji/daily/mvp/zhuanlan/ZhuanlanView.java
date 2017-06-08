@@ -26,8 +26,6 @@ public class ZhuanlanView extends BaseFragment<IZhuanlan.Presenter> implements I
 
     private RecyclerView recycler_view;
     private SwipeRefreshLayout refresh_layout;
-
-    private MultiTypeAdapter adapter;
     private int type;
 
     public static ZhuanlanView newInstance(int type) {
@@ -71,13 +69,12 @@ public class ZhuanlanView extends BaseFragment<IZhuanlan.Presenter> implements I
     @Override
     public void onSetAdapter(List<ZhuanlanBean> list) {
         if (adapter == null) {
-            adapter = new MultiTypeAdapter();
+            adapter = new MultiTypeAdapter(list);
             adapter.register(ZhuanlanBean.class, new ZhuanlanViewBinder());
             recycler_view.setAdapter(adapter);
-            adapter.setItems(list);
-            // 点击事件放到 ItemViewBinder 里
+//          点击事件放到 ItemViewBinder 里
         } else {
-            adapter.notifyItemInserted(list.size());
+            adapter.notifyDataSetChanged();
         }
     }
 

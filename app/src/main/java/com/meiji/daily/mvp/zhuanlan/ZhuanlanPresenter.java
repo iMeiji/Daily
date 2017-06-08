@@ -141,14 +141,6 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
         view.onHideLoading();
     }
 
-//    @Override
-//    public void doOnClickItem(int position) {
-//        String slug = list.get(position).getSlug();
-//        String name = list.get(position).getName();
-//        int postsCount = list.get(position).getPostsCount();
-//        PostsListView.launch(slug, name, postsCount);
-//    }
-
     @Override
     public void doShowFail() {
         view.onHideLoading();

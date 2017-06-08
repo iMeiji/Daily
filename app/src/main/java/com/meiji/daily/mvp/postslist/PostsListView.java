@@ -3,14 +3,13 @@ package com.meiji.daily.mvp.postslist;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.meiji.daily.DiffCallback;
 import com.meiji.daily.InitApp;
+import com.meiji.daily.OnLoadMoreListener;
 import com.meiji.daily.R;
 import com.meiji.daily.bean.FooterBean;
 import com.meiji.daily.bean.PostsListBean;
@@ -18,6 +17,7 @@ import com.meiji.daily.binder.FooterViewBinder;
 import com.meiji.daily.binder.PostsListViewBinder;
 import com.meiji.daily.mvp.base.BaseActivity;
 import com.meiji.daily.utils.ColorUtils;
+import com.meiji.daily.utils.DiffCallback;
 
 import java.util.List;
 
@@ -37,9 +37,7 @@ public class PostsListView extends BaseActivity<IPostsList.Presenter> implements
     private SwipeRefreshLayout refresh_layout;
     private RecyclerView recycler_view;
 
-    private MultiTypeAdapter adapter;
     private int postCount;
-    private boolean flag = false;
     private String slug;
     private Items oldItems = new Items();
 
@@ -76,31 +74,29 @@ public class PostsListView extends BaseActivity<IPostsList.Presenter> implements
 
     @Override
     public void onSetAdapter(final List<PostsListBean> list) {
-
-        Items newItems = new Items(list);
-        newItems.add(new FooterBean());
-        DiffCallback diffCallback = new DiffCallback(oldItems, newItems, DiffCallback.POSTSLIST);
-        DiffUtil.DiffResult result = DiffUtil.calculateDiff(diffCallback, true);
-        result.dispatchUpdatesTo(adapter);
-        oldItems.clear();
-        oldItems.addAll(newItems);
-
-        flag = true;
-
-        recycler_view.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        new Thread(new Runnable() {
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    if (!recyclerView.canScrollVertically(1)) {
-                        // 列表文章 < 总文章 继续加载 这里要判断recyclerview是否滚动到底再执行 不然后台一直加载
-                        if ((list.size() < postCount) && flag) {
-                            presenter.doRequestData(slug, list.size());
-                            flag = false;
-                        } else if ((list.size() == postCount)) {
-                            Snackbar.make(refresh_layout, R.string.no_more, Snackbar.LENGTH_SHORT).show();
-                        }
-                    }
+            public void run() {
+                Items newItems = new Items(list);
+                newItems.add(new FooterBean());
+
+                DiffCallback.create(oldItems, newItems, DiffCallback.POSTSLIST, adapter);
+                oldItems.clear();
+                oldItems.addAll(newItems);
+            }
+        }).start();
+
+        canLoadMore = true;
+
+        recycler_view.addOnScrollListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                // 列表文章 < 总文章 继续加载 这里要判断recyclerview是否滚动到底再执行 不然后台一直加载
+                if ((list.size() < postCount) && canLoadMore) {
+                    canLoadMore = false;
+                    presenter.doRequestData(slug, list.size());
+                } else if ((list.size() == postCount)) {
+                    Snackbar.make(refresh_layout, R.string.no_more, Snackbar.LENGTH_SHORT).show();
                 }
             }
         });

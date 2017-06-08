@@ -49,10 +49,7 @@ public class ZhuanlanViewBinder extends ItemViewBinder<ZhuanlanBean, ZhuanlanVie
         holder.root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String slug = item.getSlug();
-                String name = item.getName();
-                int postsCount = item.getPostsCount();
-                PostsListView.launch(slug, name, postsCount);
+                PostsListView.launch(item.getSlug(), item.getName(), item.getPostsCount());
             }
         });
     }

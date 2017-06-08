@@ -37,8 +37,6 @@ public class UseraddView extends BaseFragment<IUseradd.Presenter> implements IUs
     private RecyclerView recycler_view;
     private SwipeRefreshLayout refresh_layout;
     private MaterialDialog dialog;
-
-    private MultiTypeAdapter adapter;
     private List<ZhuanlanBean> list = new ArrayList<>();
 
     @Override

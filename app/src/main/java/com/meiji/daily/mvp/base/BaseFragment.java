@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import com.trello.rxlifecycle2.LifecycleTransformer;
 import com.trello.rxlifecycle2.components.support.RxFragment;
 
+import me.drakeet.multitype.MultiTypeAdapter;
+
 /**
  * Created by Meiji on 2017/5/5.
  */
@@ -17,6 +19,7 @@ import com.trello.rxlifecycle2.components.support.RxFragment;
 public abstract class BaseFragment<T extends IBasePresenter> extends RxFragment implements IBaseView<T> {
 
     protected T presenter;
+    protected MultiTypeAdapter adapter;
 
     /**
      * 绑定布局文件

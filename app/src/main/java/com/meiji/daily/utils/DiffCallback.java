@@ -1,4 +1,4 @@
-package com.meiji.daily;
+package com.meiji.daily.utils;
 
 import android.support.v7.util.DiffUtil;
 
@@ -6,6 +6,7 @@ import com.meiji.daily.bean.PostsListBean;
 import com.meiji.daily.bean.ZhuanlanBean;
 
 import me.drakeet.multitype.Items;
+import me.drakeet.multitype.MultiTypeAdapter;
 
 /**
  * Created by Meiji on 2017/6/7.
@@ -22,6 +23,12 @@ public class DiffCallback extends DiffUtil.Callback {
         this.oldItems = oldItems;
         this.newItems = newItems;
         this.type = type;
+    }
+
+    public static void create(Items oldItems, Items newItems, int type, MultiTypeAdapter adapter) {
+        DiffCallback diffCallback = new DiffCallback(oldItems, newItems, type);
+        DiffUtil.DiffResult result = DiffUtil.calculateDiff(diffCallback, true);
+        result.dispatchUpdatesTo(adapter);
     }
 
     @Override
@@ -49,7 +56,7 @@ public class DiffCallback extends DiffUtil.Callback {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
         return false;
     }
@@ -68,7 +75,7 @@ public class DiffCallback extends DiffUtil.Callback {
                 return equals;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
         return false;
     }

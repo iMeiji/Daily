@@ -57,14 +57,6 @@ class PostsListPresenter implements IPostsList.Presenter {
         view.onHideLoading();
     }
 
-//    @Override
-//    public void doOnClickItem(int position) {
-//        String titleImage = list.get(position).getTitleImage();
-//        String title = list.get(position).getTitle();
-//        int slug = list.get(position).getSlug();
-//        PostsContentView.launch(titleImage, title, slug);
-//    }
-
     @Override
     public void onFail() {
         view.onHideLoading();
