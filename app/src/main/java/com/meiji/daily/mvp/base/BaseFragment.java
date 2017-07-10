@@ -8,7 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.trello.rxlifecycle2.LifecycleTransformer;
+import com.trello.rxlifecycle2.android.FragmentEvent;
 import com.trello.rxlifecycle2.components.support.RxFragment;
+
+import javax.inject.Inject;
 
 import me.drakeet.multitype.MultiTypeAdapter;
 
@@ -18,6 +21,7 @@ import me.drakeet.multitype.MultiTypeAdapter;
 
 public abstract class BaseFragment<T extends IBasePresenter> extends RxFragment implements IBaseView<T> {
 
+    @Inject
     protected T presenter;
     protected MultiTypeAdapter adapter;
 
@@ -39,6 +43,11 @@ public abstract class BaseFragment<T extends IBasePresenter> extends RxFragment 
     protected abstract void initData();
 
     /**
+     * Dagger 注入
+     */
+    protected abstract void initInjector();
+
+    /**
      * 初始化 Toolbar
      *
      * @param toolbar
@@ -52,7 +61,7 @@ public abstract class BaseFragment<T extends IBasePresenter> extends RxFragment 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setPresenter(presenter);
+        initInjector();
     }
 
     @Nullable
@@ -69,7 +78,6 @@ public abstract class BaseFragment<T extends IBasePresenter> extends RxFragment 
      */
     @Override
     public <T> LifecycleTransformer<T> bindToLife() {
-        return this.bindToLifecycle();
+        return bindUntilEvent(FragmentEvent.DESTROY);
     }
-
 }

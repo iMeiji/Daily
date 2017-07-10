@@ -20,13 +20,13 @@ import io.reactivex.schedulers.Schedulers;
  * Created by Meiji on 2016/11/27.
  */
 
-class UseraddPresenter implements IUseradd.Presenter {
+public class UserAddPresenter implements IUserAdd.Presenter {
 
-    private IUseradd.View view;
+    private IUserAdd.View view;
     private ZhuanlanDao dao = new ZhuanlanDao();
     private List<ZhuanlanBean> list;
 
-    UseraddPresenter(IUseradd.View view) {
+    public UserAddPresenter(IUserAdd.View view) {
         this.view = view;
     }
 

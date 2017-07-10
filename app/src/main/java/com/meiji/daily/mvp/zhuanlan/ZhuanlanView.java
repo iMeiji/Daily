@@ -10,8 +10,10 @@ import android.view.View;
 import com.meiji.daily.R;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.binder.ZhuanlanViewBinder;
+import com.meiji.daily.injector.component.DaggerZhuanlanComponent;
+import com.meiji.daily.injector.module.ZhuanlanModule;
 import com.meiji.daily.mvp.base.BaseFragment;
-import com.meiji.daily.utils.ColorUtils;
+import com.meiji.daily.util.ColorUtil;
 
 import java.util.List;
 
@@ -24,13 +26,14 @@ import me.drakeet.multitype.MultiTypeAdapter;
 
 public class ZhuanlanView extends BaseFragment<IZhuanlan.Presenter> implements IZhuanlan.View, SwipeRefreshLayout.OnRefreshListener {
 
-    private RecyclerView recycler_view;
-    private SwipeRefreshLayout refresh_layout;
+    private static final String TAG = "ZhuanlanView";
+    private RecyclerView recyclerView;
+    private SwipeRefreshLayout refreshLayout;
     private int type;
 
     public static ZhuanlanView newInstance(int type) {
         Bundle args = new Bundle();
-        args.putInt("type", type);
+        args.putInt(TAG, type);
         ZhuanlanView fragment = new ZhuanlanView();
         fragment.setArguments(args);
         return fragment;
@@ -43,20 +46,20 @@ public class ZhuanlanView extends BaseFragment<IZhuanlan.Presenter> implements I
 
     @Override
     protected void initViews(View view) {
-        recycler_view = (RecyclerView) view.findViewById(R.id.recycler_view);
-        refresh_layout = (SwipeRefreshLayout) view.findViewById(R.id.refresh_layout);
-        recycler_view.setHasFixedSize(true);
-        recycler_view.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView = view.findViewById(R.id.recycler_view);
+        refreshLayout = view.findViewById(R.id.refresh_layout);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         // 设置下拉刷新的按钮的颜色
-        refresh_layout.setColorSchemeColors(ColorUtils.getColor());
-        refresh_layout.setOnRefreshListener(this);
+        refreshLayout.setColorSchemeColors(ColorUtil.getColor());
+        refreshLayout.setOnRefreshListener(this);
     }
 
     @Override
     protected void initData() {
         Bundle arguments = getArguments();
         if (arguments != null) {
-            type = arguments.getInt("type");
+            type = arguments.getInt(TAG);
         }
         onRequestData();
     }
@@ -71,8 +74,7 @@ public class ZhuanlanView extends BaseFragment<IZhuanlan.Presenter> implements I
         if (adapter == null) {
             adapter = new MultiTypeAdapter(list);
             adapter.register(ZhuanlanBean.class, new ZhuanlanViewBinder());
-            recycler_view.setAdapter(adapter);
-//          点击事件放到 ItemViewBinder 里
+            recyclerView.setAdapter(adapter);
         } else {
             adapter.notifyDataSetChanged();
         }
@@ -85,20 +87,20 @@ public class ZhuanlanView extends BaseFragment<IZhuanlan.Presenter> implements I
 
     @Override
     public void onShowLoading() {
-        refresh_layout.setRefreshing(true);
-        recycler_view.setVisibility(View.GONE);
+        refreshLayout.setRefreshing(true);
+        recyclerView.setVisibility(View.GONE);
     }
 
     @Override
     public void onHideLoading() {
-        refresh_layout.setRefreshing(false);
-        recycler_view.setVisibility(View.VISIBLE);
+        refreshLayout.setRefreshing(false);
+        recyclerView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onShowNetError() {
-        Snackbar.make(refresh_layout, R.string.network_error, Snackbar.LENGTH_SHORT).show();
-        refresh_layout.setEnabled(true);
+        Snackbar.make(refreshLayout, R.string.network_error, Snackbar.LENGTH_SHORT).show();
+        refreshLayout.setEnabled(true);
     }
 
     @Override
@@ -108,9 +110,10 @@ public class ZhuanlanView extends BaseFragment<IZhuanlan.Presenter> implements I
     }
 
     @Override
-    public void setPresenter(IZhuanlan.Presenter presenter) {
-        if (null == presenter) {
-            this.presenter = new ZhuanlanPresenter(this);
-        }
+    public void initInjector() {
+        DaggerZhuanlanComponent.builder()
+                .zhuanlanModule(new ZhuanlanModule(this))
+                .build()
+                .inject(this);
     }
 }

@@ -46,6 +46,11 @@ public class AboutActivity extends BaseActivity<IBasePresenter> implements View.
     }
 
     @Override
+    protected void initInjector() {
+
+    }
+
+    @Override
     protected void initViews() {
         tv_version = (TextView) findViewById(R.id.tv_version);
         LinearLayout changelogView = (LinearLayout) findViewById(R.id.changelogView);
@@ -125,10 +130,5 @@ public class AboutActivity extends BaseActivity<IBasePresenter> implements View.
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void setPresenter(IBasePresenter presenter) {
-
     }
 }

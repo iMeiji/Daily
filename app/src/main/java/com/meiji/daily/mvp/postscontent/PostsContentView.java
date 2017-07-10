@@ -20,6 +20,8 @@ import com.bumptech.glide.Glide;
 import com.meiji.daily.IApi;
 import com.meiji.daily.InitApp;
 import com.meiji.daily.R;
+import com.meiji.daily.injector.component.DaggerPostsContentComponent;
+import com.meiji.daily.injector.module.PostsContentModule;
 import com.meiji.daily.mvp.base.BaseActivity;
 
 import static com.meiji.daily.bean.PostsListBean.POSTSLISTBEAN_SLUG;
@@ -34,8 +36,8 @@ public class PostsContentView extends BaseActivity<IPostsContent.Presenter> impl
 
     private WebView webView;
     private MaterialDialog dialog;
-    private CollapsingToolbarLayout toolbar_layout;
-    private ImageView iv_header;
+    private CollapsingToolbarLayout toolbarLayout;
+    private ImageView ivHeader;
 
     private String title;
     private int slug;
@@ -98,24 +100,32 @@ public class PostsContentView extends BaseActivity<IPostsContent.Presenter> impl
         title = intent.getStringExtra(POSTSLISTBEAN_TITLE);
         slug = intent.getIntExtra(POSTSLISTBEAN_SLUG, 0);
 
-        toolbar_layout.setTitle(title);
+        toolbarLayout.setTitle(title);
         if (TextUtils.isEmpty(titleImage)) {
-            iv_header.setImageResource(R.drawable.error_image);
-            iv_header.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            ivHeader.setImageResource(R.drawable.error_image);
+            ivHeader.setScaleType(ImageView.ScaleType.CENTER_CROP);
         } else {
-            Glide.with(this).load(titleImage).centerCrop().into(iv_header);
+            Glide.with(this).load(titleImage).centerCrop().into(ivHeader);
         }
 
         presenter.doRequestData(slug);
     }
 
     @Override
+    protected void initInjector() {
+        DaggerPostsContentComponent.builder()
+                .postsContentModule(new PostsContentModule(this))
+                .build()
+                .inject(this);
+    }
+
+    @Override
     protected void initViews() {
-        iv_header = (ImageView) findViewById(R.id.iv_titleimage);
+        ivHeader = (ImageView) findViewById(R.id.iv_titleimage);
         Toolbar toolbar_title = (Toolbar) findViewById(R.id.toolbar_title);
         webView = (WebView) findViewById(R.id.webview_content);
         FloatingActionButton fab_share = (FloatingActionButton) findViewById(R.id.fab_share);
-        toolbar_layout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_layout);
+        toolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_layout);
         final NestedScrollView scrollView = (NestedScrollView) findViewById(R.id.scrollView);
 
         initToolBar(toolbar_title, true, null);
@@ -139,8 +149,8 @@ public class PostsContentView extends BaseActivity<IPostsContent.Presenter> impl
             }
         });
 
-        toolbar_layout.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
-        toolbar_layout.setCollapsedTitleTextAppearance(R.style.CollapsedAppBar);
+        toolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
+        toolbarLayout.setCollapsedTitleTextAppearance(R.style.CollapsedAppBar);
 
         dialog = new MaterialDialog.Builder(this)
                 .progress(true, 0)
@@ -165,12 +175,5 @@ public class PostsContentView extends BaseActivity<IPostsContent.Presenter> impl
     public void onShowNetError() {
         dialog.dismiss();
         Snackbar.make(webView, R.string.network_error, Snackbar.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void setPresenter(IPostsContent.Presenter presenter) {
-        if (null == presenter) {
-            this.presenter = new PostsContentPresenter(this);
-        }
     }
 }

@@ -35,14 +35,13 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
     public static final int TYPE_FINANCE = 4;
     public static final int TYPE_ZHIHU = 5;
     public static final int TYPE_USERADD = 6;
-
+    private static final String TAG = "ZhuanlanPresenter";
     private IZhuanlan.View view;
-    private List<ZhuanlanBean> list;
     private ZhuanlanDao dao = new ZhuanlanDao();
     private Call<ZhuanlanBean> call;
     private String[] ids;
 
-    ZhuanlanPresenter(IZhuanlan.View view) {
+    public ZhuanlanPresenter(IZhuanlan.View view) {
         this.view = view;
     }
 
@@ -58,11 +57,10 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
                     }
                 })
                 .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
                 .flatMap(new Function<List<ZhuanlanBean>, Observable<List<ZhuanlanBean>>>() {
                     @Override
                     public Observable<List<ZhuanlanBean>> apply(@NonNull List<ZhuanlanBean> list) throws Exception {
-                        if (list.size() != 0) {
+                        if (null != list && list.size() > 0) {
                             return Observable.just(list);
                         } else {
                             list = retrofitRequest(type);
@@ -75,7 +73,7 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
                 .subscribe(new Consumer<List<ZhuanlanBean>>() {
                     @Override
                     public void accept(@NonNull List<ZhuanlanBean> list) throws Exception {
-                        if (list.size() != 0) {
+                        if (null != list && list.size() > 0) {
                             doSetAdapter(list);
                         } else {
                             doShowFail();
@@ -136,7 +134,6 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
 
     @Override
     public void doSetAdapter(List<ZhuanlanBean> list) {
-        this.list = list;
         view.onSetAdapter(list);
         view.onHideLoading();
     }

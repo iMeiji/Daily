@@ -1,4 +1,4 @@
-package com.meiji.daily.utils;
+package com.meiji.daily.util;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -8,7 +8,7 @@ import android.net.NetworkInfo;
  * Created by Meiji on 2017/5/2.
  */
 
-public class NetWorkUtils {
+public class NetWorkUtil {
 
     /**
      * 判断是否有网络连接

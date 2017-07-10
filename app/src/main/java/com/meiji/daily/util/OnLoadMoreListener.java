@@ -1,4 +1,4 @@
-package com.meiji.daily;
+package com.meiji.daily.util;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;

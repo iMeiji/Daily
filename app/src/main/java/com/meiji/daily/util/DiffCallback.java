@@ -1,4 +1,4 @@
-package com.meiji.daily.utils;
+package com.meiji.daily.util;
 
 import android.support.v7.util.DiffUtil;
 

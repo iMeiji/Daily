@@ -4,7 +4,7 @@ import com.franmontiel.persistentcookiejar.ClearableCookieJar;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
-import com.meiji.daily.utils.NetWorkUtils;
+import com.meiji.daily.util.NetWorkUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,12 +40,12 @@ public class RetrofitFactory {
         @Override
         public Response intercept(Chain chain) throws IOException {
             Request request = chain.request();
-            if (!NetWorkUtils.isNetworkConnected(InitApp.AppContext)) {
+            if (!NetWorkUtil.isNetworkConnected(InitApp.AppContext)) {
                 request = request.newBuilder().cacheControl(CacheControl.FORCE_CACHE).build();
             }
 
             Response originalResponse = chain.proceed(request);
-            if (NetWorkUtils.isNetworkConnected(InitApp.AppContext)) {
+            if (NetWorkUtil.isNetworkConnected(InitApp.AppContext)) {
                 // 有网络时 设置缓存为默认值
                 String cacheControl = request.cacheControl().toString();
                 return originalResponse.newBuilder()

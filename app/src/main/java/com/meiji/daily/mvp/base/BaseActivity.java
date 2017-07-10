@@ -8,9 +8,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.afollestad.materialdialogs.color.CircleView;
-import com.meiji.daily.utils.ColorUtils;
+import com.meiji.daily.util.ColorUtil;
 import com.trello.rxlifecycle2.LifecycleTransformer;
+import com.trello.rxlifecycle2.android.ActivityEvent;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
+
+import javax.inject.Inject;
 
 import me.drakeet.multitype.MultiTypeAdapter;
 
@@ -20,6 +23,7 @@ import me.drakeet.multitype.MultiTypeAdapter;
 
 public abstract class BaseActivity<T extends IBasePresenter> extends RxAppCompatActivity implements IBaseView<T> {
 
+    @Inject
     protected T presenter;
     protected MultiTypeAdapter adapter;
     protected boolean canLoadMore;
@@ -42,6 +46,11 @@ public abstract class BaseActivity<T extends IBasePresenter> extends RxAppCompat
     protected abstract void initData();
 
     /**
+     * Dagger 注入
+     */
+    protected abstract void initInjector();
+
+    /**
      * 初始化 Toolbar
      *
      * @param toolbar
@@ -57,7 +66,7 @@ public abstract class BaseActivity<T extends IBasePresenter> extends RxAppCompat
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setPresenter(presenter);
+        initInjector();
         setContentView(attachLayoutId());
         initViews();
         initData();
@@ -66,7 +75,7 @@ public abstract class BaseActivity<T extends IBasePresenter> extends RxAppCompat
     @Override
     protected void onResume() {
         super.onResume();
-        int color = ColorUtils.getColor();
+        int color = ColorUtil.getColor();
         if (getSupportActionBar() != null)
             getSupportActionBar().setBackgroundDrawable(new ColorDrawable(color));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -89,6 +98,6 @@ public abstract class BaseActivity<T extends IBasePresenter> extends RxAppCompat
      */
     @Override
     public <T> LifecycleTransformer<T> bindToLife() {
-        return this.bindToLifecycle();
+        return bindUntilEvent(ActivityEvent.DESTROY);
     }
 }

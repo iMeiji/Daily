@@ -8,7 +8,7 @@ import com.trello.rxlifecycle2.LifecycleTransformer;
 
 public interface IBaseView<T> {
 
-    void setPresenter(T presenter);
+//    void setPresenter(T presenter);
 
     /**
      * 绑定生命周期

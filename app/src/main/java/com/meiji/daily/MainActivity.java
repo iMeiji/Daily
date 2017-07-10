@@ -17,10 +17,10 @@ import com.afollestad.materialdialogs.color.CircleView;
 import com.afollestad.materialdialogs.color.ColorChooserDialog;
 import com.meiji.daily.mvp.base.BaseActivity;
 import com.meiji.daily.mvp.base.IBasePresenter;
-import com.meiji.daily.mvp.useradd.UseraddView;
+import com.meiji.daily.mvp.useradd.UserAddView;
 import com.meiji.daily.mvp.zhuanlan.ZhuanlanPresenter;
 import com.meiji.daily.mvp.zhuanlan.ZhuanlanView;
-import com.meiji.daily.utils.ColorUtils;
+import com.meiji.daily.util.ColorUtil;
 
 public class MainActivity extends BaseActivity<IBasePresenter>
         implements NavigationView.OnNavigationItemSelectedListener, ColorChooserDialog.ColorCallback {
@@ -38,6 +38,11 @@ public class MainActivity extends BaseActivity<IBasePresenter>
     protected void initData() {
         replaceFragment(ZhuanlanPresenter.TYPE_PRODUCT);
         navigationView.setCheckedItem(R.id.nav_product);
+    }
+
+    @Override
+    protected void initInjector() {
+
     }
 
     @Override
@@ -93,7 +98,7 @@ public class MainActivity extends BaseActivity<IBasePresenter>
             replaceFragment(ZhuanlanPresenter.TYPE_ZHIHU);
 
         } else if (id == R.id.nav_user_add) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.content_main, new UseraddView()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.content_main, new UserAddView()).commit();
 
         } else if (id == R.id.nav_color_chooser) {
             createColorChooserDialog();
@@ -130,17 +135,12 @@ public class MainActivity extends BaseActivity<IBasePresenter>
             getWindow().setNavigationBarColor(selectedColor);
         }
         if (!dialog.isAccentMode()) {
-            ColorUtils.setColor(selectedColor);
+            ColorUtil.setColor(selectedColor);
         }
     }
 
     @Override
     public void onColorChooserDismissed(@NonNull ColorChooserDialog dialog) {
-
-    }
-
-    @Override
-    public void setPresenter(IBasePresenter presenter) {
 
     }
 }

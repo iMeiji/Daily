@@ -19,8 +19,10 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.meiji.daily.R;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.binder.ZhuanlanViewBinder;
+import com.meiji.daily.injector.component.DaggerUserAddComponent;
+import com.meiji.daily.injector.module.UserAddModule;
 import com.meiji.daily.mvp.base.BaseFragment;
-import com.meiji.daily.utils.ColorUtils;
+import com.meiji.daily.util.ColorUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,11 +33,11 @@ import me.drakeet.multitype.MultiTypeAdapter;
  * Created by Meiji on 2016/11/27.
  */
 
-public class UseraddView extends BaseFragment<IUseradd.Presenter> implements IUseradd.View, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class UserAddView extends BaseFragment<IUserAdd.Presenter> implements IUserAdd.View, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
-    private TextView tv_description;
-    private RecyclerView recycler_view;
-    private SwipeRefreshLayout refresh_layout;
+    private TextView tvDesc;
+    private RecyclerView recyclerView;
+    private SwipeRefreshLayout refreshLayout;
     private MaterialDialog dialog;
     private List<ZhuanlanBean> list = new ArrayList<>();
 
@@ -50,22 +52,30 @@ public class UseraddView extends BaseFragment<IUseradd.Presenter> implements IUs
     }
 
     @Override
-    protected void initViews(View view) {
-        tv_description = (TextView) view.findViewById(R.id.tv_description);
-        recycler_view = (RecyclerView) view.findViewById(R.id.recycler_view);
-        FloatingActionButton fab_add = (FloatingActionButton) view.findViewById(R.id.fab_add);
-        refresh_layout = (SwipeRefreshLayout) view.findViewById(R.id.refresh_layout);
+    protected void initInjector() {
+        DaggerUserAddComponent.builder()
+                .userAddModule(new UserAddModule(this))
+                .build()
+                .inject(this);
+    }
 
-        recycler_view.setHasFixedSize(true);
-        recycler_view.setLayoutManager(new LinearLayoutManager(getActivity()));
+    @Override
+    protected void initViews(View view) {
+        tvDesc = view.findViewById(R.id.tv_description);
+        recyclerView = view.findViewById(R.id.recycler_view);
+        FloatingActionButton fab_add = view.findViewById(R.id.fab_add);
+        refreshLayout = view.findViewById(R.id.refresh_layout);
+
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         // 设置下拉刷新的按钮的颜色
-        refresh_layout.setColorSchemeColors(ColorUtils.getColor());
-        refresh_layout.setOnRefreshListener(this);
+        refreshLayout.setColorSchemeColors(ColorUtil.getColor());
+        refreshLayout.setOnRefreshListener(this);
 
         adapter = new MultiTypeAdapter();
         adapter.register(ZhuanlanBean.class, new ZhuanlanViewBinder());
-        recycler_view.setAdapter(adapter);
+        recyclerView.setAdapter(adapter);
 
         fab_add.setOnClickListener(this);
 
@@ -83,7 +93,7 @@ public class UseraddView extends BaseFragment<IUseradd.Presenter> implements IUs
                         final String name = list.get(position).getName();
                         adapter.notifyItemRemoved(position);
                         presenter.doRemoveItem(position);
-                        Snackbar.make(recycler_view, getString(R.string.deleted) + name, Snackbar.LENGTH_LONG)
+                        Snackbar.make(recyclerView, getString(R.string.deleted) + name, Snackbar.LENGTH_LONG)
                                 .setAction(getString(R.string.undo), new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
@@ -93,7 +103,7 @@ public class UseraddView extends BaseFragment<IUseradd.Presenter> implements IUs
                                 .show();
                     }
                 });
-        helper.attachToRecyclerView(recycler_view);
+        helper.attachToRecyclerView(recyclerView);
     }
 
     @Override
@@ -164,9 +174,9 @@ public class UseraddView extends BaseFragment<IUseradd.Presenter> implements IUs
         adapter.notifyDataSetChanged();
 
         if (list.size() == 0) {
-            tv_description.setVisibility(View.VISIBLE);
+            tvDesc.setVisibility(View.VISIBLE);
         } else {
-            tv_description.setVisibility(View.GONE);
+            tvDesc.setVisibility(View.GONE);
         }
     }
 
@@ -177,30 +187,23 @@ public class UseraddView extends BaseFragment<IUseradd.Presenter> implements IUs
 
     @Override
     public void onAddSuccess() {
-        Snackbar.make(recycler_view, R.string.add_zhuanlan_id_success, Snackbar.LENGTH_SHORT).show();
-        tv_description.setVisibility(View.GONE);
+        Snackbar.make(recyclerView, R.string.add_zhuanlan_id_success, Snackbar.LENGTH_SHORT).show();
+        tvDesc.setVisibility(View.GONE);
     }
 
     @Override
     public void onShowLoading() {
-        refresh_layout.setRefreshing(true);
+        refreshLayout.setRefreshing(true);
     }
 
     @Override
     public void onHideLoading() {
-        refresh_layout.setRefreshing(false);
+        refreshLayout.setRefreshing(false);
     }
 
     @Override
     public void onShowNetError() {
-        Snackbar.make(recycler_view, R.string.add_zhuanlan_id_error, Snackbar.LENGTH_SHORT).show();
-        refresh_layout.setEnabled(true);
-    }
-
-    @Override
-    public void setPresenter(IUseradd.Presenter presenter) {
-        if (null == presenter) {
-            this.presenter = new UseraddPresenter(this);
-        }
+        Snackbar.make(recyclerView, R.string.add_zhuanlan_id_error, Snackbar.LENGTH_SHORT).show();
+        refreshLayout.setEnabled(true);
     }
 }

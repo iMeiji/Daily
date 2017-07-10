@@ -16,12 +16,12 @@ import io.reactivex.schedulers.Schedulers;
  * Created by Meiji on 2016/11/19.
  */
 
-class PostsListPresenter implements IPostsList.Presenter {
+public class PostsListPresenter implements IPostsList.Presenter {
 
     private IPostsList.View view;
     private List<PostsListBean> list = new ArrayList<>();
 
-    PostsListPresenter(IPostsList.View view) {
+    public PostsListPresenter(IPostsList.View view) {
         this.view = view;
     }
 

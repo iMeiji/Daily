@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.3'
+    compileSdkVersion 26
+    buildToolsVersion '26.0.0'
     defaultConfig {
         applicationId "com.meiji.daily"
         minSdkVersion 15
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 1
         versionName '1.43'
     }
@@ -70,4 +70,7 @@ dependencies {
     debugCompile 'com.squareup.okhttp3:logging-interceptor:3.7.0'
     debugCompile 'com.facebook.stetho:stetho:1.5.0'
     compile 'me.drakeet.multitype:multitype:3.0.0'
+    // dagger 2
+    compile 'com.google.dagger:dagger:2.11'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.11'
 }

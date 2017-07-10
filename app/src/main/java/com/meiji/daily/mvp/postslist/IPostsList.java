@@ -10,7 +10,7 @@ import java.util.List;
  * Created by Meiji on 2016/11/24.
  */
 
-interface IPostsList {
+public interface IPostsList {
 
     interface View extends IBaseView<Presenter> {
 

@@ -17,6 +17,7 @@ import retrofit2.http.Query;
  */
 
 public interface IApi {
+
     String COLUMN_URL = "https://zhuanlan.zhihu.com/api/columns/";
 
     String POST_URL = "https://zhuanlan.zhihu.com/api/posts/";

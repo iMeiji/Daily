@@ -13,11 +13,11 @@ import io.reactivex.schedulers.Schedulers;
  * Created by Meiji on 2016/11/23.
  */
 
-class PostsContentPresenter implements IPostsContent.Presenter {
+public class PostsContentPresenter implements IPostsContent.Presenter {
 
     private IPostsContent.View view;
 
-    PostsContentPresenter(IPostsContent.View view) {
+    public PostsContentPresenter(IPostsContent.View view) {
         this.view = view;
     }
 

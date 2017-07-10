@@ -1,4 +1,4 @@
-package com.meiji.daily.utils;
+package com.meiji.daily.util;
 
 import android.content.SharedPreferences;
 
@@ -10,7 +10,7 @@ import static android.content.Context.MODE_PRIVATE;
  * Created by Meiji on 2016/11/26.
  */
 
-public class ColorUtils {
+public class ColorUtil {
 
     public static int getColor() {
         SharedPreferences prefs = InitApp.AppContext.getSharedPreferences(InitApp.AppContext.getPackageName(), MODE_PRIVATE);
