@@ -2,6 +2,7 @@ package com.meiji.daily.mvp.postscontent;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -16,6 +17,7 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.bumptech.glide.Glide;
 import com.meiji.daily.IApi;
 import com.meiji.daily.InitApp;
@@ -23,6 +25,7 @@ import com.meiji.daily.R;
 import com.meiji.daily.injector.component.DaggerPostsContentComponent;
 import com.meiji.daily.injector.module.PostsContentModule;
 import com.meiji.daily.mvp.base.BaseActivity;
+import com.meiji.daily.util.SettingUtil;
 
 import static com.meiji.daily.bean.PostsListBean.POSTSLISTBEAN_SLUG;
 import static com.meiji.daily.bean.PostsListBean.POSTSLISTBEAN_TITLE;
@@ -137,6 +140,7 @@ public class PostsContentView extends BaseActivity<IPostsContent.Presenter> impl
             }
         });
 
+        fab_share.setBackgroundTintList(ColorStateList.valueOf(SettingUtil.getInstance().getColor()));
         fab_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -155,6 +159,7 @@ public class PostsContentView extends BaseActivity<IPostsContent.Presenter> impl
         dialog = new MaterialDialog.Builder(this)
                 .progress(true, 0)
                 .content(R.string.md_loading)
+                .theme(SettingUtil.getInstance().getIsNightMode() ? Theme.DARK : Theme.LIGHT)
                 .cancelable(true)
                 .build();
 

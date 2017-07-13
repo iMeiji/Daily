@@ -1,8 +1,10 @@
 package com.meiji.daily;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.meiji.daily.mvp.base.BaseActivity;
 import com.meiji.daily.mvp.base.IBasePresenter;
+import com.meiji.daily.util.SettingUtil;
 
 import de.psdev.licensesdialog.LicensesDialog;
 import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
@@ -87,12 +90,24 @@ public class AboutActivity extends BaseActivity<IBasePresenter> implements View.
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.source_code_url))));
                 break;
             case R.id.copyRightView:
-                new MaterialDialog.Builder(this)
-                        .title(R.string.action_copyright)
-                        .content(R.string.copyright_content)
-                        .positiveText(R.string.md_got_it)
-                        .build()
+                AlertDialog dialog = new AlertDialog.Builder(this)
+                        .setTitle(R.string.action_copyright)
+                        .setMessage(R.string.copyright_content)
+                        .setPositiveButton(R.string.md_got_it, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        })
                         .show();
+                dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(SettingUtil.getInstance().getColor());
+                dialog.show();
+//                new MaterialDialog.Builder(this)
+//                        .title(R.string.action_copyright)
+//                        .content(R.string.copyright_content)
+//                        .positiveText(R.string.md_got_it)
+//                        .build()
+//                        .show();
                 break;
         }
     }

@@ -46,7 +46,7 @@ public class ZhuanlanViewBinder extends ItemViewBinder<ZhuanlanBean, ZhuanlanVie
         holder.tv_followersCount.setText(followersCount);
         holder.tv_postsCount.setText(postsCount);
         holder.tv_intro.setText(item.getIntro());
-        holder.root.setOnClickListener(new View.OnClickListener() {
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 PostsListView.launch(item.getSlug(), item.getName(), item.getPostsCount());
@@ -56,7 +56,7 @@ public class ZhuanlanViewBinder extends ItemViewBinder<ZhuanlanBean, ZhuanlanVie
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        private CardView root;
+        private CardView cardView;
         private CircleImageView cv_avatar;
         private TextView tv_name;
         private TextView tv_followersCount;
@@ -65,12 +65,12 @@ public class ZhuanlanViewBinder extends ItemViewBinder<ZhuanlanBean, ZhuanlanVie
 
         ViewHolder(View itemView) {
             super(itemView);
-            root = (CardView) itemView.findViewById(R.id.root);
-            cv_avatar = (CircleImageView) itemView.findViewById(R.id.cv_avatar);
-            tv_name = (TextView) itemView.findViewById(R.id.tv_name);
-            tv_followersCount = (TextView) itemView.findViewById(R.id.tv_followersCount);
-            tv_postsCount = (TextView) itemView.findViewById(R.id.tv_postsCount);
-            tv_intro = (TextView) itemView.findViewById(R.id.tv_intro);
+            cardView = itemView.findViewById(R.id.cardview);
+            cv_avatar = itemView.findViewById(R.id.cv_avatar);
+            tv_name = itemView.findViewById(R.id.tv_name);
+            tv_followersCount = itemView.findViewById(R.id.tv_followersCount);
+            tv_postsCount = itemView.findViewById(R.id.tv_postsCount);
+            tv_intro = itemView.findViewById(R.id.tv_intro);
         }
     }
 }

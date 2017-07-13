@@ -45,17 +45,12 @@ public interface IZhuanlan {
         /**
          * 获取专栏类型
          */
-        void doGetType(int type);
+        void doLoading();
 
         /**
          * 设置适配器
          */
         void doSetAdapter(List<ZhuanlanBean> list);
-
-        /**
-         * 获取点击栏信息
-         */
-//        void doOnClickItem(int position);
 
         /**
          * 显示查询数据失败

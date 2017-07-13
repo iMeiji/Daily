@@ -21,7 +21,7 @@
     <string name="nav_zhihu">知乎·程序员</string>
     <string name="nav_other">其它</string>
     <string name="nav_user_define">自定义</string>
-    <string name="nav_color_chooser">切换主题</string>
+    <string name="nav_color_chooser">切换主题颜色</string>
     <string name="nav_activity_about">关于</string>
 
     <!--About Activity-->
@@ -69,6 +69,7 @@
 
     <!--PostsListView-->
     <string name="no_more">没有更多了！</string>
+    <string name="nav_night_mode">夜间模式</string>
 
 
 </resources>

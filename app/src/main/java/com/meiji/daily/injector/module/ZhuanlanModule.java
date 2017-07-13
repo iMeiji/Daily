@@ -14,13 +14,15 @@ import dagger.Provides;
 public class ZhuanlanModule {
 
     private final ZhuanlanView view;
+    private final int type;
 
-    public ZhuanlanModule(ZhuanlanView view) {
+    public ZhuanlanModule(ZhuanlanView view, int type) {
         this.view = view;
+        this.type = type;
     }
 
     @Provides
     public IZhuanlan.Presenter providePresenter() {
-        return new ZhuanlanPresenter(view);
+        return new ZhuanlanPresenter(view, type);
     }
 }

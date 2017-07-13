@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/category"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_product"
             android:icon="@drawable/ic_menu_cloud"
@@ -33,16 +36,19 @@
             android:title="@string/nav_user_define"/>
     </group>
 
-    <item android:title="@string/nav_other">
-        <menu>
-            <item
-                android:id="@+id/nav_color_chooser"
-                android:icon="@drawable/ic_photo_color_chooser"
-                android:title="@string/nav_color_chooser"/>
-            <item
-                android:id="@+id/nav_about"
-                android:icon="@drawable/ic_photo_info"
-                android:title="@string/nav_activity_about"/>
-        </menu>
-    </item>
+    <group android:id="@+id/other">
+        <item
+            android:id="@+id/app_bar_switch"
+            android:icon="@drawable/ic_photo_color_chooser"
+            android:title="@string/nav_night_mode"
+            app:actionLayout="@layout/item_switch"/>
+        <item
+            android:id="@+id/nav_color_chooser"
+            android:icon="@drawable/ic_photo_color_chooser"
+            android:title="@string/nav_color_chooser"/>
+        <item
+            android:id="@+id/nav_about"
+            android:icon="@drawable/ic_photo_info"
+            android:title="@string/nav_activity_about"/>
+    </group>
 </menu>

@@ -22,7 +22,7 @@ import com.meiji.daily.binder.ZhuanlanViewBinder;
 import com.meiji.daily.injector.component.DaggerUserAddComponent;
 import com.meiji.daily.injector.module.UserAddModule;
 import com.meiji.daily.mvp.base.BaseFragment;
-import com.meiji.daily.util.ColorUtil;
+import com.meiji.daily.util.SettingUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +70,7 @@ public class UserAddView extends BaseFragment<IUserAdd.Presenter> implements IUs
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         // 设置下拉刷新的按钮的颜色
-        refreshLayout.setColorSchemeColors(ColorUtil.getColor());
+        refreshLayout.setColorSchemeColors(SettingUtil.getInstance().getColor());
         refreshLayout.setOnRefreshListener(this);
 
         adapter = new MultiTypeAdapter();

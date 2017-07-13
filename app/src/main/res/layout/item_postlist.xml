@@ -12,7 +12,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?attr/selectableItemBackground"
+        android:background="?attr/itemViewBackground"
         android:foreground="?attr/selectableItemBackground"
         android:orientation="vertical"
         android:paddingBottom="4dp"
@@ -30,7 +30,8 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:gravity="center_vertical"/>
+                android:gravity="center_vertical"
+                android:textColor="?attr/textColorPrimary"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -43,7 +44,8 @@
                     android:layout_height="match_parent"
                     android:layout_toLeftOf="@+id/tv_commentsCount"
                     android:gravity="center_vertical"
-                    android:paddingRight="8dp"/>
+                    android:paddingRight="8dp"
+                    android:textColor="?attr/textColorPrimary"/>
 
                 <TextView
                     android:id="@+id/tv_commentsCount"
@@ -51,7 +53,8 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentRight="true"
-                    android:gravity="center_vertical"/>
+                    android:gravity="center_vertical"
+                    android:textColor="?attr/textColorPrimary"/>
             </RelativeLayout>
         </RelativeLayout>
 
@@ -67,6 +70,7 @@
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="1"
+            android:textColor="?attr/textColorPrimary"
             android:textSize="16sp"
             android:textStyle="bold"/>
 

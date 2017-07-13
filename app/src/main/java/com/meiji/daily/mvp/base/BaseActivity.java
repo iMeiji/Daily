@@ -8,7 +8,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.afollestad.materialdialogs.color.CircleView;
-import com.meiji.daily.util.ColorUtil;
+import com.meiji.daily.R;
+import com.meiji.daily.util.SettingUtil;
 import com.trello.rxlifecycle2.LifecycleTransformer;
 import com.trello.rxlifecycle2.android.ActivityEvent;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
@@ -50,6 +51,15 @@ public abstract class BaseActivity<T extends IBasePresenter> extends RxAppCompat
      */
     protected abstract void initInjector();
 
+    protected void initTheme() {
+        boolean isNightMode = SettingUtil.getInstance().getIsNightMode();
+        if (isNightMode) {
+            setTheme(R.style.DarkTheme);
+        } else {
+            setTheme(R.style.LightTheme);
+        }
+    }
+
     /**
      * 初始化 Toolbar
      *
@@ -66,6 +76,7 @@ public abstract class BaseActivity<T extends IBasePresenter> extends RxAppCompat
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initTheme();
         initInjector();
         setContentView(attachLayoutId());
         initViews();
@@ -75,7 +86,7 @@ public abstract class BaseActivity<T extends IBasePresenter> extends RxAppCompat
     @Override
     protected void onResume() {
         super.onResume();
-        int color = ColorUtil.getColor();
+        int color = SettingUtil.getInstance().getColor();
         if (getSupportActionBar() != null)
             getSupportActionBar().setBackgroundDrawable(new ColorDrawable(color));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

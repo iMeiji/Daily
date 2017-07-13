@@ -40,13 +40,15 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
     private ZhuanlanDao dao = new ZhuanlanDao();
     private Call<ZhuanlanBean> call;
     private String[] ids;
+    private int type;
 
-    public ZhuanlanPresenter(IZhuanlan.View view) {
+    public ZhuanlanPresenter(IZhuanlan.View view, int type) {
         this.view = view;
+        this.type = type;
     }
 
     @Override
-    public void doGetType(final int type) {
+    public void doLoading() {
         view.onShowLoading();
 
         Observable
@@ -63,7 +65,7 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
                         if (null != list && list.size() > 0) {
                             return Observable.just(list);
                         } else {
-                            list = retrofitRequest(type);
+                            list = retrofitRequest();
                             return Observable.just(list);
                         }
                     }
@@ -87,7 +89,7 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
                 });
     }
 
-    private List<ZhuanlanBean> retrofitRequest(int type) {
+    private List<ZhuanlanBean> retrofitRequest() {
 
         switch (type) {
             case TYPE_PRODUCT:

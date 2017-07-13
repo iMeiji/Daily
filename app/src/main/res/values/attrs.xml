@@ -6,4 +6,12 @@
         <attr name="civ_border_overlay" format="boolean"/>
         <attr name="civ_fill_color" format="color"/>
     </declare-styleable>
+
+    <!--<attr name="colorPrimary" format="color"/>-->
+    <!--<attr name="colorPrimaryDark" format="color"/>-->
+    <!--<attr name="colorAccent" format="color"/>-->
+    <attr name="textColorPrimary" format="color"/>
+    <attr name="itemViewBackground" format="color"/>
+    <attr name="rootViewBackground" format="color"/>
+
 </resources>

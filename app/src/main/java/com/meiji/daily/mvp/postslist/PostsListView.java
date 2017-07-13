@@ -17,9 +17,9 @@ import com.meiji.daily.binder.PostsListViewBinder;
 import com.meiji.daily.injector.component.DaggerPostsListComponent;
 import com.meiji.daily.injector.module.PostsListModule;
 import com.meiji.daily.mvp.base.BaseActivity;
-import com.meiji.daily.util.ColorUtil;
 import com.meiji.daily.util.DiffCallback;
 import com.meiji.daily.util.OnLoadMoreListener;
+import com.meiji.daily.util.SettingUtil;
 
 import java.util.List;
 
@@ -36,6 +36,7 @@ import static com.meiji.daily.bean.ZhuanlanBean.ZHUANLANBEAN_SLUG;
 
 public class PostsListView extends BaseActivity<IPostsList.Presenter> implements IPostsList.View, SwipeRefreshLayout.OnRefreshListener {
 
+    private static final String TAG = "PostsListView";
     private SwipeRefreshLayout refreshLayout;
     private RecyclerView recyclerView;
 
@@ -127,7 +128,7 @@ public class PostsListView extends BaseActivity<IPostsList.Presenter> implements
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
         // 设置下拉刷新的按钮的颜色
-        refreshLayout.setColorSchemeColors(ColorUtil.getColor());
+        refreshLayout.setColorSchemeColors(SettingUtil.getInstance().getColor());
         refreshLayout.setOnRefreshListener(this);
 
         adapter = new MultiTypeAdapter();
