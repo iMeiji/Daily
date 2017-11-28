@@ -10,7 +10,7 @@ import com.meiji.daily.database.table.ZhuanlanTable;
 /**
  * Created by Meiji on 2016/12/7.
  */
-
+@Deprecated
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "Daily";

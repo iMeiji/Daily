@@ -26,9 +26,10 @@ import java.util.List;
 import me.drakeet.multitype.Items;
 import me.drakeet.multitype.MultiTypeAdapter;
 
-import static com.meiji.daily.bean.ZhuanlanBean.ZHUANLANBEAN_NAME;
-import static com.meiji.daily.bean.ZhuanlanBean.ZHUANLANBEAN_POSTSCOUNT;
-import static com.meiji.daily.bean.ZhuanlanBean.ZHUANLANBEAN_SLUG;
+import static com.meiji.daily.Constant.ZHUANLANBEAN_NAME;
+import static com.meiji.daily.Constant.ZHUANLANBEAN_POSTSCOUNT;
+import static com.meiji.daily.Constant.ZHUANLANBEAN_SLUG;
+
 
 /**
  * Created by Meiji on 2016/11/18.
@@ -115,9 +116,9 @@ public class PostsListView extends BaseActivity<IPostsList.Presenter> implements
 
     @Override
     protected void initViews() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_title);
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_layout);
+        Toolbar toolbar = findViewById(R.id.toolbar_title);
+        recyclerView = findViewById(R.id.recycler_view);
+        refreshLayout = findViewById(R.id.refresh_layout);
         initToolBar(toolbar, true, null);
         toolbar.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -5,7 +5,6 @@ import com.meiji.daily.InitApp;
 import com.meiji.daily.R;
 import com.meiji.daily.RetrofitFactory;
 import com.meiji.daily.bean.ZhuanlanBean;
-import com.meiji.daily.database.dao.ZhuanlanDao;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,7 +36,7 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
     public static final int TYPE_USERADD = 6;
     private static final String TAG = "ZhuanlanPresenter";
     private IZhuanlan.View view;
-    private ZhuanlanDao dao = new ZhuanlanDao();
+    //    private ZhuanlanDao dao = new ZhuanlanDao();
     private Call<ZhuanlanBean> call;
     private String[] ids;
     private int type;
@@ -55,11 +54,11 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
                 .create(new ObservableOnSubscribe<List<ZhuanlanBean>>() {
                     @Override
                     public void subscribe(@NonNull ObservableEmitter<List<ZhuanlanBean>> e) throws Exception {
-                        e.onNext(dao.query(type));
+                        e.onNext(InitApp.db.ZhuanlanNewDao().query(type));
                     }
                 })
                 .subscribeOn(Schedulers.io())
-                .flatMap(new Function<List<ZhuanlanBean>, Observable<List<ZhuanlanBean>>>() {
+                .switchMap(new Function<List<ZhuanlanBean>, Observable<List<ZhuanlanBean>>>() {
                     @Override
                     public Observable<List<ZhuanlanBean>> apply(@NonNull List<ZhuanlanBean> list) throws Exception {
                         if (null != list && list.size() > 0) {
@@ -120,16 +119,20 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
             try {
                 Response<ZhuanlanBean> response = call.execute();
                 if (response.isSuccessful()) {
-                    list.add(response.body());
+                    ZhuanlanBean bean = response.body();
+                    if (bean != null) {
+                        bean.setType(type);
+                        list.add(bean);
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
-        for (ZhuanlanBean bean : list) {
-            dao.add(type, bean);
-        }
+        InitApp.db.ZhuanlanNewDao().insert(list);
+//        for (ZhuanlanBean bean : list) {
+//            dao.add(type, bean);
+//        }
 
         return list;
     }

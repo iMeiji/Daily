@@ -16,7 +16,7 @@ import static android.R.attr.id;
 /**
  * Created by Meiji on 2016/11/25.
  */
-
+@Deprecated
 public class ZhuanlanDao {
 
     private SQLiteDatabase db;

@@ -3,7 +3,7 @@ package com.meiji.daily.database.table;
 /**
  * Created by Meiji on 2016/12/7.
  */
-
+@Deprecated
 public class ZhuanlanTable {
 
     /**

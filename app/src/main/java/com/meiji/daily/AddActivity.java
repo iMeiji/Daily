@@ -9,7 +9,6 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.meiji.daily.bean.ZhuanlanBean;
-import com.meiji.daily.database.dao.ZhuanlanDao;
 import com.meiji.daily.mvp.zhuanlan.ZhuanlanPresenter;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
@@ -18,9 +17,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -30,7 +32,7 @@ import io.reactivex.schedulers.Schedulers;
 public class AddActivity extends RxAppCompatActivity {
 
     private static final String TAG = "AddActivity";
-    private ZhuanlanDao zhuanlanDao = new ZhuanlanDao();
+    //    private ZhuanlanDao zhuanlanDao = new ZhuanlanDao();
     private boolean result = false;
     private MaterialDialog dialog;
 
@@ -65,23 +67,45 @@ public class AddActivity extends RxAppCompatActivity {
         final Matcher matcher = Pattern.compile(regex).matcher(shareText);
         if (matcher.find()) {
             final String slug = matcher.group(1).toLowerCase();
-            List<ZhuanlanBean> query = zhuanlanDao.query(ZhuanlanPresenter.TYPE_USERADD);
-            for (ZhuanlanBean bean : query) {
-                if (bean.getSlug().equals(slug)) {
-                    onFinish(getString(R.string.has_been_added));
-                    return;
-                }
-            }
+            Observable
+                    .create(new ObservableOnSubscribe<List<ZhuanlanBean>>() {
+                        @Override
+                        public void subscribe(ObservableEmitter<List<ZhuanlanBean>> e) throws Exception {
+                            List<ZhuanlanBean> query = InitApp.db.ZhuanlanNewDao().query(ZhuanlanPresenter.TYPE_USERADD);
+                            e.onNext(query);
+                        }
+                    })
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .compose(this.<List<ZhuanlanBean>>bindToLifecycle())
+                    .subscribe(new Consumer<List<ZhuanlanBean>>() {
+                        @Override
+                        public void accept(List<ZhuanlanBean> list) throws Exception {
+                            for (ZhuanlanBean bean : list) {
+                                if (bean.getSlug().equals(slug)) {
+                                    onFinish(getString(R.string.has_been_added));
+                                    return;
+                                }
+                            }
+                        }
+                    });
 
             IApi IApi = RetrofitFactory.getRetrofit().create(IApi.class);
             Observable<ZhuanlanBean> observable = IApi.getZhuanlanBeanRx(slug);
             observable.subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .compose(this.<ZhuanlanBean>bindToLifecycle())
-                    .subscribe(new Consumer<ZhuanlanBean>() {
+                    .map(new Function<ZhuanlanBean, Boolean>() {
                         @Override
-                        public void accept(@NonNull ZhuanlanBean bean) throws Exception {
-                            result = zhuanlanDao.add(ZhuanlanPresenter.TYPE_USERADD, bean);
+                        public Boolean apply(ZhuanlanBean bean) throws Exception {
+                            bean.setType(ZhuanlanPresenter.TYPE_USERADD);
+                            result = InitApp.db.ZhuanlanNewDao().insert(bean) != -1;
+                            return result;
+                        }
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .compose(this.<Boolean>bindToLifecycle())
+                    .subscribe(new Consumer<Boolean>() {
+                        @Override
+                        public void accept(@NonNull Boolean result) throws Exception {
                             if (result) {
                                 onFinish(getString(R.string.add_zhuanlan_id_success));
                             } else {

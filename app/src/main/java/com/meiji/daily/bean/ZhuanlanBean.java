@@ -1,11 +1,16 @@
 package com.meiji.daily.bean;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
+
 import java.util.List;
 
 /**
  * Created by Meiji on 2016/11/16.
  */
-
+@Entity(tableName = "zhuanlans")
 public class ZhuanlanBean {
 
     /**
@@ -37,16 +42,8 @@ public class ZhuanlanBean {
      * canPost : false
      */
 
-    public static final String ZHUANLANBEAN_SLUG = "slug";
-    public static final String ZHUANLANBEAN_NAME = "name";
-    public static final String ZHUANLANBEAN_POSTSCOUNT = "postsCount";
-    public static final String ZHUANLANBEAN_AVATARURL = "avatarUrl";
-    public static final String ZHUANLANBEAN_AVATARId = "avatarId";
-    public static final String ZHUANLANBEAN_FOLLOWERSCOUNT = "followersCount";
-    public static final String ZHUANLANBEAN_INTRO = "intro";
-    public static final String ZHUANLANBEAN_TYPE = "type";
-
     private int followersCount;
+    @Ignore
     private CreatorBean creator;
     private String activateState;
     private String href;
@@ -59,6 +56,8 @@ public class ZhuanlanBean {
     private int nameCanEditUntil;
     private String reason;
     private int banUntil;
+    @NonNull
+    @PrimaryKey
     private String slug;
     private String name;
     private String url;
@@ -69,9 +68,21 @@ public class ZhuanlanBean {
     private boolean following;
     private int postsCount;
     private boolean canPost;
+    @Ignore
     private List<TopicsBean> topics;
+    @Ignore
     private List<PostTopicsBean> postTopics;
+    @Ignore
     private List<?> pendingTopics;
+    private int type;
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
 
     public int getFollowersCount() {
         return followersCount;

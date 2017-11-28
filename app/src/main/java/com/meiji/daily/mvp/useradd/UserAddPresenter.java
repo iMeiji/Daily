@@ -1,9 +1,9 @@
 package com.meiji.daily.mvp.useradd;
 
 import com.meiji.daily.IApi;
+import com.meiji.daily.InitApp;
 import com.meiji.daily.RetrofitFactory;
 import com.meiji.daily.bean.ZhuanlanBean;
-import com.meiji.daily.database.dao.ZhuanlanDao;
 import com.meiji.daily.mvp.zhuanlan.ZhuanlanPresenter;
 
 import java.util.List;
@@ -23,7 +23,7 @@ import io.reactivex.schedulers.Schedulers;
 public class UserAddPresenter implements IUserAdd.Presenter {
 
     private IUserAdd.View view;
-    private ZhuanlanDao dao = new ZhuanlanDao();
+    //    private ZhuanlanDao dao = new ZhuanlanDao();
     private List<ZhuanlanBean> list;
 
     public UserAddPresenter(IUserAdd.View view) {
@@ -35,14 +35,15 @@ public class UserAddPresenter implements IUserAdd.Presenter {
         view.onShowLoading();
         RetrofitFactory.getRetrofit().create(IApi.class).getZhuanlanBeanRx(input)
                 .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
                 .doOnNext(new Consumer<ZhuanlanBean>() {
                     @Override
                     public void accept(@NonNull ZhuanlanBean bean) throws Exception {
-                        dao.add(ZhuanlanPresenter.TYPE_USERADD, bean);
+                        bean.setType(ZhuanlanPresenter.TYPE_USERADD);
+                        InitApp.db.ZhuanlanNewDao().insert(bean);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
+                .compose(view.<ZhuanlanBean>bindToLife())
                 .subscribe(new Consumer<ZhuanlanBean>() {
                     @Override
                     public void accept(@NonNull ZhuanlanBean bean) throws Exception {
@@ -63,7 +64,7 @@ public class UserAddPresenter implements IUserAdd.Presenter {
                 .create(new ObservableOnSubscribe<List<ZhuanlanBean>>() {
                     @Override
                     public void subscribe(@NonNull ObservableEmitter<List<ZhuanlanBean>> e) throws Exception {
-                        list = dao.query(ZhuanlanPresenter.TYPE_USERADD);
+                        list = InitApp.db.ZhuanlanNewDao().query(ZhuanlanPresenter.TYPE_USERADD);
                         e.onNext(list);
                     }
                 })
@@ -105,7 +106,7 @@ public class UserAddPresenter implements IUserAdd.Presenter {
             @Override
             public void subscribe(@NonNull ObservableEmitter<Object> e) throws Exception {
                 final ZhuanlanBean bean = list.get(position);
-                dao.removeSlug(bean.getSlug());
+                InitApp.db.ZhuanlanNewDao().delete(bean.getSlug());
                 doSetAdapter();
             }
         }).subscribeOn(Schedulers.io()).subscribe();
@@ -116,7 +117,8 @@ public class UserAddPresenter implements IUserAdd.Presenter {
         Observable.create(new ObservableOnSubscribe<Object>() {
             @Override
             public void subscribe(@NonNull ObservableEmitter<Object> e) throws Exception {
-                dao.add(ZhuanlanPresenter.TYPE_USERADD, bean);
+                bean.setType(ZhuanlanPresenter.TYPE_USERADD);
+                InitApp.db.ZhuanlanNewDao().insert(bean);
                 doSetAdapter();
             }
         }).subscribeOn(Schedulers.io()).subscribe();
