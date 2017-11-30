@@ -1,8 +1,8 @@
 package com.meiji.daily.mvp.postscontent;
 
-import com.meiji.daily.IApi;
 import com.meiji.daily.RetrofitFactory;
 import com.meiji.daily.bean.PostsContentBean;
+import com.meiji.daily.data.remote.IApi;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;

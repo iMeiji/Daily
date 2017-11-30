@@ -33,8 +33,7 @@ import com.afollestad.materialdialogs.color.ColorChooserDialog;
 import com.meiji.daily.mvp.base.BaseActivity;
 import com.meiji.daily.mvp.base.IBasePresenter;
 import com.meiji.daily.mvp.useradd.UserAddView;
-import com.meiji.daily.mvp.zhuanlan.ZhuanlanPresenter;
-import com.meiji.daily.mvp.zhuanlan.ZhuanlanView;
+import com.meiji.daily.mvp.zhuanlan.ZhuanlanNewView;
 import com.meiji.daily.util.SettingUtil;
 
 import io.reactivex.Observable;
@@ -76,7 +75,7 @@ public class MainActivity extends BaseActivity<IBasePresenter>
 
     @Override
     protected void initData() {
-        replaceFragment(ZhuanlanPresenter.TYPE_PRODUCT);
+        replaceFragment(Constant.TYPE_PRODUCT);
         navigationView.setCheckedItem(R.id.nav_product);
     }
 
@@ -87,16 +86,16 @@ public class MainActivity extends BaseActivity<IBasePresenter>
 
     @Override
     protected void initViews() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         initToolBar(toolbar, false, null);
 
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerLayout = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         switchInput = navigationView.getMenu().findItem(R.id.app_bar_switch).getActionView().findViewById(R.id.switch_input);
@@ -152,22 +151,22 @@ public class MainActivity extends BaseActivity<IBasePresenter>
         int id = item.getItemId();
 
         if (id == R.id.nav_product) {
-            replaceFragment(ZhuanlanPresenter.TYPE_PRODUCT);
+            replaceFragment(Constant.TYPE_PRODUCT);
 
         } else if (id == R.id.nav_life) {
-            replaceFragment(ZhuanlanPresenter.TYPE_LIFE);
+            replaceFragment(Constant.TYPE_LIFE);
 
         } else if (id == R.id.nav_music) {
-            replaceFragment(ZhuanlanPresenter.TYPE_MUSIC);
+            replaceFragment(Constant.TYPE_MUSIC);
 
         } else if (id == R.id.nav_emotion) {
-            replaceFragment(ZhuanlanPresenter.TYPE_EMOTION);
+            replaceFragment(Constant.TYPE_EMOTION);
 
         } else if (id == R.id.nav_profession) {
-            replaceFragment(ZhuanlanPresenter.TYPE_FINANCE);
+            replaceFragment(Constant.TYPE_FINANCE);
 
         } else if (id == R.id.nav_zhihu) {
-            replaceFragment(ZhuanlanPresenter.TYPE_ZHIHU);
+            replaceFragment(Constant.TYPE_ZHIHU);
 
         } else if (id == R.id.nav_user_add) {
             getSupportFragmentManager().beginTransaction().replace(R.id.content_main, new UserAddView()).commit();
@@ -198,7 +197,7 @@ public class MainActivity extends BaseActivity<IBasePresenter>
     }
 
     private void replaceFragment(int type) {
-        ZhuanlanView fragment = ZhuanlanView.newInstance(type);
+        ZhuanlanNewView fragment = ZhuanlanNewView.newInstance(type);
         getSupportFragmentManager().beginTransaction().replace(R.id.content_main, fragment).commit();
     }
 

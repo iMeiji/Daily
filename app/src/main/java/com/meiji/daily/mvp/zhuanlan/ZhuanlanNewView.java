@@ -1,5 +1,7 @@
 package com.meiji.daily.mvp.zhuanlan;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,13 +16,13 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.meiji.daily.InitApp;
 import com.meiji.daily.R;
 import com.meiji.daily.RxBus;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.binder.ZhuanlanViewBinder;
-import com.meiji.daily.injector.component.DaggerZhuanlanComponent;
-import com.meiji.daily.injector.module.ZhuanlanModule;
 import com.meiji.daily.mvp.base.BaseFragment;
+import com.meiji.daily.mvp.base.IBasePresenter;
 import com.meiji.daily.util.RecyclerViewUtil;
 import com.meiji.daily.util.SettingUtil;
 
@@ -32,22 +34,23 @@ import me.drakeet.multitype.MultiTypeAdapter;
 
 
 /**
- * Created by Meiji on 2016/11/17.
+ * Created by Meiji on 2017/11/29.
  */
-@Deprecated
-public class ZhuanlanView extends BaseFragment<IZhuanlan.Presenter> implements IZhuanlan.View, SwipeRefreshLayout.OnRefreshListener {
 
-    private static final String TAG = "ZhuanlanView";
+public class ZhuanlanNewView extends BaseFragment<IBasePresenter> implements SwipeRefreshLayout.OnRefreshListener {
+
+    private static final String TAG = "ZhuanlanNewView";
     private RecyclerView recyclerView;
     private SwipeRefreshLayout refreshLayout;
     private LinearLayout root;
     private int type;
     private Observable<Boolean> observable;
+    private ZhuanlanViewModel model;
 
-    public static ZhuanlanView newInstance(int type) {
+    public static ZhuanlanNewView newInstance(int type) {
         Bundle args = new Bundle();
         args.putInt(TAG, type);
-        ZhuanlanView fragment = new ZhuanlanView();
+        ZhuanlanNewView fragment = new ZhuanlanNewView();
         fragment.setArguments(args);
         return fragment;
     }
@@ -122,16 +125,47 @@ public class ZhuanlanView extends BaseFragment<IZhuanlan.Presenter> implements I
 
     @Override
     protected void initData() {
-        onRequestData();
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            type = arguments.getInt(TAG);
+        }
     }
 
     @Override
-    public void onRequestData() {
-        presenter.doLoading();
+    public void onStart() {
+        super.onStart();
+        subscribeUI();
     }
 
-    @Override
-    public void onSetAdapter(List<ZhuanlanBean> list) {
+    private void subscribeUI() {
+        if (!isAdded()) {
+            return;
+        }
+        ZhuanlanViewModel.Factory factory = new ZhuanlanViewModel.Factory(InitApp.application, type);
+        model = ViewModelProviders.of(this, factory).get(ZhuanlanViewModel.class);
+        model.getList().observe(this, new Observer<List<ZhuanlanBean>>() {
+            @Override
+            public void onChanged(@Nullable List<ZhuanlanBean> list) {
+                if (null != list && list.size() > 0) {
+                    onSetAdapter(list);
+                } else {
+                    onShowNetError();
+                }
+            }
+        });
+        model.getIsLoading().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean aBoolean) {
+                if (aBoolean) {
+                    onShowLoading();
+                } else {
+                    onHideLoading();
+                }
+            }
+        });
+    }
+
+    private void onSetAdapter(List<ZhuanlanBean> list) {
         if (adapter == null) {
             adapter = new MultiTypeAdapter(list);
             adapter.register(ZhuanlanBean.class, new ZhuanlanViewBinder());
@@ -143,42 +177,25 @@ public class ZhuanlanView extends BaseFragment<IZhuanlan.Presenter> implements I
 
     @Override
     public void onRefresh() {
-        presenter.doRefresh();
+        model.getData();
     }
 
-    @Override
-    public void onShowLoading() {
+    private void onShowLoading() {
         refreshLayout.setRefreshing(true);
         recyclerView.setVisibility(View.GONE);
     }
 
-    @Override
-    public void onHideLoading() {
+    private void onHideLoading() {
         refreshLayout.setRefreshing(false);
         recyclerView.setVisibility(View.VISIBLE);
     }
 
-    @Override
-    public void onShowNetError() {
+    private void onShowNetError() {
         Snackbar.make(refreshLayout, R.string.network_error, Snackbar.LENGTH_SHORT).show();
         refreshLayout.setEnabled(true);
     }
 
     @Override
-    public void onStop() {
-        presenter.onDestroy();
-        super.onStop();
-    }
-
-    @Override
     public void initInjector() {
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            type = arguments.getInt(TAG);
-            DaggerZhuanlanComponent.builder()
-                    .zhuanlanModule(new ZhuanlanModule(this, type))
-                    .build()
-                    .inject(this);
-        }
     }
 }

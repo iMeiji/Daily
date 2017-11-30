@@ -1,4 +1,4 @@
-package com.meiji.daily;
+package com.meiji.daily.data.remote;
 
 import com.meiji.daily.bean.PostsContentBean;
 import com.meiji.daily.bean.PostsListBean;

@@ -1,4 +1,4 @@
-package com.meiji.daily.database;
+package com.meiji.daily.data.local;
 
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
@@ -8,8 +8,8 @@ import android.content.Context;
 import android.support.annotation.VisibleForTesting;
 
 import com.meiji.daily.bean.ZhuanlanBean;
-import com.meiji.daily.database.converter.ZhuanlanBeanConverter;
-import com.meiji.daily.database.dao.ZhuanlanNewDao;
+import com.meiji.daily.data.local.converter.ZhuanlanBeanConverter;
+import com.meiji.daily.data.local.dao.ZhuanlanNewDao;
 
 /**
  * Created by Meiji on 2017/11/28.

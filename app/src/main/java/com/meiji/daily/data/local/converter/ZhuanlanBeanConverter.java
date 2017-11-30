@@ -1,4 +1,4 @@
-package com.meiji.daily.database.converter;
+package com.meiji.daily.data.local.converter;
 
 import android.arch.persistence.room.TypeConverter;
 import android.support.annotation.NonNull;

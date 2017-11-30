@@ -1,10 +1,11 @@
 package com.meiji.daily.mvp.zhuanlan;
 
-import com.meiji.daily.IApi;
+import com.meiji.daily.Constant;
 import com.meiji.daily.InitApp;
 import com.meiji.daily.R;
 import com.meiji.daily.RetrofitFactory;
 import com.meiji.daily.bean.ZhuanlanBean;
+import com.meiji.daily.data.remote.IApi;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,16 +25,9 @@ import retrofit2.Response;
 /**
  * Created by Meiji on 2016/11/17.
  */
-
+@Deprecated
 public class ZhuanlanPresenter implements IZhuanlan.Presenter {
 
-    public static final int TYPE_PRODUCT = 0;
-    public static final int TYPE_MUSIC = 1;
-    public static final int TYPE_LIFE = 2;
-    public static final int TYPE_EMOTION = 3;
-    public static final int TYPE_FINANCE = 4;
-    public static final int TYPE_ZHIHU = 5;
-    public static final int TYPE_USERADD = 6;
     private static final String TAG = "ZhuanlanPresenter";
     private IZhuanlan.View view;
     //    private ZhuanlanDao dao = new ZhuanlanDao();
@@ -91,22 +85,22 @@ public class ZhuanlanPresenter implements IZhuanlan.Presenter {
     private List<ZhuanlanBean> retrofitRequest() {
 
         switch (type) {
-            case TYPE_PRODUCT:
+            case Constant.TYPE_PRODUCT:
                 ids = InitApp.AppContext.getResources().getStringArray(R.array.product);
                 break;
-            case TYPE_MUSIC:
+            case Constant.TYPE_MUSIC:
                 ids = InitApp.AppContext.getResources().getStringArray(R.array.music);
                 break;
-            case TYPE_LIFE:
+            case Constant.TYPE_LIFE:
                 ids = InitApp.AppContext.getResources().getStringArray(R.array.life);
                 break;
-            case TYPE_EMOTION:
+            case Constant.TYPE_EMOTION:
                 ids = InitApp.AppContext.getResources().getStringArray(R.array.emotion);
                 break;
-            case TYPE_FINANCE:
+            case Constant.TYPE_FINANCE:
                 ids = InitApp.AppContext.getResources().getStringArray(R.array.profession);
                 break;
-            case TYPE_ZHIHU:
+            case Constant.TYPE_ZHIHU:
                 ids = InitApp.AppContext.getResources().getStringArray(R.array.zhihu);
                 break;
         }

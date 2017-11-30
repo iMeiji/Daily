@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.meiji.daily.bean.ZhuanlanBean;
-import com.meiji.daily.mvp.zhuanlan.ZhuanlanPresenter;
+import com.meiji.daily.data.remote.IApi;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import java.util.List;
@@ -71,7 +71,7 @@ public class AddActivity extends RxAppCompatActivity {
                     .create(new ObservableOnSubscribe<List<ZhuanlanBean>>() {
                         @Override
                         public void subscribe(ObservableEmitter<List<ZhuanlanBean>> e) throws Exception {
-                            List<ZhuanlanBean> query = InitApp.db.ZhuanlanNewDao().query(ZhuanlanPresenter.TYPE_USERADD);
+                            List<ZhuanlanBean> query = InitApp.db.ZhuanlanNewDao().query(Constant.TYPE_USERADD);
                             e.onNext(query);
                         }
                     })
@@ -96,7 +96,7 @@ public class AddActivity extends RxAppCompatActivity {
                     .map(new Function<ZhuanlanBean, Boolean>() {
                         @Override
                         public Boolean apply(ZhuanlanBean bean) throws Exception {
-                            bean.setType(ZhuanlanPresenter.TYPE_USERADD);
+                            bean.setType(Constant.TYPE_USERADD);
                             result = InitApp.db.ZhuanlanNewDao().insert(bean) != -1;
                             return result;
                         }

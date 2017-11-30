@@ -1,8 +1,8 @@
 package com.meiji.daily.mvp.postslist;
 
-import com.meiji.daily.IApi;
 import com.meiji.daily.RetrofitFactory;
 import com.meiji.daily.bean.PostsListBean;
+import com.meiji.daily.data.remote.IApi;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -19,9 +19,9 @@ import android.widget.ImageView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.bumptech.glide.Glide;
-import com.meiji.daily.IApi;
 import com.meiji.daily.InitApp;
 import com.meiji.daily.R;
+import com.meiji.daily.data.remote.IApi;
 import com.meiji.daily.injector.component.DaggerPostsContentComponent;
 import com.meiji.daily.injector.module.PostsContentModule;
 import com.meiji.daily.mvp.base.BaseActivity;
@@ -124,12 +124,12 @@ public class PostsContentView extends BaseActivity<IPostsContent.Presenter> impl
 
     @Override
     protected void initViews() {
-        ivHeader = (ImageView) findViewById(R.id.iv_titleimage);
-        Toolbar toolbar_title = (Toolbar) findViewById(R.id.toolbar_title);
-        webView = (WebView) findViewById(R.id.webview_content);
-        FloatingActionButton fab_share = (FloatingActionButton) findViewById(R.id.fab_share);
-        toolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_layout);
-        final NestedScrollView scrollView = (NestedScrollView) findViewById(R.id.scrollView);
+        ivHeader = findViewById(R.id.iv_titleimage);
+        Toolbar toolbar_title = findViewById(R.id.toolbar_title);
+        webView = findViewById(R.id.webview_content);
+        FloatingActionButton fab_share = findViewById(R.id.fab_share);
+        toolbarLayout = findViewById(R.id.collapsing_layout);
+        final NestedScrollView scrollView = findViewById(R.id.scrollView);
 
         initToolBar(toolbar_title, true, null);
 

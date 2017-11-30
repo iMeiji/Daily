@@ -1,11 +1,11 @@
-package com.meiji.daily.database;
+package com.meiji.daily.data.local;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.meiji.daily.InitApp;
-import com.meiji.daily.database.table.ZhuanlanTable;
+import com.meiji.daily.data.local.table.ZhuanlanTable;
 
 /**
  * Created by Meiji on 2016/12/7.

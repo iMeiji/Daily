@@ -1,0 +1,157 @@
+package com.meiji.daily.mvp.zhuanlan;
+
+import android.app.Application;
+import android.arch.lifecycle.AndroidViewModel;
+import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProvider;
+import android.support.annotation.NonNull;
+
+import com.meiji.daily.Constant;
+import com.meiji.daily.InitApp;
+import com.meiji.daily.R;
+import com.meiji.daily.RetrofitFactory;
+import com.meiji.daily.bean.ZhuanlanBean;
+import com.meiji.daily.data.remote.IApi;
+
+import org.reactivestreams.Publisher;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import io.reactivex.Flowable;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
+
+/**
+ * Created by Meiji on 2017/11/29.
+ */
+
+public class ZhuanlanViewModel extends AndroidViewModel {
+
+    private static final String TAG = "ZhuanlanViewModel";
+    private int mType;
+    private String[] ids;
+    private MutableLiveData<Boolean> mIsLoading = new MutableLiveData<>();
+    private MutableLiveData<List<ZhuanlanBean>> mList = new MutableLiveData<>();
+    private CompositeDisposable mDisposable = new CompositeDisposable();
+
+    private ZhuanlanViewModel(@NonNull Application application, int type) {
+        super(application);
+        this.mType = type;
+        mIsLoading.setValue(true);
+
+        getData();
+    }
+
+    public void getData() {
+        Disposable subscribe = InitApp.db.ZhuanlanNewDao().queryRx(mType)
+                .subscribeOn(Schedulers.io())
+                .switchMap(new Function<List<ZhuanlanBean>, Publisher<List<ZhuanlanBean>>>() {
+                    @Override
+                    public Publisher<List<ZhuanlanBean>> apply(List<ZhuanlanBean> list) throws Exception {
+                        if (null != list && list.size() > 0) {
+                            return Flowable.just(list);
+                        } else {
+                            list = retrofitRequest();
+                            return Flowable.just(list);
+                        }
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<ZhuanlanBean>>() {
+                    @Override
+                    public void accept(List<ZhuanlanBean> list) throws Exception {
+                        mList.setValue(list);
+                        mIsLoading.setValue(false);
+                    }
+                });
+        mDisposable.add(subscribe);
+    }
+
+    @Override
+    protected void onCleared() {
+        mDisposable.clear();
+        super.onCleared();
+    }
+
+    public MutableLiveData<List<ZhuanlanBean>> getList() {
+        return mList;
+    }
+
+    public MutableLiveData<Boolean> getIsLoading() {
+        return mIsLoading;
+    }
+
+    private List<ZhuanlanBean> retrofitRequest() {
+
+        switch (mType) {
+            case Constant.TYPE_PRODUCT:
+                ids = InitApp.AppContext.getResources().getStringArray(R.array.product);
+                break;
+            case Constant.TYPE_MUSIC:
+                ids = InitApp.AppContext.getResources().getStringArray(R.array.music);
+                break;
+            case Constant.TYPE_LIFE:
+                ids = InitApp.AppContext.getResources().getStringArray(R.array.life);
+                break;
+            case Constant.TYPE_EMOTION:
+                ids = InitApp.AppContext.getResources().getStringArray(R.array.emotion);
+                break;
+            case Constant.TYPE_FINANCE:
+                ids = InitApp.AppContext.getResources().getStringArray(R.array.profession);
+                break;
+            case Constant.TYPE_ZHIHU:
+                ids = InitApp.AppContext.getResources().getStringArray(R.array.zhihu);
+                break;
+        }
+
+        final List<ZhuanlanBean> list = new ArrayList<>();
+        final List<Observable<ZhuanlanBean>> observableList = new ArrayList<>();
+        final IApi api = RetrofitFactory.getRetrofit().create(IApi.class);
+
+        for (String id : ids) {
+            observableList.add(api.getZhuanlanBeanRx(id));
+        }
+
+        Disposable subscribe = Observable.merge(observableList)
+                .subscribe(new Consumer<ZhuanlanBean>() {
+                    @Override
+                    public void accept(ZhuanlanBean bean) throws Exception {
+                        if (bean != null) {
+                            bean.setType(mType);
+                            list.add(bean);
+                            InitApp.db.ZhuanlanNewDao().insert(bean);
+                        }
+                    }
+                });
+        mDisposable.add(subscribe);
+
+        return list;
+    }
+
+
+    public static class Factory extends ViewModelProvider.NewInstanceFactory {
+
+        @NonNull
+        private final Application application;
+        private final int type;
+
+        public Factory(@NonNull Application application, int type) {
+            this.application = application;
+            this.type = type;
+        }
+
+        @NonNull
+        @Override
+        public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+            return (T) new ZhuanlanViewModel(application, type);
+        }
+    }
+
+}

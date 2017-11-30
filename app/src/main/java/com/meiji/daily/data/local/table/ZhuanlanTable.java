@@ -1,4 +1,4 @@
-package com.meiji.daily.database.table;
+package com.meiji.daily.data.local.table;
 
 /**
  * Created by Meiji on 2016/12/7.

@@ -1,10 +1,10 @@
 package com.meiji.daily.mvp.useradd;
 
-import com.meiji.daily.IApi;
+import com.meiji.daily.Constant;
 import com.meiji.daily.InitApp;
 import com.meiji.daily.RetrofitFactory;
 import com.meiji.daily.bean.ZhuanlanBean;
-import com.meiji.daily.mvp.zhuanlan.ZhuanlanPresenter;
+import com.meiji.daily.data.remote.IApi;
 
 import java.util.List;
 
@@ -38,7 +38,7 @@ public class UserAddPresenter implements IUserAdd.Presenter {
                 .doOnNext(new Consumer<ZhuanlanBean>() {
                     @Override
                     public void accept(@NonNull ZhuanlanBean bean) throws Exception {
-                        bean.setType(ZhuanlanPresenter.TYPE_USERADD);
+                        bean.setType(Constant.TYPE_USERADD);
                         InitApp.db.ZhuanlanNewDao().insert(bean);
                     }
                 })
@@ -64,7 +64,7 @@ public class UserAddPresenter implements IUserAdd.Presenter {
                 .create(new ObservableOnSubscribe<List<ZhuanlanBean>>() {
                     @Override
                     public void subscribe(@NonNull ObservableEmitter<List<ZhuanlanBean>> e) throws Exception {
-                        list = InitApp.db.ZhuanlanNewDao().query(ZhuanlanPresenter.TYPE_USERADD);
+                        list = InitApp.db.ZhuanlanNewDao().query(Constant.TYPE_USERADD);
                         e.onNext(list);
                     }
                 })
@@ -117,7 +117,7 @@ public class UserAddPresenter implements IUserAdd.Presenter {
         Observable.create(new ObservableOnSubscribe<Object>() {
             @Override
             public void subscribe(@NonNull ObservableEmitter<Object> e) throws Exception {
-                bean.setType(ZhuanlanPresenter.TYPE_USERADD);
+                bean.setType(Constant.TYPE_USERADD);
                 InitApp.db.ZhuanlanNewDao().insert(bean);
                 doSetAdapter();
             }
