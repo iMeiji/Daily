@@ -10,7 +10,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -18,18 +17,14 @@ import android.widget.TextView;
 
 import com.meiji.daily.InitApp;
 import com.meiji.daily.R;
-import com.meiji.daily.RxBus;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.binder.ZhuanlanViewBinder;
-import com.meiji.daily.mvp.base.BaseFragment;
-import com.meiji.daily.mvp.base.IBasePresenter;
+import com.meiji.daily.mvp.base.BaseNewFragment;
 import com.meiji.daily.util.RecyclerViewUtil;
 import com.meiji.daily.util.SettingUtil;
 
 import java.util.List;
 
-import io.reactivex.Observable;
-import io.reactivex.functions.Consumer;
 import me.drakeet.multitype.MultiTypeAdapter;
 
 
@@ -37,15 +32,15 @@ import me.drakeet.multitype.MultiTypeAdapter;
  * Created by Meiji on 2017/11/29.
  */
 
-public class ZhuanlanNewView extends BaseFragment<IBasePresenter> implements SwipeRefreshLayout.OnRefreshListener {
+public class ZhuanlanNewView extends BaseNewFragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = "ZhuanlanNewView";
-    private RecyclerView recyclerView;
-    private SwipeRefreshLayout refreshLayout;
-    private LinearLayout root;
-    private int type;
-    private Observable<Boolean> observable;
-    private ZhuanlanViewModel model;
+    private RecyclerView mRecyclerView;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private LinearLayout mRoot;
+    private int mType;
+    private ZhuanlanViewModel mModel;
+    private MultiTypeAdapter mAdapter;
 
     public static ZhuanlanNewView newInstance(int type) {
         Bundle args = new Bundle();
@@ -55,26 +50,7 @@ public class ZhuanlanNewView extends BaseFragment<IBasePresenter> implements Swi
         return fragment;
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        observable = RxBus.getInstance().register(Boolean.class);
-        observable.subscribe(new Consumer<Boolean>() {
-            @Override
-            public void accept(Boolean isNightMode) throws Exception {
-                refreshUI();
-            }
-        });
-    }
-
-    @Override
-    public void onDestroy() {
-        RxBus.getInstance().unregister(Boolean.class, observable);
-        super.onDestroy();
-    }
-
     private void refreshUI() {
-        Log.d(TAG, "refreshUI: ");
         Resources.Theme theme = getActivity().getTheme();
         TypedValue rootViewBackground = new TypedValue();
         TypedValue itemViewBackground = new TypedValue();
@@ -82,12 +58,12 @@ public class ZhuanlanNewView extends BaseFragment<IBasePresenter> implements Swi
         theme.resolveAttribute(R.attr.rootViewBackground, rootViewBackground, true);
         theme.resolveAttribute(R.attr.itemViewBackground, itemViewBackground, true);
         theme.resolveAttribute(R.attr.textColorPrimary, textColorPrimary, true);
-        root.setBackgroundResource(rootViewBackground.resourceId);
+        mRoot.setBackgroundResource(rootViewBackground.resourceId);
 
         Resources resources = getResources();
-        int childCount = recyclerView.getChildCount();
+        int childCount = mRecyclerView.getChildCount();
         for (int i = 0; i < childCount; i++) {
-            CardView cardView = recyclerView.getChildAt(i).findViewById(R.id.cardview);
+            CardView cardView = mRecyclerView.getChildAt(i).findViewById(R.id.cardview);
             cardView.setBackgroundResource(itemViewBackground.resourceId);
 
             TextView tv_name = cardView.findViewById(R.id.tv_name);
@@ -103,7 +79,7 @@ public class ZhuanlanNewView extends BaseFragment<IBasePresenter> implements Swi
             tv_intro.setTextColor(resources.getColor(textColorPrimary.resourceId));
         }
 
-        RecyclerViewUtil.invalidateCacheItem(recyclerView);
+        RecyclerViewUtil.invalidateCacheItem(mRecyclerView);
     }
 
     @Override
@@ -113,37 +89,29 @@ public class ZhuanlanNewView extends BaseFragment<IBasePresenter> implements Swi
 
     @Override
     protected void initViews(View view) {
-        root = view.findViewById(R.id.root);
-        recyclerView = view.findViewById(R.id.recycler_view);
-        refreshLayout = view.findViewById(R.id.refresh_layout);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRoot = view.findViewById(R.id.root);
+        mRecyclerView = view.findViewById(R.id.recycler_view);
+        mSwipeRefreshLayout = view.findViewById(R.id.refresh_layout);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         // 设置下拉刷新的按钮的颜色
-        refreshLayout.setColorSchemeColors(SettingUtil.getInstance().getColor());
-        refreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setColorSchemeColors(SettingUtil.getInstance().getColor());
+        mSwipeRefreshLayout.setOnRefreshListener(this);
     }
 
     @Override
     protected void initData() {
         Bundle arguments = getArguments();
         if (arguments != null) {
-            type = arguments.getInt(TAG);
+            mType = arguments.getInt(TAG);
         }
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        subscribeUI();
-    }
-
-    private void subscribeUI() {
-        if (!isAdded()) {
-            return;
-        }
-        ZhuanlanViewModel.Factory factory = new ZhuanlanViewModel.Factory(InitApp.application, type);
-        model = ViewModelProviders.of(this, factory).get(ZhuanlanViewModel.class);
-        model.getList().observe(this, new Observer<List<ZhuanlanBean>>() {
+    protected void subscribeUI() {
+        ZhuanlanViewModel.Factory factory = new ZhuanlanViewModel.Factory(InitApp.application, mType);
+        mModel = ViewModelProviders.of(this, factory).get(ZhuanlanViewModel.class);
+        mModel.getList().observe(this, new Observer<List<ZhuanlanBean>>() {
             @Override
             public void onChanged(@Nullable List<ZhuanlanBean> list) {
                 if (null != list && list.size() > 0) {
@@ -153,7 +121,7 @@ public class ZhuanlanNewView extends BaseFragment<IBasePresenter> implements Swi
                 }
             }
         });
-        model.getIsLoading().observe(this, new Observer<Boolean>() {
+        mModel.getIsLoading().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable Boolean aBoolean) {
                 if (aBoolean) {
@@ -163,39 +131,41 @@ public class ZhuanlanNewView extends BaseFragment<IBasePresenter> implements Swi
                 }
             }
         });
+        mModel.getIsRefreshUI().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean aBoolean) {
+                refreshUI();
+            }
+        });
     }
 
     private void onSetAdapter(List<ZhuanlanBean> list) {
-        if (adapter == null) {
-            adapter = new MultiTypeAdapter(list);
-            adapter.register(ZhuanlanBean.class, new ZhuanlanViewBinder());
-            recyclerView.setAdapter(adapter);
+        if (mAdapter == null) {
+            mAdapter = new MultiTypeAdapter(list);
+            mAdapter.register(ZhuanlanBean.class, new ZhuanlanViewBinder());
+            mRecyclerView.setAdapter(mAdapter);
         } else {
-            adapter.notifyDataSetChanged();
+            mAdapter.notifyDataSetChanged();
         }
     }
 
     @Override
     public void onRefresh() {
-        model.getData();
+        mModel.getData();
     }
 
     private void onShowLoading() {
-        refreshLayout.setRefreshing(true);
-        recyclerView.setVisibility(View.GONE);
+        mSwipeRefreshLayout.setRefreshing(true);
+        mRecyclerView.setVisibility(View.GONE);
     }
 
     private void onHideLoading() {
-        refreshLayout.setRefreshing(false);
-        recyclerView.setVisibility(View.VISIBLE);
+        mSwipeRefreshLayout.setRefreshing(false);
+        mRecyclerView.setVisibility(View.VISIBLE);
     }
 
     private void onShowNetError() {
-        Snackbar.make(refreshLayout, R.string.network_error, Snackbar.LENGTH_SHORT).show();
-        refreshLayout.setEnabled(true);
-    }
-
-    @Override
-    public void initInjector() {
+        Snackbar.make(mSwipeRefreshLayout, R.string.network_error, Snackbar.LENGTH_SHORT).show();
+        mSwipeRefreshLayout.setEnabled(true);
     }
 }

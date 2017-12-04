@@ -11,6 +11,7 @@ import com.meiji.daily.Constant;
 import com.meiji.daily.InitApp;
 import com.meiji.daily.R;
 import com.meiji.daily.RetrofitFactory;
+import com.meiji.daily.RxBus;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.data.remote.IApi;
 
@@ -34,22 +35,45 @@ import io.reactivex.schedulers.Schedulers;
 
 public class ZhuanlanViewModel extends AndroidViewModel {
 
-    private static final String TAG = "ZhuanlanViewModel";
+    public static final String TAG = "ZhuanlanViewModel";
     private int mType;
     private String[] ids;
-    private MutableLiveData<Boolean> mIsLoading = new MutableLiveData<>();
-    private MutableLiveData<List<ZhuanlanBean>> mList = new MutableLiveData<>();
-    private CompositeDisposable mDisposable = new CompositeDisposable();
+    private Observable<Boolean> mRxBus;
+    private MutableLiveData<Boolean> mIsLoading;
+    private MutableLiveData<Boolean> mIsRefreshUI;
+    private MutableLiveData<List<ZhuanlanBean>> mList;
+    private CompositeDisposable mDisposable;
+
+    {
+        mIsLoading = new MutableLiveData<>();
+        mIsRefreshUI = new MutableLiveData<>();
+        mList = new MutableLiveData<>();
+        mDisposable = new CompositeDisposable();
+
+        mIsLoading.setValue(true);
+        mIsRefreshUI.setValue(true);
+    }
 
     private ZhuanlanViewModel(@NonNull Application application, int type) {
         super(application);
-        this.mType = type;
-        mIsLoading.setValue(true);
+        mType = type;
 
         getData();
+        subscribeTheme();
     }
 
-    public void getData() {
+    private void subscribeTheme() {
+        mRxBus = RxBus.getInstance().register(Constant.RxBusEvent.REFRESHUI);
+        Disposable subscribe = mRxBus.subscribe(new Consumer<Boolean>() {
+            @Override
+            public void accept(Boolean aBoolean) throws Exception {
+                mIsRefreshUI.setValue(mIsRefreshUI.getValue() != null && !mIsRefreshUI.getValue());
+            }
+        });
+        mDisposable.add(subscribe);
+    }
+
+    void getData() {
         Disposable subscribe = InitApp.db.ZhuanlanNewDao().queryRx(mType)
                 .subscribeOn(Schedulers.io())
                 .switchMap(new Function<List<ZhuanlanBean>, Publisher<List<ZhuanlanBean>>>() {
@@ -70,22 +94,33 @@ public class ZhuanlanViewModel extends AndroidViewModel {
                         mList.setValue(list);
                         mIsLoading.setValue(false);
                     }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        mList.setValue(null);
+                        mIsLoading.setValue(false);
+                    }
                 });
         mDisposable.add(subscribe);
     }
 
     @Override
     protected void onCleared() {
+        RxBus.getInstance().unregister(Constant.RxBusEvent.REFRESHUI, mRxBus);
         mDisposable.clear();
         super.onCleared();
     }
 
-    public MutableLiveData<List<ZhuanlanBean>> getList() {
+    MutableLiveData<List<ZhuanlanBean>> getList() {
         return mList;
     }
 
-    public MutableLiveData<Boolean> getIsLoading() {
+    MutableLiveData<Boolean> getIsLoading() {
         return mIsLoading;
+    }
+
+    MutableLiveData<Boolean> getIsRefreshUI() {
+        return mIsRefreshUI;
     }
 
     private List<ZhuanlanBean> retrofitRequest() {
@@ -138,20 +173,18 @@ public class ZhuanlanViewModel extends AndroidViewModel {
 
     public static class Factory extends ViewModelProvider.NewInstanceFactory {
 
-        @NonNull
-        private final Application application;
-        private final int type;
+        private final Application mApplication;
+        private final int mType;
 
         public Factory(@NonNull Application application, int type) {
-            this.application = application;
-            this.type = type;
+            this.mApplication = application;
+            this.mType = type;
         }
 
         @NonNull
         @Override
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-            return (T) new ZhuanlanViewModel(application, type);
+            return (T) new ZhuanlanViewModel(mApplication, mType);
         }
     }
-
 }

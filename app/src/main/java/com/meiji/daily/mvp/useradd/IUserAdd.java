@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by Meiji on 2016/11/27.
  */
-
+@Deprecated
 public interface IUserAdd {
 
     interface View extends IBaseView<Presenter> {

@@ -22,4 +22,8 @@ public class Constant {
     public static final int TYPE_FINANCE = 4;
     public static final int TYPE_ZHIHU = 5;
     public static final int TYPE_USERADD = 6;
+
+    public static final class RxBusEvent {
+        public static final String REFRESHUI = "refreshUI";
+    }
 }

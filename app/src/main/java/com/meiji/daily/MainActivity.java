@@ -32,7 +32,7 @@ import com.afollestad.materialdialogs.color.CircleView;
 import com.afollestad.materialdialogs.color.ColorChooserDialog;
 import com.meiji.daily.mvp.base.BaseActivity;
 import com.meiji.daily.mvp.base.IBasePresenter;
-import com.meiji.daily.mvp.useradd.UserAddView;
+import com.meiji.daily.mvp.useradd.UserAddNewView;
 import com.meiji.daily.mvp.zhuanlan.ZhuanlanNewView;
 import com.meiji.daily.util.SettingUtil;
 
@@ -52,7 +52,7 @@ public class MainActivity extends BaseActivity<IBasePresenter>
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        observable = RxBus.getInstance().register(Boolean.class);
+        observable = RxBus.getInstance().register(Constant.RxBusEvent.REFRESHUI);
         observable.subscribe(new Consumer<Boolean>() {
             @Override
             public void accept(Boolean isNightMode) throws Exception {
@@ -64,7 +64,7 @@ public class MainActivity extends BaseActivity<IBasePresenter>
 
     @Override
     protected void onDestroy() {
-        RxBus.getInstance().unregister(Boolean.class, observable);
+        RxBus.getInstance().unregister(Constant.RxBusEvent.REFRESHUI, observable);
         super.onDestroy();
     }
 
@@ -113,7 +113,8 @@ public class MainActivity extends BaseActivity<IBasePresenter>
                 } else {
                     setTheme(R.style.LightTheme);
                 }
-                RxBus.getInstance().post(isNightMode);
+                RxBus rxBus = RxBus.getInstance();
+                rxBus.post(Constant.RxBusEvent.REFRESHUI, isNightMode);
             }
         });
     }
@@ -169,7 +170,7 @@ public class MainActivity extends BaseActivity<IBasePresenter>
             replaceFragment(Constant.TYPE_ZHIHU);
 
         } else if (id == R.id.nav_user_add) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.content_main, new UserAddView()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.content_main, new UserAddNewView()).commit();
 
         } else if (id == R.id.nav_color_chooser) {
             createColorChooserDialog();

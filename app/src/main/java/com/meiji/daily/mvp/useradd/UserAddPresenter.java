@@ -19,7 +19,7 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * Created by Meiji on 2016/11/27.
  */
-
+@Deprecated
 public class UserAddPresenter implements IUserAdd.Presenter {
 
     private IUserAdd.View view;
@@ -85,14 +85,6 @@ public class UserAddPresenter implements IUserAdd.Presenter {
         view.onHideLoading();
         view.onShowNetError();
     }
-
-//    @Override
-//    public void doOnClickItem(int position) {
-//        String slug = list.get(position).getSlug();
-//        String name = list.get(position).getName();
-//        int postsCount = list.get(position).getPostsCount();
-//        PostsListView.launch(slug, name, postsCount);
-//    }
 
     @Override
     public void doRefresh() {
