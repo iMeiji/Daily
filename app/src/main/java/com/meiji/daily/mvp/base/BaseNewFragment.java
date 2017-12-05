@@ -44,7 +44,7 @@ public abstract class BaseNewFragment extends Fragment {
      * @param title
      */
     protected void initToolBar(Toolbar toolbar, boolean homeAsUpEnabled, String title) {
-        ((BaseActivity) getActivity()).initToolBar(toolbar, homeAsUpEnabled, title);
+        ((BaseNewActivity) getActivity()).initToolBar(toolbar, homeAsUpEnabled, title);
     }
 
     @Nullable

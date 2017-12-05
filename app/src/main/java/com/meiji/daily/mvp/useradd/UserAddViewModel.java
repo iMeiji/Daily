@@ -13,6 +13,7 @@ import com.meiji.daily.RetrofitFactory;
 import com.meiji.daily.RxBus;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.data.remote.IApi;
+import com.meiji.daily.util.ErrorAction;
 
 import java.util.List;
 
@@ -82,15 +83,10 @@ public class UserAddViewModel extends AndroidViewModel {
                     @Override
                     public void accept(List<ZhuanlanBean> list) throws Exception {
                         mList.setValue(list);
-                        mIsLoading.setValue(false);
                     }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        mIsLoading.setValue(false);
-                    }
-                });
+                }, ErrorAction.error());
         mDisposable.add(subscribe);
+        mIsLoading.setValue(false);
     }
 
     void addItem(final String input) {
@@ -114,13 +110,13 @@ public class UserAddViewModel extends AndroidViewModel {
                         mAddResult.setValue(true);
                         getData();
                     }
-                }, new Consumer<Throwable>() {
+                }, new ErrorAction() {
                     @Override
-                    public void accept(@io.reactivex.annotations.NonNull Throwable throwable) throws Exception {
+                    public void doAction() {
                         mAddResult.setValue(false);
                         mIsLoading.setValue(false);
                     }
-                });
+                }.action());
         mDisposable.add(subscribe);
     }
 
@@ -131,7 +127,7 @@ public class UserAddViewModel extends AndroidViewModel {
             public void accept(Boolean aBoolean) throws Exception {
                 mIsRefreshUI.setValue(mIsRefreshUI.getValue() != null && !mIsRefreshUI.getValue());
             }
-        });
+        }, ErrorAction.error());
         mDisposable.add(subscribe);
     }
 

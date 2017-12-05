@@ -47,7 +47,7 @@
     <string name="md_custom">自定义</string>
     <string name="md_loading">加载中</string>
     <string name="md_zhuanlan_add_title">添加专栏ID</string>
-    <string name="md_zhuanlan_add_content">在下面输入专栏的ID,如wooyun</string>
+    <string name="md_zhuanlan_add_content">在下面输入专栏的ID,如 wooyun</string>
     <string name="md_zhuanlan_add_help">什么是专栏id</string>
     <string name="md_ok">确定</string>
 

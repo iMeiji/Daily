@@ -39,7 +39,7 @@ public abstract class OnLoadMoreListener extends RecyclerView.OnScrollListener {
 //        if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
 //            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
 //                if (!recyclerView.canScrollVertically(1)) {
-//                    this.onLoadMore();
+//                    this.doAction();
 //                }
 //            }
 //        }

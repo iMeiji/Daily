@@ -15,7 +15,7 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * Created by Meiji on 2016/11/19.
  */
-
+@Deprecated
 public class PostsListPresenter implements IPostsList.Presenter {
 
     private IPostsList.View view;

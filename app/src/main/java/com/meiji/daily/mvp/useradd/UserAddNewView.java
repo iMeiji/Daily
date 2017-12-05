@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.meiji.daily.InitApp;
 import com.meiji.daily.R;
 import com.meiji.daily.bean.ZhuanlanBean;
@@ -204,6 +205,7 @@ public class UserAddNewView extends BaseNewFragment implements View.OnClickListe
         mDialog = new MaterialDialog.Builder(getActivity())
                 .title(R.string.md_zhuanlan_add_title)
                 .content(R.string.md_zhuanlan_add_content)
+                .theme(SettingUtil.getInstance().getIsNightMode() ? Theme.DARK : Theme.LIGHT)
                 .inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS)
                 .input("", "", new MaterialDialog.InputCallback() {
                     @Override

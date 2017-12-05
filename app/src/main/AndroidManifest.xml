@@ -48,6 +48,11 @@
             android:label="@string/about"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+        <activity
+            android:name=".mvp.postslist.PostsListActivity"
+            android:label="@string/zhuanlan"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
     </application>
 
 </manifest>

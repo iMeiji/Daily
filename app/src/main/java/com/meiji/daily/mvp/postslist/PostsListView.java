@@ -34,7 +34,7 @@ import static com.meiji.daily.Constant.ZHUANLANBEAN_SLUG;
 /**
  * Created by Meiji on 2016/11/18.
  */
-
+@Deprecated
 public class PostsListView extends BaseActivity<IPostsList.Presenter> implements IPostsList.View, SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = "PostsListView";
