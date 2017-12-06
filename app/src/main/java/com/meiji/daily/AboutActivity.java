@@ -13,8 +13,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.meiji.daily.mvp.base.BaseActivity;
-import com.meiji.daily.mvp.base.IBasePresenter;
+import com.meiji.daily.module.base.BaseActivity;
+import com.meiji.daily.module.base.IBasePresenter;
 import com.meiji.daily.util.SettingUtil;
 
 import de.psdev.licensesdialog.LicensesDialog;
@@ -31,7 +31,7 @@ import static com.meiji.daily.R.id.changelogView;
 
 public class AboutActivity extends BaseActivity<IBasePresenter> implements View.OnClickListener {
 
-    private TextView tv_version;
+    private TextView mTvVersion;
 
     @Override
     protected int attachLayoutId() {
@@ -42,7 +42,7 @@ public class AboutActivity extends BaseActivity<IBasePresenter> implements View.
     protected void initData() {
         try {
             String version = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
-            tv_version.setText(version);
+            mTvVersion.setText(version);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -55,12 +55,12 @@ public class AboutActivity extends BaseActivity<IBasePresenter> implements View.
 
     @Override
     protected void initViews() {
-        tv_version = (TextView) findViewById(R.id.tv_version);
-        LinearLayout changelogView = (LinearLayout) findViewById(R.id.changelogView);
-        LinearLayout developersView = (LinearLayout) findViewById(R.id.developersView);
-        LinearLayout licensesView = (LinearLayout) findViewById(R.id.licensesView);
-        LinearLayout sourceCodeView = (LinearLayout) findViewById(R.id.sourceCodeView);
-        LinearLayout copyRightView = (LinearLayout) findViewById(R.id.copyRightView);
+        mTvVersion = findViewById(R.id.tv_version);
+        LinearLayout changelogView = findViewById(R.id.changelogView);
+        LinearLayout developersView = findViewById(R.id.developersView);
+        LinearLayout licensesView = findViewById(R.id.licensesView);
+        LinearLayout sourceCodeView = findViewById(R.id.sourceCodeView);
+        LinearLayout copyRightView = findViewById(R.id.copyRightView);
         initToolBar((Toolbar) findViewById(R.id.toolbar), true, null);
 
         changelogView.setOnClickListener(this);
@@ -116,7 +116,7 @@ public class AboutActivity extends BaseActivity<IBasePresenter> implements View.
         Notices notices = new Notices();
         notices.addNotice(new Notice("Material Dialogs", "https://github.com/afollestad/material-dialogs", "Copyright (c) 2014-2016 Aidan Michael Follestad", new MITLicense()));
         notices.addNotice(new Notice("OkHttp", "https://github.com/square/okhttp", "Copyright 2016 Square, Inc.", new ApacheSoftwareLicense20()));
-        notices.addNotice(new Notice("Gson", "https://github.com/google/gson", "Copyright 2008 Google Inc.", new ApacheSoftwareLicense20()));
+        notices.addNotice(new Notice("Gson", "https://github.com/google/sGson", "Copyright 2008 Google Inc.", new ApacheSoftwareLicense20()));
         notices.addNotice(new Notice("Glide", "https://github.com/bumptech/glide", "Sam Judd - @sjudd on GitHub, @samajudd on Twitter", new ApacheSoftwareLicense20()));
         notices.addNotice(new Notice("CircleImageView", "https://github.com/hdodenhof/CircleImageView", "Copyright 2014 - 2016 Henning Dodenhof", new ApacheSoftwareLicense20()));
 

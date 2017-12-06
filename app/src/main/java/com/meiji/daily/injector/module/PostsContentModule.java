@@ -1,8 +1,8 @@
 package com.meiji.daily.injector.module;
 
-import com.meiji.daily.mvp.postscontent.IPostsContent;
-import com.meiji.daily.mvp.postscontent.PostsContentPresenter;
-import com.meiji.daily.mvp.postscontent.PostsContentView;
+import com.meiji.daily.module.postscontent.IPostsContent;
+import com.meiji.daily.module.postscontent.PostsContentPresenter;
+import com.meiji.daily.module.postscontent.PostsContentView;
 
 import dagger.Module;
 import dagger.Provides;

@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.meiji.daily.R;
 import com.meiji.daily.bean.PostsListBean;
-import com.meiji.daily.mvp.postscontent.PostsContentView;
+import com.meiji.daily.module.postscontent.PostsContentActivity;
 
 import me.drakeet.multitype.ItemViewBinder;
 
@@ -52,7 +52,7 @@ public class PostsListViewBinder extends ItemViewBinder<PostsListBean, PostsList
         holder.root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PostsContentView.launch(item.getTitleImage(), item.getTitle(), item.getSlug());
+                PostsContentActivity.start(item.getTitleImage(), item.getTitle(), item.getSlug());
             }
         });
     }
@@ -68,12 +68,12 @@ public class PostsListViewBinder extends ItemViewBinder<PostsListBean, PostsList
 
         ViewHolder(View itemView) {
             super(itemView);
-            this.root = (CardView) itemView.findViewById(R.id.root);
-            this.tv_publishedTime = (TextView) itemView.findViewById(R.id.tv_publishedTime);
-            this.tv_likesCount = (TextView) itemView.findViewById(R.id.tv_likesCount);
-            this.tv_commentsCount = (TextView) itemView.findViewById(R.id.tv_commentsCount);
-            this.iv_titleImage = (ImageView) itemView.findViewById(R.id.iv_titleImage);
-            this.tv_title = (TextView) itemView.findViewById(R.id.tv_title);
+            this.root = itemView.findViewById(R.id.root);
+            this.tv_publishedTime = itemView.findViewById(R.id.tv_publishedTime);
+            this.tv_likesCount = itemView.findViewById(R.id.tv_likesCount);
+            this.tv_commentsCount = itemView.findViewById(R.id.tv_commentsCount);
+            this.iv_titleImage = itemView.findViewById(R.id.iv_titleImage);
+            this.tv_title = itemView.findViewById(R.id.tv_title);
         }
     }
 }

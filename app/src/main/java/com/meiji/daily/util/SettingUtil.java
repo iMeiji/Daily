@@ -13,18 +13,18 @@ import com.meiji.daily.R;
 
 public class SettingUtil {
 
-    private SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(InitApp.AppContext);
+    private SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(InitApp.sAppContext);
 
     public static SettingUtil getInstance() {
         return SettingsUtilInstance.instance;
     }
 
     public boolean getIsNoPhotoMode() {
-        return setting.getBoolean("switch_noPhotoMode", false) && NetWorkUtil.isMobileConnected(InitApp.AppContext);
+        return setting.getBoolean("switch_noPhotoMode", false) && NetWorkUtil.isMobileConnected(InitApp.sAppContext);
     }
 
     public int getColor() {
-        int defaultColor = InitApp.AppContext.getResources().getColor(R.color.colorPrimary);
+        int defaultColor = InitApp.sAppContext.getResources().getColor(R.color.colorPrimary);
         int color = setting.getInt("color", defaultColor);
         if ((color != 0) && Color.alpha(color) != 255) {
             return defaultColor;
@@ -42,14 +42,6 @@ public class SettingUtil {
 
     public void setIsNightMode(boolean flag) {
         setting.edit().putBoolean("switch_nightMode", flag).apply();
-    }
-
-    public boolean getNavBar() {
-        return setting.getBoolean("nav_bar", false);
-    }
-
-    public boolean getVideoOrientation() {
-        return setting.getBoolean("video_force_landscape", false);
     }
 
     private static final class SettingsUtilInstance {

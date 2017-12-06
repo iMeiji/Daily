@@ -32,19 +32,18 @@ import io.reactivex.schedulers.Schedulers;
 public class AddActivity extends RxAppCompatActivity {
 
     private static final String TAG = "AddActivity";
-    //    private ZhuanlanDao zhuanlanDao = new ZhuanlanDao();
-    private boolean result = false;
-    private MaterialDialog dialog;
+    private boolean isResult = false;
+    private MaterialDialog mDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        dialog = new MaterialDialog.Builder(this)
+        mDialog = new MaterialDialog.Builder(this)
                 .progress(true, 0)
                 .content(R.string.md_loading)
                 .cancelable(true)
                 .build();
-        dialog.show();
+        mDialog.show();
 
         Intent intent = getIntent();
         String action = intent.getAction();
@@ -71,7 +70,7 @@ public class AddActivity extends RxAppCompatActivity {
                     .create(new ObservableOnSubscribe<List<ZhuanlanBean>>() {
                         @Override
                         public void subscribe(ObservableEmitter<List<ZhuanlanBean>> e) throws Exception {
-                            List<ZhuanlanBean> query = InitApp.db.ZhuanlanNewDao().query(Constant.TYPE_USERADD);
+                            List<ZhuanlanBean> query = InitApp.sDatabase.ZhuanlanNewDao().query(Constant.TYPE_USERADD);
                             e.onNext(query);
                         }
                     })
@@ -97,8 +96,8 @@ public class AddActivity extends RxAppCompatActivity {
                         @Override
                         public Boolean apply(ZhuanlanBean bean) throws Exception {
                             bean.setType(Constant.TYPE_USERADD);
-                            result = InitApp.db.ZhuanlanNewDao().insert(bean) != -1;
-                            return result;
+                            isResult = InitApp.sDatabase.ZhuanlanNewDao().insert(bean) != -1;
+                            return isResult;
                         }
                     })
                     .observeOn(AndroidSchedulers.mainThread())
@@ -124,7 +123,7 @@ public class AddActivity extends RxAppCompatActivity {
     }
 
     private void onFinish(String message) {
-        dialog.dismiss();
+        mDialog.dismiss();
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         new Handler().postDelayed(new Runnable() {
             @Override

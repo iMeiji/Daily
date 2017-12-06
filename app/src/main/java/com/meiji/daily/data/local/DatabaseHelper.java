@@ -26,7 +26,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static synchronized DatabaseHelper getInstance() {
         if (instance == null) {
-            instance = new DatabaseHelper(InitApp.AppContext, DB_NAME, null, DB_VERSION);
+            instance = new DatabaseHelper(InitApp.sAppContext, DB_NAME, null, DB_VERSION);
         }
         return instance;
     }

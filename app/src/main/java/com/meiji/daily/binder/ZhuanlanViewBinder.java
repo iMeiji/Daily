@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.meiji.daily.R;
 import com.meiji.daily.bean.ZhuanlanBean;
-import com.meiji.daily.mvp.postslist.PostsListActivity;
+import com.meiji.daily.module.postslist.PostsListActivity;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import me.drakeet.multitype.ItemViewBinder;
@@ -49,7 +49,7 @@ public class ZhuanlanViewBinder extends ItemViewBinder<ZhuanlanBean, ZhuanlanVie
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PostsListActivity.launch(item.getSlug(), item.getName(), item.getPostsCount());
+                PostsListActivity.start(item.getSlug(), item.getName(), item.getPostsCount());
             }
         });
     }

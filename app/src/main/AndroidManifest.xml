@@ -23,12 +23,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".mvp.postslist.PostsListView"
+            android:name=".module.postslist.PostsListView"
             android:label="@string/zhuanlan"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".mvp.postscontent.PostsContentView"
+            android:name=".module.postscontent.PostsContentView"
             android:label="@string/postslist"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
@@ -49,8 +49,13 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".mvp.postslist.PostsListActivity"
+            android:name=".module.postslist.PostsListActivity"
             android:label="@string/zhuanlan"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".module.postscontent.PostsContentActivity"
+            android:label="@string/postslist"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>

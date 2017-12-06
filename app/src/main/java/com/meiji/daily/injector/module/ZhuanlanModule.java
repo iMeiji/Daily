@@ -1,8 +1,8 @@
 package com.meiji.daily.injector.module;
 
-import com.meiji.daily.mvp.zhuanlan.IZhuanlan;
-import com.meiji.daily.mvp.zhuanlan.ZhuanlanPresenter;
-import com.meiji.daily.mvp.zhuanlan.ZhuanlanView;
+import com.meiji.daily.module.zhuanlan.IZhuanlan;
+import com.meiji.daily.module.zhuanlan.ZhuanlanPresenter;
+import com.meiji.daily.module.zhuanlan.ZhuanlanView;
 
 import dagger.Module;
 import dagger.Provides;

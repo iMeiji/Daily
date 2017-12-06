@@ -1,7 +1,7 @@
 package com.meiji.daily.injector.component;
 
 import com.meiji.daily.injector.module.ZhuanlanModule;
-import com.meiji.daily.mvp.zhuanlan.ZhuanlanView;
+import com.meiji.daily.module.zhuanlan.ZhuanlanView;
 
 import dagger.Component;
 

@@ -27,7 +27,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitFactory {
 
-    private static final Object Object = new Object();
     /**
      * 缓存机制
      * 在响应请求之后在 data/data/<包名>/cache 下建立一个response 文件夹，保持缓存数据。
@@ -41,12 +40,12 @@ public class RetrofitFactory {
         @Override
         public Response intercept(Chain chain) throws IOException {
             Request request = chain.request();
-            if (!NetWorkUtil.isNetworkConnected(InitApp.AppContext)) {
+            if (!NetWorkUtil.isNetworkConnected(InitApp.sAppContext)) {
                 request = request.newBuilder().cacheControl(CacheControl.FORCE_CACHE).build();
             }
 
             Response originalResponse = chain.proceed(request);
-            if (NetWorkUtil.isNetworkConnected(InitApp.AppContext)) {
+            if (NetWorkUtil.isNetworkConnected(InitApp.sAppContext)) {
                 // 有网络时 设置缓存为默认值
                 String cacheControl = request.cacheControl().toString();
                 return originalResponse.newBuilder()
@@ -63,41 +62,43 @@ public class RetrofitFactory {
             }
         }
     };
-    private volatile static Retrofit retrofit;
+    private volatile static Retrofit sRetrofit;
 
     public static Retrofit getRetrofit() {
-        synchronized (Object) {
-            if (retrofit == null) {
-                // 指定缓存路径,缓存大小 50Mb
-                Cache cache = new Cache(new File(InitApp.AppContext.getCacheDir(), "HttpCache"),
-                        1024 * 1024 * 50);
+        if (sRetrofit == null) {
+            synchronized (RetrofitFactory.class) {
+                if (sRetrofit == null) {
+                    // 指定缓存路径,缓存大小 50Mb
+                    Cache cache = new Cache(new File(InitApp.sAppContext.getCacheDir(), "HttpCache"),
+                            1024 * 1024 * 50);
 
-                // Cookie 持久化
-                ClearableCookieJar cookieJar =
-                        new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(InitApp.AppContext));
+                    // Cookie 持久化
+                    ClearableCookieJar cookieJar =
+                            new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(InitApp.sAppContext));
 
-                OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                        .cookieJar(cookieJar)
-                        .cache(cache)
-                        .addInterceptor(cacheControlInterceptor)
-                        .connectTimeout(10, TimeUnit.SECONDS)
-                        .readTimeout(15, TimeUnit.SECONDS)
-                        .writeTimeout(15, TimeUnit.SECONDS)
-                        .retryOnConnectionFailure(true);
+                    OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                            .cookieJar(cookieJar)
+                            .cache(cache)
+                            .addInterceptor(cacheControlInterceptor)
+                            .connectTimeout(10, TimeUnit.SECONDS)
+                            .readTimeout(15, TimeUnit.SECONDS)
+                            .writeTimeout(15, TimeUnit.SECONDS)
+                            .retryOnConnectionFailure(true);
 
-                // Log 拦截器
-                if (BuildConfig.DEBUG) {
-                    builder = SdkManager.initInterceptor(builder);
+                    // Log 拦截器
+                    if (BuildConfig.DEBUG) {
+                        builder = SdkManager.initInterceptor(builder);
+                    }
+
+                    sRetrofit = new Retrofit.Builder()
+                            .baseUrl(IApi.API_BASE)
+                            .client(builder.build())
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                            .build();
                 }
-
-                retrofit = new Retrofit.Builder()
-                        .baseUrl(IApi.API_BASE)
-                        .client(builder.build())
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                        .build();
             }
-            return retrofit;
         }
+        return sRetrofit;
     }
 }

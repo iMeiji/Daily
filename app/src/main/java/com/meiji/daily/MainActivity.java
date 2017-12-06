@@ -30,10 +30,10 @@ import android.widget.CompoundButton;
 import com.afollestad.materialdialogs.Theme;
 import com.afollestad.materialdialogs.color.CircleView;
 import com.afollestad.materialdialogs.color.ColorChooserDialog;
-import com.meiji.daily.mvp.base.BaseActivity;
-import com.meiji.daily.mvp.base.IBasePresenter;
-import com.meiji.daily.mvp.useradd.UserAddNewView;
-import com.meiji.daily.mvp.zhuanlan.ZhuanlanNewView;
+import com.meiji.daily.module.base.BaseActivity;
+import com.meiji.daily.module.base.IBasePresenter;
+import com.meiji.daily.module.useradd.UserAddNewView;
+import com.meiji.daily.module.zhuanlan.ZhuanlanNewView;
 import com.meiji.daily.util.SettingUtil;
 
 import io.reactivex.Observable;
@@ -43,17 +43,17 @@ public class MainActivity extends BaseActivity<IBasePresenter>
         implements NavigationView.OnNavigationItemSelectedListener, ColorChooserDialog.ColorCallback {
 
     private static final String TAG = "MainActivity";
-    private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
-    private long exitTime;
-    private Observable<Boolean> observable;
-    private SwitchCompat switchInput;
+    private DrawerLayout mDrawerLayout;
+    private NavigationView mNavigationView;
+    private long mExitTime;
+    private Observable<Boolean> mRxBus;
+    private SwitchCompat mSwitchCompat;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        observable = RxBus.getInstance().register(Constant.RxBusEvent.REFRESHUI);
-        observable.subscribe(new Consumer<Boolean>() {
+        mRxBus = RxBus.getInstance().register(Constant.RxBusEvent.REFRESHUI);
+        mRxBus.subscribe(new Consumer<Boolean>() {
             @Override
             public void accept(Boolean isNightMode) throws Exception {
                 showAnimation();
@@ -64,7 +64,7 @@ public class MainActivity extends BaseActivity<IBasePresenter>
 
     @Override
     protected void onDestroy() {
-        RxBus.getInstance().unregister(Constant.RxBusEvent.REFRESHUI, observable);
+        RxBus.getInstance().unregister(Constant.RxBusEvent.REFRESHUI, mRxBus);
         super.onDestroy();
     }
 
@@ -76,7 +76,7 @@ public class MainActivity extends BaseActivity<IBasePresenter>
     @Override
     protected void initData() {
         replaceFragment(Constant.TYPE_PRODUCT);
-        navigationView.setCheckedItem(R.id.nav_product);
+        mNavigationView.setCheckedItem(R.id.nav_product);
     }
 
     @Override
@@ -89,21 +89,21 @@ public class MainActivity extends BaseActivity<IBasePresenter>
         Toolbar toolbar = findViewById(R.id.toolbar);
         initToolBar(toolbar, false, null);
 
-        drawerLayout = findViewById(R.id.drawer_layout);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawerLayout.addDrawerListener(toggle);
+                this, mDrawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        mNavigationView = findViewById(R.id.nav_view);
+        mNavigationView.setNavigationItemSelectedListener(this);
 
-        switchInput = navigationView.getMenu().findItem(R.id.app_bar_switch).getActionView().findViewById(R.id.switch_input);
-        switchInput.setChecked(SettingUtil.getInstance().getIsNightMode());
+        mSwitchCompat = mNavigationView.getMenu().findItem(R.id.app_bar_switch).getActionView().findViewById(R.id.switch_input);
+        mSwitchCompat.setChecked(SettingUtil.getInstance().getIsNightMode());
 
         setUpSwitch();
 
-        switchInput.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mSwitchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isNightMode) {
                 SettingUtil.getInstance().setIsNightMode(isNightMode);
@@ -122,26 +122,26 @@ public class MainActivity extends BaseActivity<IBasePresenter>
     private void setUpSwitch() {
         boolean isNightMode = SettingUtil.getInstance().getIsNightMode();
         if (isNightMode) {
-            switchInput.setThumbTintList(ColorStateList.valueOf(SettingUtil.getInstance().getColor()));
+            mSwitchCompat.setThumbTintList(ColorStateList.valueOf(SettingUtil.getInstance().getColor()));
         } else {
             Resources.Theme theme = getTheme();
             Resources resources = getResources();
             TypedValue textColorPrimary = new TypedValue();
             theme.resolveAttribute(R.attr.textColorPrimary, textColorPrimary, true);
-            switchInput.setThumbTintList(resources.getColorStateList(textColorPrimary.resourceId));
+            mSwitchCompat.setThumbTintList(resources.getColorStateList(textColorPrimary.resourceId));
         }
     }
 
     @Override
     public void onBackPressed() {
         long currentTime = System.currentTimeMillis();
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        } else if ((currentTime - exitTime) < 2000) {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else if ((currentTime - mExitTime) < 2000) {
             super.onBackPressed();
         } else {
-            Snackbar.make(drawerLayout, getString(R.string.double_click_exit), Snackbar.LENGTH_SHORT).show();
-            exitTime = currentTime;
+            Snackbar.make(mDrawerLayout, getString(R.string.double_click_exit), Snackbar.LENGTH_SHORT).show();
+            mExitTime = currentTime;
         }
     }
 
@@ -180,7 +180,7 @@ public class MainActivity extends BaseActivity<IBasePresenter>
 
         }
 
-        drawerLayout.closeDrawer(GravityCompat.START);
+        mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
@@ -191,10 +191,10 @@ public class MainActivity extends BaseActivity<IBasePresenter>
         theme.resolveAttribute(R.attr.rootViewBackground, rootViewBackground, true);
         theme.resolveAttribute(R.attr.textColorPrimary, textColorPrimary, true);
         Resources resources = getResources();
-        navigationView.setBackgroundResource(rootViewBackground.resourceId);
-        navigationView.setItemBackgroundResource(rootViewBackground.resourceId);
-        navigationView.setItemTextColor(resources.getColorStateList(textColorPrimary.resourceId));
-        navigationView.setItemIconTintList(resources.getColorStateList(textColorPrimary.resourceId));
+        mNavigationView.setBackgroundResource(rootViewBackground.resourceId);
+        mNavigationView.setItemBackgroundResource(rootViewBackground.resourceId);
+        mNavigationView.setItemTextColor(resources.getColorStateList(textColorPrimary.resourceId));
+        mNavigationView.setItemIconTintList(resources.getColorStateList(textColorPrimary.resourceId));
     }
 
     private void replaceFragment(int type) {

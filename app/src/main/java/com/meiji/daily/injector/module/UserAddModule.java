@@ -1,8 +1,8 @@
 package com.meiji.daily.injector.module;
 
-import com.meiji.daily.mvp.useradd.IUserAdd;
-import com.meiji.daily.mvp.useradd.UserAddPresenter;
-import com.meiji.daily.mvp.useradd.UserAddView;
+import com.meiji.daily.module.useradd.IUserAdd;
+import com.meiji.daily.module.useradd.UserAddPresenter;
+import com.meiji.daily.module.useradd.UserAddView;
 
 import dagger.Module;
 import dagger.Provides;
