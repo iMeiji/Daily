@@ -1,11 +1,13 @@
-package com.meiji.daily;
+package com.meiji.daily.util;
 
 import com.franmontiel.persistentcookiejar.ClearableCookieJar;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
+import com.meiji.daily.BuildConfig;
+import com.meiji.daily.InitApp;
+import com.meiji.daily.SdkManager;
 import com.meiji.daily.data.remote.IApi;
-import com.meiji.daily.util.NetWorkUtil;
 
 import java.io.File;
 import java.io.IOException;

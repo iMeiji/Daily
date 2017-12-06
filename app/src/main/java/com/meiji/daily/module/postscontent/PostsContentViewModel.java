@@ -7,10 +7,10 @@ import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
 
-import com.meiji.daily.RetrofitFactory;
 import com.meiji.daily.bean.PostsContentBean;
 import com.meiji.daily.data.remote.IApi;
 import com.meiji.daily.util.ErrorAction;
+import com.meiji.daily.util.RetrofitFactory;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -54,7 +54,7 @@ public class PostsContentViewModel extends AndroidViewModel {
     void handleData(final int slug) {
         mIsLoading.setValue(true);
 
-        Disposable subscribe = RetrofitFactory.getRetrofit().create(IApi.class).getPostsContentBeanRx(slug)
+        Disposable subscribe = RetrofitFactory.getRetrofit().create(IApi.class).getPostsContentBean(slug)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<PostsContentBean>() {

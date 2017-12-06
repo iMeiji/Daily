@@ -4,13 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.data.remote.IApi;
-import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
+import com.meiji.daily.util.RetrofitFactory;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -21,6 +22,8 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
@@ -29,11 +32,12 @@ import io.reactivex.schedulers.Schedulers;
  * Created by Meiji on 2016/12/1.
  */
 
-public class AddActivity extends RxAppCompatActivity {
+public class AddActivity extends AppCompatActivity {
 
     private static final String TAG = "AddActivity";
     private boolean isResult = false;
     private MaterialDialog mDialog;
+    private CompositeDisposable mDisposable = new CompositeDisposable();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,7 +70,7 @@ public class AddActivity extends RxAppCompatActivity {
         final Matcher matcher = Pattern.compile(regex).matcher(shareText);
         if (matcher.find()) {
             final String slug = matcher.group(1).toLowerCase();
-            Observable
+            Disposable subscribe = Observable
                     .create(new ObservableOnSubscribe<List<ZhuanlanBean>>() {
                         @Override
                         public void subscribe(ObservableEmitter<List<ZhuanlanBean>> e) throws Exception {
@@ -76,7 +80,6 @@ public class AddActivity extends RxAppCompatActivity {
                     })
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .compose(this.<List<ZhuanlanBean>>bindToLifecycle())
                     .subscribe(new Consumer<List<ZhuanlanBean>>() {
                         @Override
                         public void accept(List<ZhuanlanBean> list) throws Exception {
@@ -88,9 +91,10 @@ public class AddActivity extends RxAppCompatActivity {
                             }
                         }
                     });
+            mDisposable.add(subscribe);
 
             IApi IApi = RetrofitFactory.getRetrofit().create(IApi.class);
-            Observable<ZhuanlanBean> observable = IApi.getZhuanlanBeanRx(slug);
+            Observable<ZhuanlanBean> observable = IApi.getZhuanlanBean(slug);
             observable.subscribeOn(Schedulers.io())
                     .map(new Function<ZhuanlanBean, Boolean>() {
                         @Override
@@ -101,7 +105,6 @@ public class AddActivity extends RxAppCompatActivity {
                         }
                     })
                     .observeOn(AndroidSchedulers.mainThread())
-                    .compose(this.<Boolean>bindToLifecycle())
                     .subscribe(new Consumer<Boolean>() {
                         @Override
                         public void accept(@NonNull Boolean result) throws Exception {
@@ -117,9 +120,16 @@ public class AddActivity extends RxAppCompatActivity {
                             onFinish(getString(R.string.add_zhuanlan_id_error));
                         }
                     });
+            mDisposable.add(subscribe);
         } else {
             onFinish(getString(R.string.incorrect_link));
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        mDisposable.clear();
+        super.onDestroy();
     }
 
     private void onFinish(String message) {

@@ -10,11 +10,11 @@ import android.support.annotation.NonNull;
 import com.meiji.daily.Constant;
 import com.meiji.daily.InitApp;
 import com.meiji.daily.R;
-import com.meiji.daily.RetrofitFactory;
-import com.meiji.daily.RxBus;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.data.remote.IApi;
 import com.meiji.daily.util.ErrorAction;
+import com.meiji.daily.util.RetrofitFactory;
+import com.meiji.daily.util.RxBus;
 
 import org.reactivestreams.Publisher;
 
@@ -152,7 +152,7 @@ public class ZhuanlanViewModel extends AndroidViewModel {
         final IApi api = RetrofitFactory.getRetrofit().create(IApi.class);
 
         for (String id : mIdArr) {
-            observableList.add(api.getZhuanlanBeanRx(id));
+            observableList.add(api.getZhuanlanBean(id));
         }
 
         Disposable subscribe = Observable.merge(observableList)

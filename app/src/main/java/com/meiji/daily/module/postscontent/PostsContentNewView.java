@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.meiji.daily.InitApp;
 import com.meiji.daily.R;
 import com.meiji.daily.data.remote.IApi;
@@ -157,7 +158,10 @@ public class PostsContentNewView extends BaseNewFragment {
                 mIvHeader.setImageResource(R.drawable.error_image);
                 mIvHeader.setScaleType(ImageView.ScaleType.CENTER_CROP);
             } else {
-                Glide.with(this).load(titleImage).centerCrop().into(mIvHeader);
+                Glide.with(this)
+                        .load(titleImage)
+                        .apply(new RequestOptions().centerCrop())
+                        .into(mIvHeader);
             }
         }
     }

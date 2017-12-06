@@ -13,8 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.meiji.daily.module.base.BaseActivity;
-import com.meiji.daily.module.base.IBasePresenter;
+import com.meiji.daily.module.base.BaseNewActivity;
 import com.meiji.daily.util.SettingUtil;
 
 import de.psdev.licensesdialog.LicensesDialog;
@@ -29,7 +28,7 @@ import static com.meiji.daily.R.id.changelogView;
  * Created by Meiji on 2016/12/3.
  */
 
-public class AboutActivity extends BaseActivity<IBasePresenter> implements View.OnClickListener {
+public class AboutActivity extends BaseNewActivity implements View.OnClickListener {
 
     private TextView mTvVersion;
 
@@ -46,11 +45,6 @@ public class AboutActivity extends BaseActivity<IBasePresenter> implements View.
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    protected void initInjector() {
-
     }
 
     @Override

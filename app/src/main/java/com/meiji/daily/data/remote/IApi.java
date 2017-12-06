@@ -7,7 +7,6 @@ import com.meiji.daily.bean.ZhuanlanBean;
 import java.util.List;
 
 import io.reactivex.Observable;
-import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -24,41 +23,6 @@ public interface IApi {
 
     String API_BASE = "https://zhuanlan.zhihu.com/";
 
-
-    /**
-     * 获取专栏信息
-     * https://zhuanlan.zhihu.com/api/columns/design
-     *
-     * @param slug 专栏ID
-     * @return
-     */
-    @GET("api/columns/{slug}")
-    Call<ZhuanlanBean> getZhuanlanBean(@Path("slug") String slug);
-
-    /**
-     * 获取专栏文章
-     * https://zhuanlan.zhihu.com/api/columns/design/posts?limit=10&offset=10
-     *
-     * @param slug   专栏ID
-     * @param offset 偏移量
-     * @return
-     */
-    @GET("api/columns/{slug}/posts?limit=10")
-    Call<List<PostsListBean>> getPostsList(
-            @Path("slug") String slug,
-            @Query("offset") int offset);
-
-    /**
-     * 获取文章内容
-     * https://zhuanlan.zhihu.com/api/posts/25982605
-     *
-     * @param slug 文章ID
-     * @return
-     */
-    @GET("api/posts/{slug}")
-    Call<PostsContentBean> getPostsContentBean(@Path("slug") int slug);
-
-
     /**
      * 获取专栏信息 Retrofit + RxJava
      * https://zhuanlan.zhihu.com/api/columns/design
@@ -67,7 +31,7 @@ public interface IApi {
      * @return
      */
     @GET("api/columns/{slug}")
-    Observable<ZhuanlanBean> getZhuanlanBeanRx(@Path("slug") String slug);
+    Observable<ZhuanlanBean> getZhuanlanBean(@Path("slug") String slug);
 
     /**
      * 获取专栏文章 Retrofit + RxJava
@@ -78,7 +42,7 @@ public interface IApi {
      * @return
      */
     @GET("api/columns/{slug}/posts?limit=10")
-    Observable<List<PostsListBean>> getPostsListRx(
+    Observable<List<PostsListBean>> getPostsList(
             @Path("slug") String slug,
             @Query("offset") int offset);
 
@@ -90,5 +54,5 @@ public interface IApi {
      * @return
      */
     @GET("api/posts/{slug}")
-    Observable<PostsContentBean> getPostsContentBeanRx(@Path("slug") int slug);
+    Observable<PostsContentBean> getPostsContentBean(@Path("slug") int slug);
 }

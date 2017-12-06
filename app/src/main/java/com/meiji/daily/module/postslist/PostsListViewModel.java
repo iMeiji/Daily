@@ -10,10 +10,10 @@ import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
 
-import com.meiji.daily.RetrofitFactory;
 import com.meiji.daily.bean.PostsListBean;
 import com.meiji.daily.data.remote.IApi;
 import com.meiji.daily.util.ErrorAction;
+import com.meiji.daily.util.RetrofitFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +82,7 @@ public class PostsListViewModel extends AndroidViewModel {
 
         final MutableLiveData<List<PostsListBean>> liveData = new MutableLiveData<>();
 
-        Disposable subscribe = RetrofitFactory.getRetrofit().create(IApi.class).getPostsListRx(mSlug, offset)
+        Disposable subscribe = RetrofitFactory.getRetrofit().create(IApi.class).getPostsList(mSlug, offset)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<List<PostsListBean>>() {

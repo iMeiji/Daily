@@ -9,11 +9,11 @@ import android.support.annotation.NonNull;
 
 import com.meiji.daily.Constant;
 import com.meiji.daily.InitApp;
-import com.meiji.daily.RetrofitFactory;
-import com.meiji.daily.RxBus;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.data.remote.IApi;
 import com.meiji.daily.util.ErrorAction;
+import com.meiji.daily.util.RetrofitFactory;
+import com.meiji.daily.util.RxBus;
 
 import java.util.List;
 
@@ -92,7 +92,7 @@ public class UserAddViewModel extends AndroidViewModel {
     void addItem(final String input) {
         mIsLoading.setValue(true);
 
-        Disposable subscribe = RetrofitFactory.getRetrofit().create(IApi.class).getZhuanlanBeanRx(input)
+        Disposable subscribe = RetrofitFactory.getRetrofit().create(IApi.class).getZhuanlanBean(input)
                 .subscribeOn(Schedulers.io())
                 .doOnNext(new Consumer<ZhuanlanBean>() {
                     @Override

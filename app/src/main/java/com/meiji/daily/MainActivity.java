@@ -30,16 +30,16 @@ import android.widget.CompoundButton;
 import com.afollestad.materialdialogs.Theme;
 import com.afollestad.materialdialogs.color.CircleView;
 import com.afollestad.materialdialogs.color.ColorChooserDialog;
-import com.meiji.daily.module.base.BaseActivity;
-import com.meiji.daily.module.base.IBasePresenter;
+import com.meiji.daily.module.base.BaseNewActivity;
 import com.meiji.daily.module.useradd.UserAddNewView;
 import com.meiji.daily.module.zhuanlan.ZhuanlanNewView;
+import com.meiji.daily.util.RxBus;
 import com.meiji.daily.util.SettingUtil;
 
 import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
 
-public class MainActivity extends BaseActivity<IBasePresenter>
+public class MainActivity extends BaseNewActivity
         implements NavigationView.OnNavigationItemSelectedListener, ColorChooserDialog.ColorCallback {
 
     private static final String TAG = "MainActivity";
@@ -77,11 +77,6 @@ public class MainActivity extends BaseActivity<IBasePresenter>
     protected void initData() {
         replaceFragment(Constant.TYPE_PRODUCT);
         mNavigationView.setCheckedItem(R.id.nav_product);
-    }
-
-    @Override
-    protected void initInjector() {
-
     }
 
     @Override

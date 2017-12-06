@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.meiji.daily.R;
 import com.meiji.daily.bean.PostsListBean;
 import com.meiji.daily.module.postscontent.PostsContentActivity;
@@ -40,7 +41,11 @@ public class PostsListViewBinder extends ItemViewBinder<PostsListBean, PostsList
 
         if (!TextUtils.isEmpty(titleImage)) {
             titleImage = item.getTitleImage().replace("r.jpg", "b.jpg");
-            Glide.with(holder.iv_titleImage.getContext()).load(titleImage).asBitmap().centerCrop().into(holder.iv_titleImage);
+            Glide.with(holder.iv_titleImage.getContext())
+                    .asBitmap()
+                    .apply(new RequestOptions().centerCrop())
+                    .load(titleImage)
+                    .into(holder.iv_titleImage);
         } else {
             holder.iv_titleImage.setImageResource(R.drawable.error_image);
             holder.iv_titleImage.setScaleType(ImageView.ScaleType.CENTER_CROP);

@@ -23,16 +23,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".module.postslist.PostsListView"
-            android:label="@string/zhuanlan"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
-        <activity
-            android:name=".module.postscontent.PostsContentView"
-            android:label="@string/postslist"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
-        <activity
             android:name=".AddActivity"
             android:label="@string/add_zhuanlan"
             android:theme="@style/AppTheme.NoActionBar">

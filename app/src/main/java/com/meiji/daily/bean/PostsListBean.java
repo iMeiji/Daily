@@ -28,10 +28,6 @@ public class PostsListBean {
      * likesCount : 84
      */
 
-    public static final String POSTSLISTBEAN_TITLEIMAGE = "titleImage";
-    public static final String POSTSLISTBEAN_TITLE = "title";
-    public static final String POSTSLISTBEAN_SLUG = "slug";
-
     private boolean isTitleImageFullScreen;
     private String rating;
     private String sourceUrl;
