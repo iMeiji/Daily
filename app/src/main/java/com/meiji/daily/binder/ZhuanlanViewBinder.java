@@ -1,5 +1,6 @@
 package com.meiji.daily.binder;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -33,6 +34,7 @@ public class ZhuanlanViewBinder extends ItemViewBinder<ZhuanlanBean, ZhuanlanVie
 
     @Override
     protected void onBindViewHolder(@NonNull ZhuanlanViewBinder.ViewHolder holder, @NonNull final ZhuanlanBean item) {
+        final Context context = holder.itemView.getContext();
         String followersCount = item.getFollowersCount() + "人关注TA";
         String postsCount = item.getPostsCount() + "篇文章";
         String avatarUrl = item.getAvatar().getTemplate();
@@ -41,7 +43,7 @@ public class ZhuanlanViewBinder extends ItemViewBinder<ZhuanlanBean, ZhuanlanVie
             avatarUrl = avatarUrl
                     .replace("{id}", item.getAvatar().getId())
                     .replace("{size}", "m");
-            Glide.with(holder.cv_avatar.getContext())
+            Glide.with(context)
                     .asBitmap()
                     .apply(new RequestOptions().centerCrop())
                     .load(avatarUrl)
@@ -54,7 +56,7 @@ public class ZhuanlanViewBinder extends ItemViewBinder<ZhuanlanBean, ZhuanlanVie
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PostsListActivity.start(item.getSlug(), item.getName(), item.getPostsCount());
+                PostsListActivity.start(context, item.getSlug(), item.getName(), item.getPostsCount());
             }
         });
     }

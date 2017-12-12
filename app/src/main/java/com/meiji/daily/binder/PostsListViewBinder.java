@@ -1,5 +1,6 @@
 package com.meiji.daily.binder;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -33,6 +34,7 @@ public class PostsListViewBinder extends ItemViewBinder<PostsListBean, PostsList
 
     @Override
     protected void onBindViewHolder(@NonNull PostsListViewBinder.ViewHolder holder, @NonNull final PostsListBean item) {
+        final Context context = holder.itemView.getContext();
         String publishedTime = item.getPublishedTime().substring(0, 10);
         String likesCount = item.getLikesCount() + "赞";
         String commentsCount = item.getCommentsCount() + "条评论";
@@ -41,7 +43,7 @@ public class PostsListViewBinder extends ItemViewBinder<PostsListBean, PostsList
 
         if (!TextUtils.isEmpty(titleImage)) {
             titleImage = item.getTitleImage().replace("r.jpg", "b.jpg");
-            Glide.with(holder.iv_titleImage.getContext())
+            Glide.with(context)
                     .asBitmap()
                     .apply(new RequestOptions().centerCrop())
                     .load(titleImage)
@@ -57,7 +59,7 @@ public class PostsListViewBinder extends ItemViewBinder<PostsListBean, PostsList
         holder.root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PostsContentActivity.start(item.getTitleImage(), item.getTitle(), item.getSlug());
+                PostsContentActivity.start(context, item.getTitleImage(), item.getTitle(), item.getSlug());
             }
         });
     }

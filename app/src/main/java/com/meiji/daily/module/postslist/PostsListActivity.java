@@ -1,8 +1,9 @@
 package com.meiji.daily.module.postslist;
 
+import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 
-import com.meiji.daily.InitApp;
 import com.meiji.daily.R;
 import com.meiji.daily.module.base.BaseNewActivity;
 
@@ -17,12 +18,12 @@ public class PostsListActivity extends BaseNewActivity {
     private static final String EXTRA_POSTSCOUNT = "EXTRA_POSTSCOUNT";
 
 
-    public static void start(String slug, String title, int postsCount) {
-        InitApp.sAppContext.startActivity(new Intent(InitApp.sAppContext, PostsListActivity.class)
+    public static void start(@NonNull Context context, @NonNull String slug, @NonNull String title, int postsCount) {
+        Intent starter = new Intent(context, PostsListActivity.class)
                 .putExtra(EXTRA_SLUG, slug)
                 .putExtra(EXTRA_NAME, title)
-                .putExtra(EXTRA_POSTSCOUNT, postsCount)
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                .putExtra(EXTRA_POSTSCOUNT, postsCount);
+        context.startActivity(starter);
     }
 
     @Override

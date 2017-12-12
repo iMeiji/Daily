@@ -1,9 +1,11 @@
 package com.meiji.daily;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -31,6 +33,11 @@ import static com.meiji.daily.R.id.changelogView;
 public class AboutActivity extends BaseNewActivity implements View.OnClickListener {
 
     private TextView mTvVersion;
+
+    public static void start(@NonNull Context context) {
+        Intent starter = new Intent(context, AboutActivity.class);
+        context.startActivity(starter);
+    }
 
     @Override
     protected int attachLayoutId() {

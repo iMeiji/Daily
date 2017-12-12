@@ -1,8 +1,9 @@
 package com.meiji.daily.module.postscontent;
 
+import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 
-import com.meiji.daily.InitApp;
 import com.meiji.daily.R;
 import com.meiji.daily.module.base.BaseNewActivity;
 
@@ -16,12 +17,12 @@ public class PostsContentActivity extends BaseNewActivity {
     private static final String EXTRA_TITLE = "EXTRA_TITLE";
     private static final String EXTRA_SLUG = "EXTRA_SLUG";
 
-    public static void start(String titleImage, String title, int slug) {
-        Intent starter = new Intent(InitApp.sAppContext, PostsContentActivity.class);
+    public static void start(@NonNull Context context, @NonNull String titleImage, @NonNull String title, int slug) {
+        Intent starter = new Intent(context, PostsContentActivity.class);
         starter.putExtra(EXTRA_TITLEIMAGE, titleImage);
         starter.putExtra(EXTRA_TITLE, title);
         starter.putExtra(EXTRA_SLUG, slug);
-        InitApp.sAppContext.startActivity(starter);
+        context.startActivity(starter);
     }
 
     @Override
