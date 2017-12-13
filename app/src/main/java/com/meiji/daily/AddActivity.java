@@ -19,9 +19,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
@@ -73,14 +70,7 @@ public class AddActivity extends AppCompatActivity {
         final Matcher matcher = Pattern.compile(regex).matcher(shareText);
         if (matcher.find()) {
             final String slug = matcher.group(1).toLowerCase();
-            Disposable subscribe = Observable
-                    .create(new ObservableOnSubscribe<List<ZhuanlanBean>>() {
-                        @Override
-                        public void subscribe(ObservableEmitter<List<ZhuanlanBean>> e) throws Exception {
-                            List<ZhuanlanBean> query = InitApp.sDatabase.ZhuanlanNewDao().query(Constant.TYPE_USERADD);
-                            e.onNext(query);
-                        }
-                    })
+            Disposable subscribe = InitApp.sDatabase.ZhuanlanNewDao().query(Constant.TYPE_USERADD)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<List<ZhuanlanBean>>() {
@@ -96,9 +86,8 @@ public class AddActivity extends AppCompatActivity {
                     });
             mDisposable.add(subscribe);
 
-            IApi IApi = RetrofitFactory.getRetrofit().create(IApi.class);
-            Observable<ZhuanlanBean> observable = IApi.getZhuanlanBean(slug);
-            observable.subscribeOn(Schedulers.io())
+            Disposable disposable = RetrofitFactory.getRetrofit().create(IApi.class).getZhuanlanBean(slug)
+                    .subscribeOn(Schedulers.io())
                     .map(new Function<ZhuanlanBean, Boolean>() {
                         @Override
                         public Boolean apply(ZhuanlanBean bean) throws Exception {
@@ -123,7 +112,7 @@ public class AddActivity extends AppCompatActivity {
                             onFinish(getString(R.string.add_zhuanlan_id_error));
                         }
                     });
-            mDisposable.add(subscribe);
+            mDisposable.add(disposable);
         } else {
             onFinish(getString(R.string.incorrect_link));
         }

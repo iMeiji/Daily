@@ -16,13 +16,12 @@ import com.meiji.daily.util.ErrorAction;
 import com.meiji.daily.util.RetrofitFactory;
 import com.meiji.daily.util.RxBus;
 
-import org.reactivestreams.Publisher;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Flowable;
-import io.reactivex.Observable;
+import io.reactivex.Maybe;
+import io.reactivex.MaybeSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -39,7 +38,7 @@ public class ZhuanlanViewModel extends AndroidViewModel {
     public static final String TAG = "ZhuanlanViewModel";
     private int mType;
     private String[] mIdArr;
-    private Observable<Boolean> mRxBus;
+    private Flowable<Boolean> mRxBus;
     private MutableLiveData<Boolean> mIsLoading;
     private MutableLiveData<Boolean> mIsRefreshUI;
     private MutableLiveData<List<ZhuanlanBean>> mList;
@@ -75,16 +74,16 @@ public class ZhuanlanViewModel extends AndroidViewModel {
     }
 
     void handleData() {
-        Disposable subscribe = InitApp.sDatabase.ZhuanlanNewDao().queryRx(mType)
+        Disposable subscribe = InitApp.sDatabase.ZhuanlanNewDao().query(mType)
                 .subscribeOn(Schedulers.io())
-                .switchMap(new Function<List<ZhuanlanBean>, Publisher<List<ZhuanlanBean>>>() {
+                .flatMap(new Function<List<ZhuanlanBean>, MaybeSource<List<ZhuanlanBean>>>() {
                     @Override
-                    public Publisher<List<ZhuanlanBean>> apply(List<ZhuanlanBean> list) throws Exception {
+                    public MaybeSource<List<ZhuanlanBean>> apply(List<ZhuanlanBean> list) throws Exception {
                         if (null != list && list.size() > 0) {
-                            return Flowable.just(list);
+                            return Maybe.just(list);
                         } else {
                             list = retrofitRequest();
-                            return Flowable.just(list);
+                            return Maybe.just(list);
                         }
                     }
                 })
@@ -148,14 +147,14 @@ public class ZhuanlanViewModel extends AndroidViewModel {
         }
 
         final List<ZhuanlanBean> list = new ArrayList<>();
-        final List<Observable<ZhuanlanBean>> observableList = new ArrayList<>();
+        final List<Maybe<ZhuanlanBean>> maybeList = new ArrayList<>();
         final IApi api = RetrofitFactory.getRetrofit().create(IApi.class);
 
         for (String id : mIdArr) {
-            observableList.add(api.getZhuanlanBean(id));
+            maybeList.add(api.getZhuanlanBean(id));
         }
 
-        Disposable subscribe = Observable.merge(observableList)
+        Disposable subscribe = Maybe.merge(maybeList)
                 .subscribe(new Consumer<ZhuanlanBean>() {
                     @Override
                     public void accept(ZhuanlanBean bean) throws Exception {

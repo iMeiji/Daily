@@ -17,9 +17,10 @@ import com.meiji.daily.util.RxBus;
 
 import java.util.List;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Flowable;
+import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -32,7 +33,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public class UserAddViewModel extends AndroidViewModel {
 
-    private Observable<Boolean> mRxBus;
+    private Flowable<Boolean> mRxBus;
     private MutableLiveData<Boolean> mIsLoading;
     private MutableLiveData<Boolean> mIsRefreshUI;
     private MutableLiveData<Boolean> mIsAddResult;
@@ -76,7 +77,7 @@ public class UserAddViewModel extends AndroidViewModel {
     void handleData() {
         mIsLoading.setValue(true);
 
-        Disposable subscribe = InitApp.sDatabase.ZhuanlanNewDao().queryRx(Constant.TYPE_USERADD)
+        Disposable subscribe = InitApp.sDatabase.ZhuanlanNewDao().query(Constant.TYPE_USERADD)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<List<ZhuanlanBean>>() {
@@ -94,7 +95,7 @@ public class UserAddViewModel extends AndroidViewModel {
 
         Disposable subscribe = RetrofitFactory.getRetrofit().create(IApi.class).getZhuanlanBean(input)
                 .subscribeOn(Schedulers.io())
-                .doOnNext(new Consumer<ZhuanlanBean>() {
+                .doOnSuccess(new Consumer<ZhuanlanBean>() {
                     @Override
                     public void accept(ZhuanlanBean bean) throws Exception {
                         if (bean != null) {
@@ -132,9 +133,9 @@ public class UserAddViewModel extends AndroidViewModel {
     }
 
     void deleteItem(final ZhuanlanBean bean) {
-        Disposable subscribe = Observable.create(new ObservableOnSubscribe<Object>() {
+        Disposable subscribe = Single.create(new SingleOnSubscribe<Object>() {
             @Override
-            public void subscribe(@io.reactivex.annotations.NonNull ObservableEmitter<Object> e) throws Exception {
+            public void subscribe(SingleEmitter<Object> e) throws Exception {
                 InitApp.sDatabase.ZhuanlanNewDao().delete(bean.getSlug());
             }
         }).subscribeOn(Schedulers.io()).subscribe();

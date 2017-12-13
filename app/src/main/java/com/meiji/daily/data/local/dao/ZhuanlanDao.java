@@ -13,7 +13,7 @@ import com.meiji.daily.bean.ZhuanlanBean;
 
 import java.util.List;
 
-import io.reactivex.Flowable;
+import io.reactivex.Maybe;
 
 @Dao
 public interface ZhuanlanDao {
@@ -24,11 +24,8 @@ public interface ZhuanlanDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(List<ZhuanlanBean> list);
 
-    @Query("SELECT * FROM zhuanlans WHERE type = :type ")
-    List<ZhuanlanBean> query(int type);
-
-    @Query("SELECT * FROM zhuanlans WHERE type = :type ")
-    Flowable<List<ZhuanlanBean>> queryRx(int type);
+    @Query("SELECT * FROM zhuanlans WHERE type = :type")
+    Maybe<List<ZhuanlanBean>> query(int type);
 
     @Query("DELETE FROM zhuanlans WHERE slug = :slug")
     void delete(String slug);

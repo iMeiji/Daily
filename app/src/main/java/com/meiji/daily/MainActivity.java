@@ -35,7 +35,7 @@ import com.meiji.daily.module.zhuanlan.ZhuanlanView;
 import com.meiji.daily.util.RxBus;
 import com.meiji.daily.util.SettingUtil;
 
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 import io.reactivex.functions.Consumer;
 
 public class MainActivity extends BaseActivity
@@ -45,7 +45,7 @@ public class MainActivity extends BaseActivity
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
     private long mExitTime;
-    private Observable<Boolean> mRxBus;
+    private Flowable<Boolean> mRxBus;
     private SwitchCompat mSwitchCompat;
 
     @Override

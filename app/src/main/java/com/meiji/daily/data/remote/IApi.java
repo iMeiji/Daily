@@ -6,7 +6,7 @@ import com.meiji.daily.bean.ZhuanlanBean;
 
 import java.util.List;
 
-import io.reactivex.Observable;
+import io.reactivex.Maybe;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -31,7 +31,7 @@ public interface IApi {
      * @return
      */
     @GET("api/columns/{slug}")
-    Observable<ZhuanlanBean> getZhuanlanBean(@Path("slug") String slug);
+    Maybe<ZhuanlanBean> getZhuanlanBean(@Path("slug") String slug);
 
     /**
      * 获取专栏文章 Retrofit + RxJava
@@ -42,7 +42,7 @@ public interface IApi {
      * @return
      */
     @GET("api/columns/{slug}/posts?limit=10")
-    Observable<List<PostsListBean>> getPostsList(
+    Maybe<List<PostsListBean>> getPostsList(
             @Path("slug") String slug,
             @Query("offset") int offset);
 
@@ -54,5 +54,5 @@ public interface IApi {
      * @return
      */
     @GET("api/posts/{slug}")
-    Observable<PostsContentBean> getPostsContentBean(@Path("slug") int slug);
+    Maybe<PostsContentBean> getPostsContentBean(@Path("slug") int slug);
 }
