@@ -177,7 +177,7 @@ public class ZhuanlanViewModel extends AndroidViewModel {
         private final Application mApplication;
         private final int mType;
 
-        public Factory(@NonNull Application application, int type) {
+        Factory(@NonNull Application application, int type) {
             this.mApplication = application;
             this.mType = type;
         }

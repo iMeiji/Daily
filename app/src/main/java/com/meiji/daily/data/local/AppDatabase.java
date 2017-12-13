@@ -9,7 +9,7 @@ import android.support.annotation.VisibleForTesting;
 
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.data.local.converter.ZhuanlanBeanConverter;
-import com.meiji.daily.data.local.dao.ZhuanlanNewDao;
+import com.meiji.daily.data.local.dao.ZhuanlanDao;
 
 /**
  * Created by Meiji on 2017/11/28.
@@ -24,7 +24,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public static final String DATABASE_NAME = "Daily";
     private static volatile AppDatabase sInstance;
 
-    public static AppDatabase getsInstance(final Context context) {
+    public static AppDatabase getInstance(final Context context) {
         if (sInstance == null) {
             synchronized (AppDatabase.class) {
                 if (sInstance == null) {
@@ -38,5 +38,5 @@ public abstract class AppDatabase extends RoomDatabase {
         return sInstance;
     }
 
-    public abstract ZhuanlanNewDao ZhuanlanNewDao();
+    public abstract ZhuanlanDao ZhuanlanNewDao();
 }

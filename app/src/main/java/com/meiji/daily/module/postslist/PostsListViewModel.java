@@ -66,19 +66,19 @@ public class PostsListViewModel extends AndroidViewModel {
         });
     }
 
-    public LiveData<List<PostsListBean>> getListLiveData() {
+    LiveData<List<PostsListBean>> getListLiveData() {
         return mListLiveData;
     }
 
-    public MutableLiveData<Boolean> isLoading() {
+    MutableLiveData<Boolean> isLoading() {
         return mIsLoading;
     }
 
-    public MutableLiveData<Boolean> isEnd() {
+    MutableLiveData<Boolean> isEnd() {
         return mIsEnd;
     }
 
-    LiveData<List<PostsListBean>> handleData(final int offset) {
+    private LiveData<List<PostsListBean>> handleData(final int offset) {
 
         final MutableLiveData<List<PostsListBean>> liveData = new MutableLiveData<>();
 
@@ -102,7 +102,7 @@ public class PostsListViewModel extends AndroidViewModel {
         return liveData;
     }
 
-    public void doRefresh() {
+    void doRefresh() {
         if (mList != null) {
             mList.clear();
         }
@@ -134,7 +134,7 @@ public class PostsListViewModel extends AndroidViewModel {
         private final String mSlug;
         private final int mPostCount;
 
-        public Factory(@NonNull Application application, @NonNull String slug, int postCount) {
+        Factory(@NonNull Application application, @NonNull String slug, int postCount) {
             this.mApplication = application;
             this.mSlug = slug;
             this.mPostCount = postCount;

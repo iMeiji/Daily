@@ -27,14 +27,14 @@ import com.bumptech.glide.request.RequestOptions;
 import com.meiji.daily.InitApp;
 import com.meiji.daily.R;
 import com.meiji.daily.data.remote.IApi;
-import com.meiji.daily.module.base.BaseNewFragment;
+import com.meiji.daily.module.base.BaseFragment;
 import com.meiji.daily.util.SettingUtil;
 
 /**
  * Created by Meiji on 2017/12/6.
  */
 
-public class PostsContentNewView extends BaseNewFragment {
+public class PostsContentView extends BaseFragment {
 
     private static final String ARGUMENT_TITLEIMAGE = "ARGUMENT_TITLEIMAGE";
     private static final String ARGUMENT_TITLE = "ARGUMENT_TITLE";
@@ -49,12 +49,12 @@ public class PostsContentNewView extends BaseNewFragment {
     private int mSlug;
     private PostsContentViewModel mModel;
 
-    public static PostsContentNewView newInstance(String titleImage, String title, int slug) {
+    public static PostsContentView newInstance(String titleImage, String title, int slug) {
         Bundle args = new Bundle();
         args.putString(ARGUMENT_TITLEIMAGE, titleImage);
         args.putString(ARGUMENT_TITLE, title);
         args.putInt(ARGUMENT_SLUG, slug);
-        PostsContentNewView fragment = new PostsContentNewView();
+        PostsContentView fragment = new PostsContentView();
         fragment.setArguments(args);
         return fragment;
     }

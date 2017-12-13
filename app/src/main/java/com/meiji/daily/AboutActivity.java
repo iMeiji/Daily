@@ -1,12 +1,10 @@
 package com.meiji.daily;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,8 +12,10 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.meiji.daily.module.base.BaseNewActivity;
+import com.afollestad.materialdialogs.Theme;
+import com.meiji.daily.module.base.BaseActivity;
 import com.meiji.daily.util.SettingUtil;
 
 import de.psdev.licensesdialog.LicensesDialog;
@@ -30,9 +30,10 @@ import static com.meiji.daily.R.id.changelogView;
  * Created by Meiji on 2016/12/3.
  */
 
-public class AboutActivity extends BaseNewActivity implements View.OnClickListener {
+public class AboutActivity extends BaseActivity implements View.OnClickListener {
 
     private TextView mTvVersion;
+    private SettingUtil settingUtil = SettingUtil.getInstance();
 
     public static void start(@NonNull Context context) {
         Intent starter = new Intent(context, AboutActivity.class);
@@ -78,11 +79,14 @@ public class AboutActivity extends BaseNewActivity implements View.OnClickListen
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.changelog_url))));
                 break;
             case R.id.developersView:
-                new MaterialDialog.Builder(this)
+                MaterialDialog devDialog = new MaterialDialog.Builder(this)
                         .title(R.string.about_developers_label)
                         .content(R.string.about_developers)
+                        .theme(settingUtil.getIsNightMode() ? Theme.DARK : Theme.LIGHT)
                         .positiveText(android.R.string.ok)
-                        .show();
+                        .build();
+                devDialog.getActionButton(DialogAction.POSITIVE).setTextColor(settingUtil.getColor());
+                devDialog.show();
                 break;
             case R.id.licensesView:
                 createLicenseDialog();
@@ -91,24 +95,14 @@ public class AboutActivity extends BaseNewActivity implements View.OnClickListen
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.source_code_url))));
                 break;
             case R.id.copyRightView:
-                AlertDialog dialog = new AlertDialog.Builder(this)
-                        .setTitle(R.string.action_copyright)
-                        .setMessage(R.string.copyright_content)
-                        .setPositiveButton(R.string.md_got_it, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                            }
-                        })
-                        .show();
-                dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(SettingUtil.getInstance().getColor());
-                dialog.show();
-//                new MaterialDialog.Builder(this)
-//                        .title(R.string.action_copyright)
-//                        .content(R.string.copyright_content)
-//                        .positiveText(R.string.md_got_it)
-//                        .build()
-//                        .show();
+                MaterialDialog copyRightDialog = new MaterialDialog.Builder(this)
+                        .title(R.string.action_copyright)
+                        .theme(settingUtil.getIsNightMode() ? Theme.DARK : Theme.LIGHT)
+                        .content(R.string.copyright_content)
+                        .positiveText(R.string.md_got_it)
+                        .build();
+                copyRightDialog.getActionButton(DialogAction.POSITIVE).setTextColor(settingUtil.getColor());
+                copyRightDialog.show();
                 break;
         }
     }

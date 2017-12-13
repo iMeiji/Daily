@@ -16,7 +16,7 @@ import java.util.List;
 import io.reactivex.Flowable;
 
 @Dao
-public interface ZhuanlanNewDao {
+public interface ZhuanlanDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     long insert(ZhuanlanBean zhuanlanBean);

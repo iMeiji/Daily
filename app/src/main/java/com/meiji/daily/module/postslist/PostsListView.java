@@ -17,8 +17,7 @@ import com.meiji.daily.bean.FooterBean;
 import com.meiji.daily.bean.PostsListBean;
 import com.meiji.daily.binder.FooterViewBinder;
 import com.meiji.daily.binder.PostsListViewBinder;
-import com.meiji.daily.module.base.BaseNewActivity;
-import com.meiji.daily.module.base.BaseNewFragment;
+import com.meiji.daily.module.base.BaseFragment;
 import com.meiji.daily.util.DiffCallback;
 import com.meiji.daily.util.OnLoadMoreListener;
 import com.meiji.daily.util.SettingUtil;
@@ -33,7 +32,7 @@ import me.drakeet.multitype.MultiTypeAdapter;
  * Created by Meiji on 2017/12/5.
  */
 
-public class PostsListNewView extends BaseNewFragment implements SwipeRefreshLayout.OnRefreshListener {
+public class PostsListView extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = "PostsListView";
     private static final String ARGUMENT_SLUG = "ARGUMENT_SLUG";
@@ -51,13 +50,12 @@ public class PostsListNewView extends BaseNewFragment implements SwipeRefreshLay
     private boolean mCanloadmore;
     private PostsListViewModel mModel;
 
-    public static PostsListNewView newInstance(String slug, String title, int postsCount) {
-
+    public static PostsListView newInstance(String slug, String title, int postsCount) {
         Bundle args = new Bundle();
         args.putString(ARGUMENT_SLUG, slug);
         args.putString(ARGUMENT_NAME, title);
         args.putInt(ARGUMENT_POSTSCOUNT, postsCount);
-        PostsListNewView fragment = new PostsListNewView();
+        PostsListView fragment = new PostsListView();
         fragment.setArguments(args);
         return fragment;
     }
@@ -99,9 +97,7 @@ public class PostsListNewView extends BaseNewFragment implements SwipeRefreshLay
             mSlug = arguments.getString(ARGUMENT_SLUG);
             mTitle = arguments.getString(ARGUMENT_NAME);
             mPostCount = arguments.getInt(ARGUMENT_POSTSCOUNT, 0);
-            if (((BaseNewActivity) getContext()).getSupportActionBar() != null) {
-                initToolBar(mToolbar, true, mTitle);
-            }
+            initToolBar(mToolbar, true, mTitle);
         }
     }
 
@@ -145,7 +141,7 @@ public class PostsListNewView extends BaseNewFragment implements SwipeRefreshLay
         Items newItems = new Items(list);
         newItems.add(new FooterBean());
 
-        DiffCallback.create(mOldItems, newItems, DiffCallback.POSTSLIST, mAdapter);
+        DiffCallback.create(mOldItems, newItems, mAdapter);
         mOldItems.clear();
         mOldItems.addAll(newItems);
 

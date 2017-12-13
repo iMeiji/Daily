@@ -43,15 +43,15 @@ public class PostsContentViewModel extends AndroidViewModel {
         handleData(mSlug);
     }
 
-    public MutableLiveData<Boolean> isLoading() {
+    MutableLiveData<Boolean> isLoading() {
         return mIsLoading;
     }
 
-    public MutableLiveData<String> getHTML() {
+    MutableLiveData<String> getHTML() {
         return mHTML;
     }
 
-    void handleData(final int slug) {
+    private void handleData(final int slug) {
         mIsLoading.setValue(true);
 
         Disposable subscribe = RetrofitFactory.getRetrofit().create(IApi.class).getPostsContentBean(slug)
@@ -100,7 +100,7 @@ public class PostsContentViewModel extends AndroidViewModel {
         private final Application mApplication;
         private final int mSlug;
 
-        public Factory(@NonNull Application application, int slug) {
+        Factory(@NonNull Application application, int slug) {
             this.mApplication = application;
             this.mSlug = slug;
         }

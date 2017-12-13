@@ -50,7 +50,7 @@ public class UserAddViewModel extends AndroidViewModel {
         mIsRefreshUI.setValue(true);
     }
 
-    public UserAddViewModel(@NonNull Application application) {
+    UserAddViewModel(@NonNull Application application) {
         super(application);
 
         handleData();
@@ -61,15 +61,15 @@ public class UserAddViewModel extends AndroidViewModel {
         return mList;
     }
 
-    public MutableLiveData<Boolean> isRefreshUI() {
+    MutableLiveData<Boolean> isRefreshUI() {
         return mIsRefreshUI;
     }
 
-    public MutableLiveData<Boolean> isLoading() {
+    MutableLiveData<Boolean> isLoading() {
         return mIsLoading;
     }
 
-    public MutableLiveData<Boolean> isAddResult() {
+    MutableLiveData<Boolean> isAddResult() {
         return mIsAddResult;
     }
 
@@ -152,7 +152,7 @@ public class UserAddViewModel extends AndroidViewModel {
 
         final Application mApplication;
 
-        public Factory(@NonNull Application application) {
+        Factory(@NonNull Application application) {
             this.mApplication = application;
         }
 

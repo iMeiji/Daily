@@ -16,7 +16,7 @@ import com.meiji.daily.util.SettingUtil;
  * Created by Meiji on 2017/12/5.
  */
 
-public abstract class BaseNewActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity {
 
     /**
      * 绑定布局文件
@@ -54,7 +54,9 @@ public abstract class BaseNewActivity extends AppCompatActivity {
     protected void initToolBar(Toolbar toolbar, boolean homeAsUpEnabled, String title) {
         toolbar.setTitle(title);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(homeAsUpEnabled);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(homeAsUpEnabled);
+        }
     }
 
     @Override

@@ -30,7 +30,7 @@ import com.meiji.daily.InitApp;
 import com.meiji.daily.R;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.binder.ZhuanlanViewBinder;
-import com.meiji.daily.module.base.BaseNewFragment;
+import com.meiji.daily.module.base.BaseFragment;
 import com.meiji.daily.util.RecyclerViewUtil;
 import com.meiji.daily.util.SettingUtil;
 
@@ -42,7 +42,7 @@ import me.drakeet.multitype.MultiTypeAdapter;
  * Created by Meiji on 2017/12/4.
  */
 
-public class UserAddNewView extends BaseNewFragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class UserAddView extends BaseFragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     private TextView mTvDesc;
     private RecyclerView mRecyclerView;

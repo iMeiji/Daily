@@ -24,7 +24,7 @@ public class InitApp extends MultiDexApplication {
         super.onCreate();
         sAppContext = getApplicationContext();
         sGson = new Gson();
-        sDatabase = AppDatabase.getsInstance(this);
+        sDatabase = AppDatabase.getInstance(this);
         application = this;
         if (BuildConfig.DEBUG) {
             SdkManager.initStetho(this);

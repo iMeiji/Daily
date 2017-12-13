@@ -76,6 +76,23 @@ public class ZhuanlanBean {
     private List<?> pendingTopics;
     private int type;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        ZhuanlanBean that = (ZhuanlanBean) o;
+
+        return slug.equals(that.slug);
+    }
+
+    @Override
+    public int hashCode() {
+        return slug.hashCode();
+    }
+
     public int getType() {
         return type;
     }

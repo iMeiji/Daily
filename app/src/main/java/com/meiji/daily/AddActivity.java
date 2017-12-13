@@ -9,9 +9,11 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.data.remote.IApi;
 import com.meiji.daily.util.RetrofitFactory;
+import com.meiji.daily.util.SettingUtil;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -45,6 +47,7 @@ public class AddActivity extends AppCompatActivity {
         mDialog = new MaterialDialog.Builder(this)
                 .progress(true, 0)
                 .content(R.string.md_loading)
+                .theme(SettingUtil.getInstance().getIsNightMode() ? Theme.DARK : Theme.LIGHT)
                 .cancelable(true)
                 .build();
         mDialog.show();

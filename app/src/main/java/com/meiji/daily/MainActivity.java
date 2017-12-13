@@ -29,16 +29,16 @@ import android.widget.CompoundButton;
 import com.afollestad.materialdialogs.Theme;
 import com.afollestad.materialdialogs.color.CircleView;
 import com.afollestad.materialdialogs.color.ColorChooserDialog;
-import com.meiji.daily.module.base.BaseNewActivity;
-import com.meiji.daily.module.useradd.UserAddNewView;
-import com.meiji.daily.module.zhuanlan.ZhuanlanNewView;
+import com.meiji.daily.module.base.BaseActivity;
+import com.meiji.daily.module.useradd.UserAddView;
+import com.meiji.daily.module.zhuanlan.ZhuanlanView;
 import com.meiji.daily.util.RxBus;
 import com.meiji.daily.util.SettingUtil;
 
 import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
 
-public class MainActivity extends BaseNewActivity
+public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, ColorChooserDialog.ColorCallback {
 
     private static final String TAG = "MainActivity";
@@ -164,7 +164,7 @@ public class MainActivity extends BaseNewActivity
             replaceFragment(Constant.TYPE_ZHIHU);
 
         } else if (id == R.id.nav_user_add) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.content_main, new UserAddNewView()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.content_main, new UserAddView()).commit();
 
         } else if (id == R.id.nav_color_chooser) {
             createColorChooserDialog();
@@ -192,7 +192,7 @@ public class MainActivity extends BaseNewActivity
     }
 
     private void replaceFragment(int type) {
-        ZhuanlanNewView fragment = ZhuanlanNewView.newInstance(type);
+        ZhuanlanView fragment = ZhuanlanView.newInstance(type);
         getSupportFragmentManager().beginTransaction().replace(R.id.content_main, fragment).commit();
     }
 

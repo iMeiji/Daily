@@ -49,6 +49,23 @@ public class PostsListBean {
     private int commentsCount;
     private int likesCount;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        PostsListBean that = (PostsListBean) o;
+
+        return slug == that.slug;
+    }
+
+    @Override
+    public int hashCode() {
+        return slug;
+    }
+
     public boolean isIsTitleImageFullScreen() {
         return isTitleImageFullScreen;
     }

@@ -19,7 +19,7 @@ import com.meiji.daily.InitApp;
 import com.meiji.daily.R;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.binder.ZhuanlanViewBinder;
-import com.meiji.daily.module.base.BaseNewFragment;
+import com.meiji.daily.module.base.BaseFragment;
 import com.meiji.daily.util.RecyclerViewUtil;
 import com.meiji.daily.util.SettingUtil;
 
@@ -32,9 +32,9 @@ import me.drakeet.multitype.MultiTypeAdapter;
  * Created by Meiji on 2017/11/29.
  */
 
-public class ZhuanlanNewView extends BaseNewFragment implements SwipeRefreshLayout.OnRefreshListener {
+public class ZhuanlanView extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    private static final String TAG = "ZhuanlanNewView";
+    private static final String TAG = "ZhuanlanView";
     private static final String ARGUMENT_TYPE = "ARGUMENT_TYPE";
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -43,10 +43,10 @@ public class ZhuanlanNewView extends BaseNewFragment implements SwipeRefreshLayo
     private ZhuanlanViewModel mModel;
     private MultiTypeAdapter mAdapter;
 
-    public static ZhuanlanNewView newInstance(int type) {
+    public static ZhuanlanView newInstance(int type) {
         Bundle args = new Bundle();
         args.putInt(ARGUMENT_TYPE, type);
-        ZhuanlanNewView fragment = new ZhuanlanNewView();
+        ZhuanlanView fragment = new ZhuanlanView();
         fragment.setArguments(args);
         return fragment;
     }

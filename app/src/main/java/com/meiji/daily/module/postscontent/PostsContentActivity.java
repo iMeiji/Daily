@@ -5,13 +5,13 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import com.meiji.daily.R;
-import com.meiji.daily.module.base.BaseNewActivity;
+import com.meiji.daily.module.base.BaseActivity;
 
 /**
  * Created by Meiji on 2017/12/6.
  */
 
-public class PostsContentActivity extends BaseNewActivity {
+public class PostsContentActivity extends BaseActivity {
 
     private static final String EXTRA_TITLEIMAGE = "EXTRA_TITLEIMAGE";
     private static final String EXTRA_TITLE = "EXTRA_TITLE";
@@ -50,7 +50,7 @@ public class PostsContentActivity extends BaseNewActivity {
         }
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.container, PostsContentNewView.newInstance(titleImage, title, slug))
+                .replace(R.id.container, PostsContentView.newInstance(titleImage, title, slug))
                 .commit();
     }
 }
