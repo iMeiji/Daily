@@ -10,8 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
+import com.meiji.daily.GlideApp;
 import com.meiji.daily.R;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.module.postslist.PostsListActivity;
@@ -43,10 +42,10 @@ public class ZhuanlanViewBinder extends ItemViewBinder<ZhuanlanBean, ZhuanlanVie
             avatarUrl = avatarUrl
                     .replace("{id}", item.getAvatar().getId())
                     .replace("{size}", "m");
-            Glide.with(context)
-                    .asBitmap()
-                    .apply(new RequestOptions().centerCrop())
+            GlideApp.with(context)
                     .load(avatarUrl)
+                    .centerCrop()
+                    .error(R.color.viewBackground)
                     .into(holder.cv_avatar);
         }
         holder.tv_name.setText(item.getName());

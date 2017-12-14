@@ -22,8 +22,8 @@ import android.widget.ImageView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.meiji.daily.GlideApp;
 import com.meiji.daily.InitApp;
 import com.meiji.daily.R;
 import com.meiji.daily.data.remote.IApi;
@@ -158,9 +158,11 @@ public class PostsContentView extends BaseFragment {
                 mIvHeader.setImageResource(R.drawable.error_image);
                 mIvHeader.setScaleType(ImageView.ScaleType.CENTER_CROP);
             } else {
-                Glide.with(this)
+                GlideApp.with(this)
                         .load(titleImage)
-                        .apply(new RequestOptions().centerCrop())
+                        .centerCrop()
+                        .error(R.color.viewBackground)
+                        .transition(new DrawableTransitionOptions().crossFade())
                         .into(mIvHeader);
             }
         }

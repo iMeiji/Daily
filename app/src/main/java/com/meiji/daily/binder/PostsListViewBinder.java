@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.meiji.daily.GlideApp;
 import com.meiji.daily.R;
 import com.meiji.daily.bean.PostsListBean;
 import com.meiji.daily.module.postscontent.PostsContentActivity;
@@ -43,10 +43,11 @@ public class PostsListViewBinder extends ItemViewBinder<PostsListBean, PostsList
 
         if (!TextUtils.isEmpty(titleImage)) {
             titleImage = item.getTitleImage().replace("r.jpg", "b.jpg");
-            Glide.with(context)
-                    .asBitmap()
-                    .apply(new RequestOptions().centerCrop())
+            GlideApp.with(context)
                     .load(titleImage)
+                    .centerCrop()
+                    .error(R.color.viewBackground)
+                    .transition(new DrawableTransitionOptions().crossFade())
                     .into(holder.iv_titleImage);
         } else {
             holder.iv_titleImage.setImageResource(R.drawable.error_image);
