@@ -15,6 +15,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -73,7 +74,7 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    protected void initData() {
+    protected void initData(Bundle savedInstanceState) {
         replaceFragment(Constant.TYPE_PRODUCT);
         mNavigationView.setCheckedItem(R.id.nav_product);
     }
@@ -164,7 +165,7 @@ public class MainActivity extends BaseActivity
             replaceFragment(Constant.TYPE_ZHIHU);
 
         } else if (id == R.id.nav_user_add) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.content_main, new UserAddView()).commit();
+            replaceFragment(Constant.TYPE_USERADD);
 
         } else if (id == R.id.nav_color_chooser) {
             createColorChooserDialog();
@@ -192,8 +193,18 @@ public class MainActivity extends BaseActivity
     }
 
     private void replaceFragment(int type) {
-        ZhuanlanView fragment = ZhuanlanView.newInstance(type);
-        getSupportFragmentManager().beginTransaction().replace(R.id.content_main, fragment).commit();
+        Fragment fragmentById = getSupportFragmentManager().findFragmentByTag(String.valueOf(type));
+        if (fragmentById == null) {
+            Fragment fragment;
+            if (type != Constant.TYPE_USERADD) {
+                fragment = ZhuanlanView.newInstance(type);
+            } else {
+                fragment = new UserAddView();
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.content_main, fragment, String.valueOf(type))
+                    .commit();
+        }
     }
 
     private void createColorChooserDialog() {

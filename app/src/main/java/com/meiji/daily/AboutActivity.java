@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -46,7 +47,7 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
     }
 
     @Override
-    protected void initData() {
+    protected void initData(Bundle savedInstanceState) {
         try {
             String version = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
             mTvVersion.setText(version);

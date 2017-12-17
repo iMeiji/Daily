@@ -25,6 +25,7 @@ import io.reactivex.MaybeSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
@@ -155,13 +156,18 @@ public class ZhuanlanViewModel extends AndroidViewModel {
         }
 
         Disposable subscribe = Maybe.merge(maybeList)
+                .doOnComplete(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        InitApp.sDatabase.ZhuanlanNewDao().insert(list);
+                    }
+                })
                 .subscribe(new Consumer<ZhuanlanBean>() {
                     @Override
                     public void accept(ZhuanlanBean bean) throws Exception {
                         if (bean != null) {
                             bean.setType(mType);
                             list.add(bean);
-                            InitApp.sDatabase.ZhuanlanNewDao().insert(bean);
                         }
                     }
                 }, ErrorAction.error());

@@ -32,8 +32,9 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     /**
      * 初始化数据
+     * @param savedInstanceState
      */
-    protected abstract void initData();
+    protected abstract void initData(Bundle savedInstanceState);
 
     protected void initTheme() {
         boolean isNightMode = SettingUtil.getInstance().getIsNightMode();
@@ -65,7 +66,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         initTheme();
         setContentView(attachLayoutId());
         initViews();
-        initData();
+        initData(savedInstanceState);
     }
 
     @Override

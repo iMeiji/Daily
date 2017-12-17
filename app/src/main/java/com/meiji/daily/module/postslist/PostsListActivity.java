@@ -2,6 +2,7 @@ package com.meiji.daily.module.postslist;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.meiji.daily.R;
@@ -36,7 +37,7 @@ public class PostsListActivity extends BaseActivity {
     }
 
     @Override
-    protected void initData() {
+    protected void initData(Bundle savedInstanceState) {
         Intent intent = getIntent();
         if (intent == null) {
             finish();
@@ -48,9 +49,11 @@ public class PostsListActivity extends BaseActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(title);
         }
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.container, PostsListView.newInstance(slug, title, postCount))
-                .commit();
+        if (savedInstanceState == null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container, PostsListView.newInstance(slug, title, postCount))
+                    .commit();
+        }
     }
 }
