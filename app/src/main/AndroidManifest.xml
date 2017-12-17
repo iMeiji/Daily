@@ -26,7 +26,6 @@
             android:name=".AddActivity"
             android:label="@string/add_zhuanlan"
             android:theme="@style/AppTheme.NoActionBar">
-            <!--接收文本-->
             <intent-filter>
                 <action android:name="android.intent.action.SEND"/>
                 <category android:name="android.intent.category.DEFAULT"/>

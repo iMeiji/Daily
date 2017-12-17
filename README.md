@@ -66,6 +66,12 @@ Gradle 差异化构建
 [GitHub Release](https://github.com/iMeiji/Daily/releases)
 
 
+### 编译
+1. 导入项目
+2. 重命名 `fabric.properties.example` 为 `fabric.properties`
+3. 运行项目
+
+
 ### 开源库
 - [Material Dialogs](https://github.com/afollestad/material-dialogs)
 - [OkHttp](https://github.com/square/okhttp)

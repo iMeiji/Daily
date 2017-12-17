@@ -78,3 +78,7 @@
 
 ## OkHttp
 -dontwarn okio.**
+
+## Crashlytics
+-keepattributes *Annotation*
+-keepattributes SourceFile,LineNumberTable

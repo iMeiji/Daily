@@ -1,5 +1,6 @@
 package com.meiji.daily.util;
 
+import com.crashlytics.android.Crashlytics;
 import com.meiji.daily.BuildConfig;
 
 import io.reactivex.annotations.NonNull;
@@ -23,6 +24,8 @@ public abstract class ErrorAction {
     public static void print(@NonNull Throwable throwable) {
         if (BuildConfig.DEBUG) {
             throwable.printStackTrace();
+        } else {
+            Crashlytics.logException(throwable);
         }
     }
 
