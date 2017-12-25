@@ -7,6 +7,8 @@ import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.google.gson.Gson;
 import com.meiji.daily.data.local.AppDatabase;
+import com.meiji.daily.di.AppComponent;
+import com.meiji.daily.di.DaggerAppComponent;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -14,22 +16,30 @@ import io.fabric.sdk.android.Fabric;
  * Created by Meiji on 2016/12/7.
  */
 
-public class InitApp extends MultiDexApplication {
+public class App extends MultiDexApplication {
 
     public static Context sAppContext;
     public static Gson sGson;
     public static AppDatabase sDatabase;
 
-    public static InitApp application;
+    public static App sApp;
 
+    public static AppComponent sAppComponent;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        sAppComponent = DaggerAppComponent
+                .builder()
+                .application(this)
+                .context(getApplicationContext())
+                .build();
+        sAppComponent.inject(this);
+
         sAppContext = getApplicationContext();
         sGson = new Gson();
         sDatabase = AppDatabase.getInstance(this);
-        application = this;
+        sApp = this;
         if (BuildConfig.DEBUG) {
             SdkManager.initStetho(this);
         }

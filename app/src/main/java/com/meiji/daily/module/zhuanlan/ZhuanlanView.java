@@ -1,7 +1,7 @@
 package com.meiji.daily.module.zhuanlan;
 
+import android.app.Application;
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,15 +15,20 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.meiji.daily.InitApp;
+import com.meiji.daily.App;
 import com.meiji.daily.R;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.binder.ZhuanlanViewBinder;
+import com.meiji.daily.di.component.DaggerZhuanlanComponent;
+import com.meiji.daily.di.module.ZhuanlanModule;
 import com.meiji.daily.module.base.BaseFragment;
 import com.meiji.daily.util.RecyclerViewUtil;
 import com.meiji.daily.util.SettingUtil;
 
 import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import me.drakeet.multitype.MultiTypeAdapter;
 
@@ -36,11 +41,15 @@ public class ZhuanlanView extends BaseFragment implements SwipeRefreshLayout.OnR
 
     private static final String TAG = "ZhuanlanView";
     private static final String ARGUMENT_TYPE = "ARGUMENT_TYPE";
+    @Inject
+    ZhuanlanViewModel mModel;
+    @Inject
+    @Named("application")
+    Application mApplication;
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private LinearLayout mRoot;
     private int mType;
-    private ZhuanlanViewModel mModel;
     private MultiTypeAdapter mAdapter;
 
     public static ZhuanlanView newInstance(int type) {
@@ -110,8 +119,13 @@ public class ZhuanlanView extends BaseFragment implements SwipeRefreshLayout.OnR
 
     @Override
     protected void subscribeUI() {
-        ZhuanlanViewModel.Factory factory = new ZhuanlanViewModel.Factory(InitApp.application, mType);
-        mModel = ViewModelProviders.of(this, factory).get(ZhuanlanViewModel.class);
+        DaggerZhuanlanComponent.builder()
+                .appComponent(App.sAppComponent)
+                .zhuanlanModule(new ZhuanlanModule(this, mType, mApplication))
+                .build().inject(this);
+
+//        ZhuanlanViewModel.Factory factory = new ZhuanlanViewModel.Factory(App.sApp, mType);
+//        mModel = ViewModelProviders.of(this, factory).get(ZhuanlanViewModel.class);
         mModel.getList().observe(this, new Observer<List<ZhuanlanBean>>() {
             @Override
             public void onChanged(@Nullable List<ZhuanlanBean> list) {

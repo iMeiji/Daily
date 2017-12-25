@@ -4,8 +4,8 @@ import com.franmontiel.persistentcookiejar.ClearableCookieJar;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
+import com.meiji.daily.App;
 import com.meiji.daily.BuildConfig;
-import com.meiji.daily.InitApp;
 import com.meiji.daily.SdkManager;
 import com.meiji.daily.data.remote.IApi;
 
@@ -42,12 +42,12 @@ public class RetrofitFactory {
         @Override
         public Response intercept(Chain chain) throws IOException {
             Request request = chain.request();
-            if (!NetWorkUtil.isNetworkConnected(InitApp.sAppContext)) {
+            if (!NetWorkUtil.isNetworkConnected(App.sAppContext)) {
                 request = request.newBuilder().cacheControl(CacheControl.FORCE_CACHE).build();
             }
 
             Response originalResponse = chain.proceed(request);
-            if (NetWorkUtil.isNetworkConnected(InitApp.sAppContext)) {
+            if (NetWorkUtil.isNetworkConnected(App.sAppContext)) {
                 // 有网络时 设置缓存为默认值
                 String cacheControl = request.cacheControl().toString();
                 return originalResponse.newBuilder()
@@ -71,12 +71,12 @@ public class RetrofitFactory {
             synchronized (RetrofitFactory.class) {
                 if (sRetrofit == null) {
                     // 指定缓存路径,缓存大小 50Mb
-                    Cache cache = new Cache(new File(InitApp.sAppContext.getCacheDir(), "HttpCache"),
+                    Cache cache = new Cache(new File(App.sAppContext.getCacheDir(), "HttpCache"),
                             1024 * 1024 * 50);
 
                     // Cookie 持久化
                     ClearableCookieJar cookieJar =
-                            new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(InitApp.sAppContext));
+                            new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(App.sAppContext));
 
                     OkHttpClient.Builder builder = new OkHttpClient.Builder()
                             .cookieJar(cookieJar)

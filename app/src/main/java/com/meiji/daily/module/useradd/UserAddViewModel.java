@@ -7,8 +7,8 @@ import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
 
+import com.meiji.daily.App;
 import com.meiji.daily.Constant;
-import com.meiji.daily.InitApp;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.data.remote.IApi;
 import com.meiji.daily.util.ErrorAction;
@@ -77,7 +77,7 @@ public class UserAddViewModel extends AndroidViewModel {
     void handleData() {
         mIsLoading.setValue(true);
 
-        Disposable subscribe = InitApp.sDatabase.ZhuanlanNewDao().query(Constant.TYPE_USERADD)
+        Disposable subscribe = App.sDatabase.ZhuanlanNewDao().query(Constant.TYPE_USERADD)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<List<ZhuanlanBean>>() {
@@ -100,7 +100,7 @@ public class UserAddViewModel extends AndroidViewModel {
                     public void accept(ZhuanlanBean bean) throws Exception {
                         if (bean != null) {
                             bean.setType(Constant.TYPE_USERADD);
-                            InitApp.sDatabase.ZhuanlanNewDao().insert(bean);
+                            App.sDatabase.ZhuanlanNewDao().insert(bean);
                         }
                     }
                 })
@@ -136,7 +136,7 @@ public class UserAddViewModel extends AndroidViewModel {
         Disposable subscribe = Single.create(new SingleOnSubscribe<Object>() {
             @Override
             public void subscribe(SingleEmitter<Object> e) throws Exception {
-                InitApp.sDatabase.ZhuanlanNewDao().delete(bean.getSlug());
+                App.sDatabase.ZhuanlanNewDao().delete(bean.getSlug());
             }
         }).subscribeOn(Schedulers.io()).subscribe();
         mDisposable.add(subscribe);

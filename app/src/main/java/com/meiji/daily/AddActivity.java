@@ -70,7 +70,7 @@ public class AddActivity extends AppCompatActivity {
         final Matcher matcher = Pattern.compile(regex).matcher(shareText);
         if (matcher.find()) {
             final String slug = matcher.group(1).toLowerCase();
-            Disposable subscribe = InitApp.sDatabase.ZhuanlanNewDao().query(Constant.TYPE_USERADD)
+            Disposable subscribe = App.sDatabase.ZhuanlanNewDao().query(Constant.TYPE_USERADD)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<List<ZhuanlanBean>>() {
@@ -92,7 +92,7 @@ public class AddActivity extends AppCompatActivity {
                         @Override
                         public Boolean apply(ZhuanlanBean bean) throws Exception {
                             bean.setType(Constant.TYPE_USERADD);
-                            isResult = InitApp.sDatabase.ZhuanlanNewDao().insert(bean) != -1;
+                            isResult = App.sDatabase.ZhuanlanNewDao().insert(bean) != -1;
                             return isResult;
                         }
                     })

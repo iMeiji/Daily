@@ -15,7 +15,8 @@ android {
         release {
             minifyEnabled true  //设为false即可断点调试
             shrinkResources true  //自动移除不用资源
-            debuggable false //设为true
+            zipAlignEnabled true
+            debuggable false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             ext.enableCrashlytics = true
             applicationVariants.all { variant ->
@@ -93,6 +94,12 @@ dependencies {
     implementation('com.crashlytics.sdk.android:crashlytics:2.8.0@aar') {
         transitive = true
     }
+    // Dagger 2
+    implementation 'com.google.dagger:dagger:2.13'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.13'
+    implementation 'com.google.dagger:dagger-android:2.13'
+    implementation 'com.google.dagger:dagger-android-support:2.13'
+    annotationProcessor 'com.google.dagger:dagger-android-processor:2.13'
 }
 
 

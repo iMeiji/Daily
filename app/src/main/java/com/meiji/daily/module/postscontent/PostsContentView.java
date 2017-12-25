@@ -23,8 +23,8 @@ import android.widget.ImageView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.meiji.daily.App;
 import com.meiji.daily.GlideApp;
-import com.meiji.daily.InitApp;
 import com.meiji.daily.R;
 import com.meiji.daily.data.remote.IApi;
 import com.meiji.daily.module.base.BaseFragment;
@@ -170,7 +170,7 @@ public class PostsContentView extends BaseFragment {
 
     @Override
     protected void subscribeUI() {
-        PostsContentViewModel.Factory factory = new PostsContentViewModel.Factory(InitApp.application, mSlug);
+        PostsContentViewModel.Factory factory = new PostsContentViewModel.Factory(App.sApp, mSlug);
         mModel = ViewModelProviders.of(this, factory).get(PostsContentViewModel.class);
         mModel.getHTML().observe(this, new Observer<String>() {
             @Override

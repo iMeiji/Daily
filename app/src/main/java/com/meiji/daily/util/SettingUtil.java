@@ -4,7 +4,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
 
-import com.meiji.daily.InitApp;
+import com.meiji.daily.App;
 import com.meiji.daily.R;
 
 /**
@@ -13,18 +13,18 @@ import com.meiji.daily.R;
 
 public class SettingUtil {
 
-    private SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(InitApp.sAppContext);
+    private SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(App.sAppContext);
 
     public static SettingUtil getInstance() {
         return SettingsUtilInstance.instance;
     }
 
     public boolean getIsNoPhotoMode() {
-        return setting.getBoolean("switch_noPhotoMode", false) && NetWorkUtil.isMobileConnected(InitApp.sAppContext);
+        return setting.getBoolean("switch_noPhotoMode", false) && NetWorkUtil.isMobileConnected(App.sAppContext);
     }
 
     public int getColor() {
-        int defaultColor = InitApp.sAppContext.getResources().getColor(R.color.colorPrimary);
+        int defaultColor = App.sAppContext.getResources().getColor(R.color.colorPrimary);
         int color = setting.getInt("color", defaultColor);
         if ((color != 0) && Color.alpha(color) != 255) {
             return defaultColor;

@@ -11,7 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.meiji.daily.InitApp;
+import com.meiji.daily.App;
 import com.meiji.daily.R;
 import com.meiji.daily.bean.FooterBean;
 import com.meiji.daily.bean.PostsListBean;
@@ -103,7 +103,7 @@ public class PostsListView extends BaseFragment implements SwipeRefreshLayout.On
 
     @Override
     protected void subscribeUI() {
-        PostsListViewModel.Factory factory = new PostsListViewModel.Factory(InitApp.application, mSlug, mPostCount);
+        PostsListViewModel.Factory factory = new PostsListViewModel.Factory(App.sApp, mSlug, mPostCount);
         mModel = ViewModelProviders.of(this, factory).get(PostsListViewModel.class);
         mModel.getListLiveData().observe(this, new Observer<List<PostsListBean>>() {
             @Override

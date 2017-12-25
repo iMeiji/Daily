@@ -7,8 +7,8 @@ import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
 
+import com.meiji.daily.App;
 import com.meiji.daily.Constant;
-import com.meiji.daily.InitApp;
 import com.meiji.daily.R;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.data.remote.IApi;
@@ -75,7 +75,7 @@ public class ZhuanlanViewModel extends AndroidViewModel {
     }
 
     void handleData() {
-        Disposable subscribe = InitApp.sDatabase.ZhuanlanNewDao().query(mType)
+        Disposable subscribe = App.sDatabase.ZhuanlanNewDao().query(mType)
                 .subscribeOn(Schedulers.io())
                 .flatMap(new Function<List<ZhuanlanBean>, MaybeSource<List<ZhuanlanBean>>>() {
                     @Override
@@ -128,22 +128,22 @@ public class ZhuanlanViewModel extends AndroidViewModel {
 
         switch (mType) {
             case Constant.TYPE_PRODUCT:
-                mIdArr = InitApp.sAppContext.getResources().getStringArray(R.array.product);
+                mIdArr = App.sAppContext.getResources().getStringArray(R.array.product);
                 break;
             case Constant.TYPE_MUSIC:
-                mIdArr = InitApp.sAppContext.getResources().getStringArray(R.array.music);
+                mIdArr = App.sAppContext.getResources().getStringArray(R.array.music);
                 break;
             case Constant.TYPE_LIFE:
-                mIdArr = InitApp.sAppContext.getResources().getStringArray(R.array.life);
+                mIdArr = App.sAppContext.getResources().getStringArray(R.array.life);
                 break;
             case Constant.TYPE_EMOTION:
-                mIdArr = InitApp.sAppContext.getResources().getStringArray(R.array.emotion);
+                mIdArr = App.sAppContext.getResources().getStringArray(R.array.emotion);
                 break;
             case Constant.TYPE_FINANCE:
-                mIdArr = InitApp.sAppContext.getResources().getStringArray(R.array.profession);
+                mIdArr = App.sAppContext.getResources().getStringArray(R.array.profession);
                 break;
             case Constant.TYPE_ZHIHU:
-                mIdArr = InitApp.sAppContext.getResources().getStringArray(R.array.zhihu);
+                mIdArr = App.sAppContext.getResources().getStringArray(R.array.zhihu);
                 break;
         }
 
@@ -159,7 +159,7 @@ public class ZhuanlanViewModel extends AndroidViewModel {
                 .doOnComplete(new Action() {
                     @Override
                     public void run() throws Exception {
-                        InitApp.sDatabase.ZhuanlanNewDao().insert(list);
+                        App.sDatabase.ZhuanlanNewDao().insert(list);
                     }
                 })
                 .subscribe(new Consumer<ZhuanlanBean>() {
@@ -182,7 +182,7 @@ public class ZhuanlanViewModel extends AndroidViewModel {
         private final Application mApplication;
         private final int mType;
 
-        Factory(@NonNull Application application, int type) {
+        public Factory(@NonNull Application application, int type) {
             this.mApplication = application;
             this.mType = type;
         }

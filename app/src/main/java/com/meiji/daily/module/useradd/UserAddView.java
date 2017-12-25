@@ -26,7 +26,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
-import com.meiji.daily.InitApp;
+import com.meiji.daily.App;
 import com.meiji.daily.R;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.binder.ZhuanlanViewBinder;
@@ -66,7 +66,7 @@ public class UserAddView extends BaseFragment implements View.OnClickListener, S
 
     @Override
     protected void subscribeUI() {
-        UserAddViewModel.Factory factory = new UserAddViewModel.Factory(InitApp.application);
+        UserAddViewModel.Factory factory = new UserAddViewModel.Factory(App.sApp);
         mModel = ViewModelProviders.of(this, factory).get(UserAddViewModel.class);
         mModel.getList().observe(this, new Observer<List<ZhuanlanBean>>() {
             @Override
