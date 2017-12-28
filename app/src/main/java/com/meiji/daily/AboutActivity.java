@@ -17,7 +17,6 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.meiji.daily.module.base.BaseActivity;
-import com.meiji.daily.util.SettingUtil;
 
 import de.psdev.licensesdialog.LicensesDialog;
 import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
@@ -34,7 +33,6 @@ import static com.meiji.daily.R.id.changelogView;
 public class AboutActivity extends BaseActivity implements View.OnClickListener {
 
     private TextView mTvVersion;
-    private SettingUtil settingUtil = SettingUtil.getInstance();
 
     public static void start(@NonNull Context context) {
         Intent starter = new Intent(context, AboutActivity.class);
@@ -83,10 +81,10 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
                 MaterialDialog devDialog = new MaterialDialog.Builder(this)
                         .title(R.string.about_developers_label)
                         .content(R.string.about_developers)
-                        .theme(settingUtil.getIsNightMode() ? Theme.DARK : Theme.LIGHT)
+                        .theme(mSettingHelper.getIsNightMode() ? Theme.DARK : Theme.LIGHT)
                         .positiveText(android.R.string.ok)
                         .build();
-                devDialog.getActionButton(DialogAction.POSITIVE).setTextColor(settingUtil.getColor());
+                devDialog.getActionButton(DialogAction.POSITIVE).setTextColor(mSettingHelper.getColor());
                 devDialog.show();
                 break;
             case R.id.licensesView:
@@ -98,11 +96,11 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
             case R.id.copyRightView:
                 MaterialDialog copyRightDialog = new MaterialDialog.Builder(this)
                         .title(R.string.action_copyright)
-                        .theme(settingUtil.getIsNightMode() ? Theme.DARK : Theme.LIGHT)
+                        .theme(mSettingHelper.getIsNightMode() ? Theme.DARK : Theme.LIGHT)
                         .content(R.string.copyright_content)
                         .positiveText(R.string.md_got_it)
                         .build();
-                copyRightDialog.getActionButton(DialogAction.POSITIVE).setTextColor(settingUtil.getColor());
+                copyRightDialog.getActionButton(DialogAction.POSITIVE).setTextColor(mSettingHelper.getColor());
                 copyRightDialog.show();
                 break;
         }

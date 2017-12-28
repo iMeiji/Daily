@@ -7,10 +7,10 @@ import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
 
-import com.meiji.daily.App;
 import com.meiji.daily.Constant;
 import com.meiji.daily.R;
 import com.meiji.daily.bean.ZhuanlanBean;
+import com.meiji.daily.data.local.AppDatabase;
 import com.meiji.daily.data.remote.IApi;
 import com.meiji.daily.util.ErrorAction;
 import com.meiji.daily.util.RetrofitFactory;
@@ -37,6 +37,7 @@ import io.reactivex.schedulers.Schedulers;
 public class ZhuanlanViewModel extends AndroidViewModel {
 
     public static final String TAG = "ZhuanlanViewModel";
+    private final AppDatabase mAppDatabase;
     private int mType;
     private String[] mIdArr;
     private Flowable<Boolean> mRxBus;
@@ -55,9 +56,10 @@ public class ZhuanlanViewModel extends AndroidViewModel {
         mIsRefreshUI.setValue(true);
     }
 
-    private ZhuanlanViewModel(@NonNull Application application, int type) {
+    private ZhuanlanViewModel(@NonNull Application application, int type, AppDatabase appDatabase) {
         super(application);
         mType = type;
+        mAppDatabase = appDatabase;
 
         handleData();
         subscribeTheme();
@@ -75,7 +77,7 @@ public class ZhuanlanViewModel extends AndroidViewModel {
     }
 
     void handleData() {
-        Disposable subscribe = App.sDatabase.ZhuanlanNewDao().query(mType)
+        Disposable subscribe = mAppDatabase.ZhuanlanNewDao().query(mType)
                 .subscribeOn(Schedulers.io())
                 .flatMap(new Function<List<ZhuanlanBean>, MaybeSource<List<ZhuanlanBean>>>() {
                     @Override
@@ -128,22 +130,22 @@ public class ZhuanlanViewModel extends AndroidViewModel {
 
         switch (mType) {
             case Constant.TYPE_PRODUCT:
-                mIdArr = App.sAppContext.getResources().getStringArray(R.array.product);
+                mIdArr = getApplication().getResources().getStringArray(R.array.product);
                 break;
             case Constant.TYPE_MUSIC:
-                mIdArr = App.sAppContext.getResources().getStringArray(R.array.music);
+                mIdArr = getApplication().getResources().getStringArray(R.array.music);
                 break;
             case Constant.TYPE_LIFE:
-                mIdArr = App.sAppContext.getResources().getStringArray(R.array.life);
+                mIdArr = getApplication().getResources().getStringArray(R.array.life);
                 break;
             case Constant.TYPE_EMOTION:
-                mIdArr = App.sAppContext.getResources().getStringArray(R.array.emotion);
+                mIdArr = getApplication().getResources().getStringArray(R.array.emotion);
                 break;
             case Constant.TYPE_FINANCE:
-                mIdArr = App.sAppContext.getResources().getStringArray(R.array.profession);
+                mIdArr = getApplication().getResources().getStringArray(R.array.profession);
                 break;
             case Constant.TYPE_ZHIHU:
-                mIdArr = App.sAppContext.getResources().getStringArray(R.array.zhihu);
+                mIdArr = getApplication().getResources().getStringArray(R.array.zhihu);
                 break;
         }
 
@@ -159,7 +161,7 @@ public class ZhuanlanViewModel extends AndroidViewModel {
                 .doOnComplete(new Action() {
                     @Override
                     public void run() throws Exception {
-                        App.sDatabase.ZhuanlanNewDao().insert(list);
+                        mAppDatabase.ZhuanlanNewDao().insert(list);
                     }
                 })
                 .subscribe(new Consumer<ZhuanlanBean>() {
@@ -181,16 +183,18 @@ public class ZhuanlanViewModel extends AndroidViewModel {
 
         private final Application mApplication;
         private final int mType;
+        private final AppDatabase mAppDatabase;
 
-        public Factory(@NonNull Application application, int type) {
-            this.mApplication = application;
-            this.mType = type;
+        public Factory(@NonNull Application application, int type, @NonNull AppDatabase appDatabase) {
+            mApplication = application;
+            mType = type;
+            mAppDatabase = appDatabase;
         }
 
         @NonNull
         @Override
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-            return (T) new ZhuanlanViewModel(mApplication, mType);
+            return (T) new ZhuanlanViewModel(mApplication, mType, mAppDatabase);
         }
     }
 }

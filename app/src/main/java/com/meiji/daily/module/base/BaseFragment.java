@@ -30,12 +30,20 @@ public abstract class BaseFragment extends Fragment {
     /**
      * 初始化数据
      */
-    protected abstract void initData();
+    protected void initData() {
+    }
 
     /**
      * 订阅UI组件
      */
-    protected abstract void subscribeUI();
+    protected void subscribeUI() {
+    }
+
+    /**
+     * 初始化 Dagger
+     */
+    protected void initInject() {
+    }
 
     /**
      * 初始化 Toolbar
@@ -48,6 +56,12 @@ public abstract class BaseFragment extends Fragment {
         if (getActivity() != null) {
             ((BaseActivity) getActivity()).initToolBar(toolbar, homeAsUpEnabled, title);
         }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initInject();
     }
 
     @Nullable

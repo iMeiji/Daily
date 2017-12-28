@@ -36,7 +36,6 @@ import com.meiji.daily.module.base.BaseActivity;
 import com.meiji.daily.module.useradd.UserAddView;
 import com.meiji.daily.module.zhuanlan.ZhuanlanView;
 import com.meiji.daily.util.RxBus;
-import com.meiji.daily.util.SettingUtil;
 
 import io.reactivex.Flowable;
 import io.reactivex.functions.Consumer;
@@ -96,14 +95,14 @@ public class MainActivity extends BaseActivity
         mNavigationView.setNavigationItemSelectedListener(this);
 
         mSwitchCompat = mNavigationView.getMenu().findItem(R.id.app_bar_switch).getActionView().findViewById(R.id.switch_input);
-        mSwitchCompat.setChecked(SettingUtil.getInstance().getIsNightMode());
+        mSwitchCompat.setChecked(mSettingHelper.getIsNightMode());
 
         setUpSwitch();
 
         mSwitchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isNightMode) {
-                SettingUtil.getInstance().setIsNightMode(isNightMode);
+                mSettingHelper.setIsNightMode(isNightMode);
                 setUpSwitch();
                 if (isNightMode) {
                     setTheme(R.style.DarkTheme);
@@ -117,9 +116,9 @@ public class MainActivity extends BaseActivity
     }
 
     private void setUpSwitch() {
-        boolean isNightMode = SettingUtil.getInstance().getIsNightMode();
+        boolean isNightMode = mSettingHelper.getIsNightMode();
         if (isNightMode) {
-            mSwitchCompat.setThumbTintList(ColorStateList.valueOf(SettingUtil.getInstance().getColor()));
+            mSwitchCompat.setThumbTintList(ColorStateList.valueOf(mSettingHelper.getColor()));
         } else {
             Resources.Theme theme = getTheme();
             Resources resources = getResources();
@@ -223,7 +222,7 @@ public class MainActivity extends BaseActivity
                 .cancelButton(R.string.md_cancel)
                 .allowUserColorInput(true)
                 .allowUserColorInputAlpha(false)
-                .theme(SettingUtil.getInstance().getIsNightMode() ? Theme.DARK : Theme.LIGHT)
+                .theme(mSettingHelper.getIsNightMode() ? Theme.DARK : Theme.LIGHT)
                 .customButton(R.string.md_custom)
                 .show();
     }
@@ -237,7 +236,7 @@ public class MainActivity extends BaseActivity
             getWindow().setNavigationBarColor(selectedColor);
         }
         if (!dialog.isAccentMode()) {
-            SettingUtil.getInstance().setColor(selectedColor);
+            mSettingHelper.setColor(selectedColor);
         }
     }
 

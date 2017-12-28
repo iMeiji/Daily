@@ -1,9 +1,7 @@
-package com.meiji.daily.di.component;
+package com.meiji.daily.module.zhuanlan;
 
-import com.meiji.daily.di.AppComponent;
-import com.meiji.daily.di.module.ZhuanlanModule;
+import com.meiji.daily.di.component.AppComponent;
 import com.meiji.daily.di.scope.FragmentScoped;
-import com.meiji.daily.module.zhuanlan.ZhuanlanView;
 
 import dagger.Component;
 

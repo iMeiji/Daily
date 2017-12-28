@@ -1,7 +1,6 @@
 package com.meiji.daily.module.postslist;
 
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -20,9 +19,12 @@ import com.meiji.daily.binder.PostsListViewBinder;
 import com.meiji.daily.module.base.BaseFragment;
 import com.meiji.daily.util.DiffCallback;
 import com.meiji.daily.util.OnLoadMoreListener;
-import com.meiji.daily.util.SettingUtil;
+import com.meiji.daily.util.SettingHelper;
 
 import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import me.drakeet.multitype.Items;
 import me.drakeet.multitype.MultiTypeAdapter;
@@ -34,21 +36,22 @@ import me.drakeet.multitype.MultiTypeAdapter;
 
 public class PostsListView extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
 
+    protected static final String ARGUMENT_SLUG = "ARGUMENT_SLUG";
+    protected static final String ARGUMENT_NAME = "ARGUMENT_NAME";
+    protected static final String ARGUMENT_POSTSCOUNT = "ARGUMENT_POSTSCOUNT";
     private static final String TAG = "PostsListView";
-    private static final String ARGUMENT_SLUG = "ARGUMENT_SLUG";
-    private static final String ARGUMENT_NAME = "ARGUMENT_NAME";
-    private static final String ARGUMENT_POSTSCOUNT = "ARGUMENT_POSTSCOUNT";
+    @Inject
+    @Named("title")
+    String mTitle;
+    @Inject
+    PostsListViewModel mModel;
+    @Inject
+    SettingHelper mSettingHelper;
     private SwipeRefreshLayout mRefreshLayout;
     private RecyclerView mRecyclerView;
-
-    private int mPostCount;
-    private String mSlug;
-    private String mTitle;
     private Items mOldItems = new Items();
-    private Toolbar mToolbar;
     private MultiTypeAdapter mAdapter;
     private boolean mCanloadmore;
-    private PostsListViewModel mModel;
 
     public static PostsListView newInstance(String slug, String title, int postsCount) {
         Bundle args = new Bundle();
@@ -61,17 +64,25 @@ public class PostsListView extends BaseFragment implements SwipeRefreshLayout.On
     }
 
     @Override
+    protected void initInject() {
+        DaggerPostsListComponent.builder()
+                .appComponent(App.sAppComponent)
+                .postsListModule(new PostsListModule(this))
+                .build().inject(this);
+    }
+
+    @Override
     protected int attachLayoutId() {
         return R.layout.activity_postslist;
     }
 
     @Override
     protected void initViews(View view) {
-        mToolbar = view.findViewById(R.id.toolbar_title);
+        Toolbar toolbar = view.findViewById(R.id.toolbar_title);
         mRecyclerView = view.findViewById(R.id.recycler_view);
         mRefreshLayout = view.findViewById(R.id.refresh_layout);
-        initToolBar(mToolbar, true, null);
-        mToolbar.setOnClickListener(new View.OnClickListener() {
+        initToolBar(toolbar, true, mTitle);
+        toolbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mRecyclerView.smoothScrollToPosition(0);
@@ -80,7 +91,7 @@ public class PostsListView extends BaseFragment implements SwipeRefreshLayout.On
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.setHasFixedSize(true);
         // 设置下拉刷新的按钮的颜色
-        mRefreshLayout.setColorSchemeColors(SettingUtil.getInstance().getColor());
+        mRefreshLayout.setColorSchemeColors(mSettingHelper.getColor());
         mRefreshLayout.setOnRefreshListener(this);
 
         mAdapter = new MultiTypeAdapter();
@@ -91,20 +102,7 @@ public class PostsListView extends BaseFragment implements SwipeRefreshLayout.On
     }
 
     @Override
-    protected void initData() {
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            mSlug = arguments.getString(ARGUMENT_SLUG);
-            mTitle = arguments.getString(ARGUMENT_NAME);
-            mPostCount = arguments.getInt(ARGUMENT_POSTSCOUNT, 0);
-            initToolBar(mToolbar, true, mTitle);
-        }
-    }
-
-    @Override
     protected void subscribeUI() {
-        PostsListViewModel.Factory factory = new PostsListViewModel.Factory(App.sApp, mSlug, mPostCount);
-        mModel = ViewModelProviders.of(this, factory).get(PostsListViewModel.class);
         mModel.getListLiveData().observe(this, new Observer<List<PostsListBean>>() {
             @Override
             public void onChanged(@Nullable List<PostsListBean> list) {

@@ -9,14 +9,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.afollestad.materialdialogs.color.CircleView;
+import com.meiji.daily.App;
 import com.meiji.daily.R;
-import com.meiji.daily.util.SettingUtil;
+import com.meiji.daily.util.SettingHelper;
+
+import javax.inject.Inject;
 
 /**
  * Created by Meiji on 2017/12/5.
  */
 
 public abstract class BaseActivity extends AppCompatActivity {
+
+    @Inject
+    protected SettingHelper mSettingHelper;
 
     /**
      * 绑定布局文件
@@ -32,12 +38,20 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     /**
      * 初始化数据
+     *
      * @param savedInstanceState
      */
-    protected abstract void initData(Bundle savedInstanceState);
+    protected void initData(Bundle savedInstanceState) {
+    }
+
+    /**
+     * 初始化 Dagger
+     */
+    protected void initInject() {
+    }
 
     protected void initTheme() {
-        boolean isNightMode = SettingUtil.getInstance().getIsNightMode();
+        boolean isNightMode = mSettingHelper.getIsNightMode();
         if (isNightMode) {
             setTheme(R.style.DarkTheme);
         } else {
@@ -62,6 +76,9 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        DaggerBaseActivityComponent.builder()
+                .appComponent(App.sAppComponent)
+                .build().inject(this);
         super.onCreate(savedInstanceState);
         initTheme();
         setContentView(attachLayoutId());
@@ -72,7 +89,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        int color = SettingUtil.getInstance().getColor();
+        int color = mSettingHelper.getColor();
         if (getSupportActionBar() != null)
             getSupportActionBar().setBackgroundDrawable(new ColorDrawable(color));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

@@ -7,9 +7,9 @@ import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
 
-import com.meiji.daily.App;
 import com.meiji.daily.Constant;
 import com.meiji.daily.bean.ZhuanlanBean;
+import com.meiji.daily.data.local.AppDatabase;
 import com.meiji.daily.data.remote.IApi;
 import com.meiji.daily.util.ErrorAction;
 import com.meiji.daily.util.RetrofitFactory;
@@ -33,6 +33,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public class UserAddViewModel extends AndroidViewModel {
 
+    private final AppDatabase mAppDatabase;
     private Flowable<Boolean> mRxBus;
     private MutableLiveData<Boolean> mIsLoading;
     private MutableLiveData<Boolean> mIsRefreshUI;
@@ -51,8 +52,9 @@ public class UserAddViewModel extends AndroidViewModel {
         mIsRefreshUI.setValue(true);
     }
 
-    UserAddViewModel(@NonNull Application application) {
+    UserAddViewModel(@NonNull Application application, AppDatabase appDatabase) {
         super(application);
+        mAppDatabase = appDatabase;
 
         handleData();
         subscribeTheme();
@@ -77,7 +79,7 @@ public class UserAddViewModel extends AndroidViewModel {
     void handleData() {
         mIsLoading.setValue(true);
 
-        Disposable subscribe = App.sDatabase.ZhuanlanNewDao().query(Constant.TYPE_USERADD)
+        Disposable subscribe = mAppDatabase.ZhuanlanNewDao().query(Constant.TYPE_USERADD)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<List<ZhuanlanBean>>() {
@@ -100,7 +102,7 @@ public class UserAddViewModel extends AndroidViewModel {
                     public void accept(ZhuanlanBean bean) throws Exception {
                         if (bean != null) {
                             bean.setType(Constant.TYPE_USERADD);
-                            App.sDatabase.ZhuanlanNewDao().insert(bean);
+                            mAppDatabase.ZhuanlanNewDao().insert(bean);
                         }
                     }
                 })
@@ -136,7 +138,7 @@ public class UserAddViewModel extends AndroidViewModel {
         Disposable subscribe = Single.create(new SingleOnSubscribe<Object>() {
             @Override
             public void subscribe(SingleEmitter<Object> e) throws Exception {
-                App.sDatabase.ZhuanlanNewDao().delete(bean.getSlug());
+                mAppDatabase.ZhuanlanNewDao().delete(bean.getSlug());
             }
         }).subscribeOn(Schedulers.io()).subscribe();
         mDisposable.add(subscribe);
@@ -151,16 +153,18 @@ public class UserAddViewModel extends AndroidViewModel {
 
     public static class Factory extends ViewModelProvider.NewInstanceFactory {
 
-        final Application mApplication;
+        private final Application mApplication;
+        private final AppDatabase mAppDatabase;
 
-        Factory(@NonNull Application application) {
-            this.mApplication = application;
+        Factory(@NonNull Application application, AppDatabase appDatabase) {
+            mApplication = application;
+            mAppDatabase = appDatabase;
         }
 
         @NonNull
         @Override
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-            return (T) new UserAddViewModel(mApplication);
+            return (T) new UserAddViewModel(mApplication, mAppDatabase);
         }
     }
 }

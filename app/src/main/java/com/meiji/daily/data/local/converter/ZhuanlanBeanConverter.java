@@ -3,8 +3,8 @@ package com.meiji.daily.data.local.converter;
 import android.arch.persistence.room.TypeConverter;
 import android.support.annotation.NonNull;
 
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.meiji.daily.App;
 import com.meiji.daily.bean.ZhuanlanBean;
 
 import java.lang.reflect.Type;
@@ -17,19 +17,21 @@ import java.util.List;
 
 public class ZhuanlanBeanConverter {
 
+    private static Gson mGson = new Gson();
+
     @TypeConverter
     public static String toString(@NonNull ZhuanlanBean.AvatarBeanX avatarBeanX) {
-        return App.sGson.toJson(avatarBeanX);
+        return mGson.toJson(avatarBeanX);
     }
 
     @TypeConverter
     public static ZhuanlanBean.AvatarBeanX toBean(@NonNull String s) {
-        return App.sGson.fromJson(s, ZhuanlanBean.AvatarBeanX.class);
+        return mGson.fromJson(s, ZhuanlanBean.AvatarBeanX.class);
     }
 
     public static List<ZhuanlanBean.AvatarBeanX> toList(@NonNull String s) {
         Type listType = new TypeToken<ArrayList<ZhuanlanBean.AvatarBeanX>>() {
         }.getType();
-        return App.sGson.fromJson(s, listType);
+        return mGson.fromJson(s, listType);
     }
 }

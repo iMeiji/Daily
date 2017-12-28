@@ -1,7 +1,11 @@
-package com.meiji.daily.di;
+package com.meiji.daily.di.module;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
+import com.meiji.daily.data.local.AppDatabase;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -27,5 +31,17 @@ public class AppModule {
     @Singleton
     Application provideApplication(Application application) {
         return application;
+    }
+
+    @Singleton
+    @Provides
+    AppDatabase provideAppDatabase(Context context) {
+        return AppDatabase.getInstance(context);
+    }
+
+    @Singleton
+    @Provides
+    SharedPreferences provideSharedPreferences(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context);
     }
 }

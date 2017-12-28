@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AddActivity"
+            android:name=".module.shareadd.ShareAddActivity"
             android:label="@string/add_zhuanlan"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

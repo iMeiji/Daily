@@ -1,7 +1,6 @@
 package com.meiji.daily.module.useradd;
 
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -32,9 +31,11 @@ import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.binder.ZhuanlanViewBinder;
 import com.meiji.daily.module.base.BaseFragment;
 import com.meiji.daily.util.RecyclerViewUtil;
-import com.meiji.daily.util.SettingUtil;
+import com.meiji.daily.util.SettingHelper;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import me.drakeet.multitype.MultiTypeAdapter;
 
@@ -44,16 +45,26 @@ import me.drakeet.multitype.MultiTypeAdapter;
 
 public class UserAddView extends BaseFragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
+    @Inject
+    UserAddViewModel mModel;
+    @Inject
+    SettingHelper mSettingHelper;
     private TextView mTvDesc;
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mRefreshLayout;
     private MaterialDialog mDialog;
     private LinearLayout mRoot;
-
     private List<ZhuanlanBean> mList;
     private MultiTypeAdapter mAdapter;
-    private UserAddViewModel mModel;
     private boolean mIsdelete;
+
+    @Override
+    protected void initInject() {
+        DaggerUserAddComponent.builder()
+                .appComponent(App.sAppComponent)
+                .userAddModule(new UserAddModule(this))
+                .build().inject(this);
+    }
 
     @Override
     protected int attachLayoutId() {
@@ -61,20 +72,12 @@ public class UserAddView extends BaseFragment implements View.OnClickListener, S
     }
 
     @Override
-    protected void initData() {
-    }
-
-    @Override
     protected void subscribeUI() {
-        UserAddViewModel.Factory factory = new UserAddViewModel.Factory(App.sApp);
-        mModel = ViewModelProviders.of(this, factory).get(UserAddViewModel.class);
         mModel.getList().observe(this, new Observer<List<ZhuanlanBean>>() {
             @Override
             public void onChanged(@Nullable List<ZhuanlanBean> list) {
                 if (null != list && list.size() > 0) {
                     onSetAdapter(list);
-                } else {
-                    onShowNetError();
                 }
             }
         });
@@ -118,10 +121,10 @@ public class UserAddView extends BaseFragment implements View.OnClickListener, S
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         // 设置下拉刷新的按钮的颜色
-        mRefreshLayout.setColorSchemeColors(SettingUtil.getInstance().getColor());
+        mRefreshLayout.setColorSchemeColors(mSettingHelper.getColor());
         mRefreshLayout.setOnRefreshListener(this);
 
-        fab_add.setBackgroundTintList(ColorStateList.valueOf(SettingUtil.getInstance().getColor()));
+        fab_add.setBackgroundTintList(ColorStateList.valueOf(mSettingHelper.getColor()));
         fab_add.setOnClickListener(this);
 
         ItemTouchHelper helper = new ItemTouchHelper(
@@ -205,7 +208,7 @@ public class UserAddView extends BaseFragment implements View.OnClickListener, S
         mDialog = new MaterialDialog.Builder(getActivity())
                 .title(R.string.md_zhuanlan_add_title)
                 .content(R.string.md_zhuanlan_add_content)
-                .theme(SettingUtil.getInstance().getIsNightMode() ? Theme.DARK : Theme.LIGHT)
+                .theme(mSettingHelper.getIsNightMode() ? Theme.DARK : Theme.LIGHT)
                 .inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS)
                 .input("", "", new MaterialDialog.InputCallback() {
                     @Override
@@ -292,11 +295,6 @@ public class UserAddView extends BaseFragment implements View.OnClickListener, S
 
     public void onAddFail() {
         Snackbar.make(mRecyclerView, R.string.add_zhuanlan_id_error, Snackbar.LENGTH_SHORT).show();
-        mRefreshLayout.setEnabled(true);
-    }
-
-    private void onShowNetError() {
-        Snackbar.make(mRefreshLayout, R.string.network_error, Snackbar.LENGTH_SHORT).show();
         mRefreshLayout.setEnabled(true);
     }
 }

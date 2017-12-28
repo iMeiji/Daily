@@ -1,9 +1,12 @@
-package com.meiji.daily.di;
+package com.meiji.daily.di.component;
 
 import android.app.Application;
 import android.content.Context;
 
 import com.meiji.daily.App;
+import com.meiji.daily.data.local.AppDatabase;
+import com.meiji.daily.di.module.AppModule;
+import com.meiji.daily.util.SettingHelper;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -21,10 +24,14 @@ public interface AppComponent {
     void inject(App app);
 
     @Named("application")
-    Application application();
+    Application getApplication();
 
     @Named("context")
-    Context context();
+    Context getContext();
+
+    AppDatabase getAppDatabase();
+
+    SettingHelper getSettingHelper();
 
     @Component.Builder
     interface Builder {

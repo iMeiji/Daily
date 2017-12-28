@@ -10,7 +10,7 @@ import com.meiji.daily.R;
 /**
  * Created by Meiji on 2017/2/20.
  */
-
+@Deprecated
 public class SettingUtil {
 
     private SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(App.sAppContext);

@@ -24,8 +24,6 @@ import io.reactivex.schedulers.Schedulers;
 
 public class PostsContentViewModel extends AndroidViewModel {
 
-    private int mSlug;
-
     private MutableLiveData<Boolean> mIsLoading;
     private MutableLiveData<String> mHTML;
     private CompositeDisposable mDisposable;
@@ -38,9 +36,8 @@ public class PostsContentViewModel extends AndroidViewModel {
 
     PostsContentViewModel(@NonNull Application application, int slug) {
         super(application);
-        this.mSlug = slug;
 
-        handleData(mSlug);
+        handleData(slug);
     }
 
     MutableLiveData<Boolean> isLoading() {
@@ -87,7 +84,6 @@ public class PostsContentViewModel extends AndroidViewModel {
 
         return html;
     }
-
 
     @Override
     protected void onCleared() {

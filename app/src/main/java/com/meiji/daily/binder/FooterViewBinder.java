@@ -11,10 +11,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.meiji.daily.App;
 import com.meiji.daily.R;
 import com.meiji.daily.bean.FooterBean;
-import com.meiji.daily.util.SettingUtil;
+import com.meiji.daily.util.SettingHelper;
 
+import javax.inject.Inject;
+
+import dagger.Lazy;
 import me.drakeet.multitype.ItemViewBinder;
 
 /**
@@ -23,16 +27,22 @@ import me.drakeet.multitype.ItemViewBinder;
 
 public class FooterViewBinder extends ItemViewBinder<FooterBean, FooterViewBinder.ViewHolder> {
 
+    @Inject
+    Lazy<SettingHelper> mSettingHelper;
+
     @NonNull
     @Override
     protected FooterViewBinder.ViewHolder onCreateViewHolder(@NonNull LayoutInflater inflater, @NonNull ViewGroup parent) {
+        DaggerItemViewComponent.builder()
+                .appComponent(App.sAppComponent)
+                .build().inject(this);
         View view = inflater.inflate(R.layout.item_loading, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     protected void onBindViewHolder(@NonNull ViewHolder holder, @NonNull FooterBean item) {
-        int color = SettingUtil.getInstance().getColor();
+        int color = mSettingHelper.get().getColor();
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             Drawable wrapDrawable = DrawableCompat.wrap(holder.mProgressBar.getIndeterminateDrawable());
             DrawableCompat.setTint(wrapDrawable, color);

@@ -1,4 +1,4 @@
-package com.meiji.daily;
+package com.meiji.daily.module.shareadd;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,14 +10,19 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
+import com.meiji.daily.Constant;
+import com.meiji.daily.R;
 import com.meiji.daily.bean.ZhuanlanBean;
+import com.meiji.daily.data.local.AppDatabase;
 import com.meiji.daily.data.remote.IApi;
 import com.meiji.daily.util.RetrofitFactory;
-import com.meiji.daily.util.SettingUtil;
+import com.meiji.daily.util.SettingHelper;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
@@ -31,12 +36,20 @@ import io.reactivex.schedulers.Schedulers;
  * Created by Meiji on 2016/12/1.
  */
 
-public class AddActivity extends AppCompatActivity {
+public class ShareAddActivity extends AppCompatActivity {
 
-    private static final String TAG = "AddActivity";
+    private static final String TAG = "ShareAddActivity";
+    @Inject
+    SettingHelper mSettingHelper;
+    @Inject
+    AppDatabase mAppDatabase;
     private boolean isResult = false;
     private MaterialDialog mDialog;
-    private CompositeDisposable mDisposable = new CompositeDisposable();
+    private CompositeDisposable mDisposable;
+
+    {
+        mDisposable = new CompositeDisposable();
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,7 +57,7 @@ public class AddActivity extends AppCompatActivity {
         mDialog = new MaterialDialog.Builder(this)
                 .progress(true, 0)
                 .content(R.string.md_loading)
-                .theme(SettingUtil.getInstance().getIsNightMode() ? Theme.DARK : Theme.LIGHT)
+                .theme(mSettingHelper.getIsNightMode() ? Theme.DARK : Theme.LIGHT)
                 .cancelable(true)
                 .build();
         mDialog.show();
@@ -70,7 +83,7 @@ public class AddActivity extends AppCompatActivity {
         final Matcher matcher = Pattern.compile(regex).matcher(shareText);
         if (matcher.find()) {
             final String slug = matcher.group(1).toLowerCase();
-            Disposable subscribe = App.sDatabase.ZhuanlanNewDao().query(Constant.TYPE_USERADD)
+            Disposable subscribe = mAppDatabase.ZhuanlanNewDao().query(Constant.TYPE_USERADD)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<List<ZhuanlanBean>>() {
@@ -92,7 +105,7 @@ public class AddActivity extends AppCompatActivity {
                         @Override
                         public Boolean apply(ZhuanlanBean bean) throws Exception {
                             bean.setType(Constant.TYPE_USERADD);
-                            isResult = App.sDatabase.ZhuanlanNewDao().insert(bean) != -1;
+                            isResult = mAppDatabase.ZhuanlanNewDao().insert(bean) != -1;
                             return isResult;
                         }
                     })

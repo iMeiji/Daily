@@ -2,7 +2,6 @@ package com.meiji.daily.module.postscontent;
 
 import android.annotation.SuppressLint;
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
@@ -28,7 +27,10 @@ import com.meiji.daily.GlideApp;
 import com.meiji.daily.R;
 import com.meiji.daily.data.remote.IApi;
 import com.meiji.daily.module.base.BaseFragment;
-import com.meiji.daily.util.SettingUtil;
+import com.meiji.daily.util.SettingHelper;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * Created by Meiji on 2017/12/6.
@@ -36,18 +38,24 @@ import com.meiji.daily.util.SettingUtil;
 
 public class PostsContentView extends BaseFragment {
 
-    private static final String ARGUMENT_TITLEIMAGE = "ARGUMENT_TITLEIMAGE";
-    private static final String ARGUMENT_TITLE = "ARGUMENT_TITLE";
-    private static final String ARGUMENT_SLUG = "ARGUMENT_SLUG";
-
+    protected static final String ARGUMENT_TITLEIMAGE = "ARGUMENT_TITLEIMAGE";
+    protected static final String ARGUMENT_TITLE = "ARGUMENT_TITLE";
+    protected static final String ARGUMENT_SLUG = "ARGUMENT_SLUG";
+    @Inject
+    @Named("image")
+    String mImage;
+    @Inject
+    @Named("title")
+    String mTitle;
+    @Inject
+    @Named("slug")
+    int mSlug;
+    @Inject
+    PostsContentViewModel mModel;
+    @Inject
+    SettingHelper mSettingHelper;
     private WebView mWebView;
     private MaterialDialog mDialog;
-    private CollapsingToolbarLayout mCollapsingToolbarLayout;
-    private ImageView mIvHeader;
-
-    private String mTitle;
-    private int mSlug;
-    private PostsContentViewModel mModel;
 
     public static PostsContentView newInstance(String titleImage, String title, int slug) {
         Bundle args = new Bundle();
@@ -57,6 +65,14 @@ public class PostsContentView extends BaseFragment {
         PostsContentView fragment = new PostsContentView();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    protected void initInject() {
+        DaggerPostsContentComponent.builder()
+                .appComponent(App.sAppComponent)
+                .postsContentModule(new PostsContentModule(this))
+                .build().inject(this);
     }
 
     public void onSetWebView(String url) {
@@ -103,11 +119,11 @@ public class PostsContentView extends BaseFragment {
 
     @Override
     protected void initViews(View view) {
-        mIvHeader = view.findViewById(R.id.iv_titleimage);
+        ImageView ivHeader = view.findViewById(R.id.iv_titleimage);
         Toolbar toolbar_title = view.findViewById(R.id.toolbar_title);
         mWebView = view.findViewById(R.id.webview_content);
         FloatingActionButton fab_share = view.findViewById(R.id.fab_share);
-        mCollapsingToolbarLayout = view.findViewById(R.id.collapsing_layout);
+        CollapsingToolbarLayout collapsingToolbarLayout = view.findViewById(R.id.collapsing_layout);
         final NestedScrollView scrollView = view.findViewById(R.id.scrollView);
 
         initToolBar(toolbar_title, true, null);
@@ -119,7 +135,7 @@ public class PostsContentView extends BaseFragment {
             }
         });
 
-        fab_share.setBackgroundTintList(ColorStateList.valueOf(SettingUtil.getInstance().getColor()));
+        fab_share.setBackgroundTintList(ColorStateList.valueOf(mSettingHelper.getColor()));
         fab_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,46 +148,34 @@ public class PostsContentView extends BaseFragment {
             }
         });
 
-        mCollapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
-        mCollapsingToolbarLayout.setCollapsedTitleTextAppearance(R.style.CollapsedAppBar);
+        collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
+        collapsingToolbarLayout.setCollapsedTitleTextAppearance(R.style.CollapsedAppBar);
+        collapsingToolbarLayout.setTitle(mTitle);
 
         mDialog = new MaterialDialog.Builder(getContext())
                 .progress(true, 0)
                 .content(R.string.md_loading)
-                .theme(SettingUtil.getInstance().getIsNightMode() ? Theme.DARK : Theme.LIGHT)
+                .theme(mSettingHelper.getIsNightMode() ? Theme.DARK : Theme.LIGHT)
                 .cancelable(true)
                 .build();
+
+        if (TextUtils.isEmpty(mImage)) {
+            ivHeader.setImageResource(R.drawable.error_image);
+            ivHeader.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        } else {
+            GlideApp.with(this)
+                    .load(mImage)
+                    .centerCrop()
+                    .error(R.color.viewBackground)
+                    .transition(new DrawableTransitionOptions().crossFade())
+                    .into(ivHeader);
+        }
 
         initWebClient();
     }
 
     @Override
-    protected void initData() {
-        Bundle arguments = getArguments();
-        if (arguments != null) {
-            String titleImage = arguments.getString(ARGUMENT_TITLEIMAGE);
-            mTitle = arguments.getString(ARGUMENT_TITLE);
-            mSlug = arguments.getInt(ARGUMENT_SLUG, 0);
-
-            mCollapsingToolbarLayout.setTitle(mTitle);
-            if (TextUtils.isEmpty(titleImage)) {
-                mIvHeader.setImageResource(R.drawable.error_image);
-                mIvHeader.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            } else {
-                GlideApp.with(this)
-                        .load(titleImage)
-                        .centerCrop()
-                        .error(R.color.viewBackground)
-                        .transition(new DrawableTransitionOptions().crossFade())
-                        .into(mIvHeader);
-            }
-        }
-    }
-
-    @Override
     protected void subscribeUI() {
-        PostsContentViewModel.Factory factory = new PostsContentViewModel.Factory(App.sApp, mSlug);
-        mModel = ViewModelProviders.of(this, factory).get(PostsContentViewModel.class);
         mModel.getHTML().observe(this, new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
