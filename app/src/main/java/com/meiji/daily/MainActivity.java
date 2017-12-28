@@ -220,6 +220,7 @@ public class MainActivity extends BaseActivity
         new ColorChooserDialog.Builder(this, R.string.md_color_chooser_title)
                 .doneButton(R.string.md_done)
                 .cancelButton(R.string.md_cancel)
+                .backButton(R.string.md_back)
                 .allowUserColorInput(true)
                 .allowUserColorInputAlpha(false)
                 .theme(mSettingHelper.getIsNightMode() ? Theme.DARK : Theme.LIGHT)

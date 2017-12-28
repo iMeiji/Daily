@@ -13,7 +13,6 @@ import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.data.local.AppDatabase;
 import com.meiji.daily.data.remote.IApi;
 import com.meiji.daily.util.ErrorAction;
-import com.meiji.daily.util.RetrofitFactory;
 import com.meiji.daily.util.RxBus;
 
 import java.util.ArrayList;
@@ -29,6 +28,7 @@ import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Retrofit;
 
 /**
  * Created by Meiji on 2017/11/29.
@@ -38,6 +38,7 @@ public class ZhuanlanViewModel extends AndroidViewModel {
 
     public static final String TAG = "ZhuanlanViewModel";
     private final AppDatabase mAppDatabase;
+    private final Retrofit mRetrofit;
     private int mType;
     private String[] mIdArr;
     private Flowable<Boolean> mRxBus;
@@ -56,10 +57,12 @@ public class ZhuanlanViewModel extends AndroidViewModel {
         mIsRefreshUI.setValue(true);
     }
 
-    private ZhuanlanViewModel(@NonNull Application application, int type, AppDatabase appDatabase) {
+    private ZhuanlanViewModel(Application application, int type,
+                              AppDatabase appDatabase, Retrofit retrofit) {
         super(application);
         mType = type;
         mAppDatabase = appDatabase;
+        mRetrofit = retrofit;
 
         handleData();
         subscribeTheme();
@@ -151,7 +154,7 @@ public class ZhuanlanViewModel extends AndroidViewModel {
 
         final List<ZhuanlanBean> list = new ArrayList<>();
         final List<Maybe<ZhuanlanBean>> maybeList = new ArrayList<>();
-        final IApi api = RetrofitFactory.getRetrofit().create(IApi.class);
+        final IApi api = mRetrofit.create(IApi.class);
 
         for (String id : mIdArr) {
             maybeList.add(api.getZhuanlanBean(id));
@@ -184,17 +187,20 @@ public class ZhuanlanViewModel extends AndroidViewModel {
         private final Application mApplication;
         private final int mType;
         private final AppDatabase mAppDatabase;
+        private final Retrofit mRetrofit;
 
-        public Factory(@NonNull Application application, int type, @NonNull AppDatabase appDatabase) {
+        public Factory(Application application, int type,
+                       AppDatabase appDatabase, Retrofit retrofit) {
             mApplication = application;
             mType = type;
             mAppDatabase = appDatabase;
+            mRetrofit = retrofit;
         }
 
         @NonNull
         @Override
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-            return (T) new ZhuanlanViewModel(mApplication, mType, mAppDatabase);
+            return (T) new ZhuanlanViewModel(mApplication, mType, mAppDatabase, mRetrofit);
         }
     }
 }

@@ -1,10 +1,12 @@
 package com.meiji.daily.util;
 
+import android.content.Context;
+import android.support.annotation.NonNull;
+
 import com.franmontiel.persistentcookiejar.ClearableCookieJar;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
-import com.meiji.daily.App;
 import com.meiji.daily.BuildConfig;
 import com.meiji.daily.SdkManager;
 import com.meiji.daily.data.remote.IApi;
@@ -12,6 +14,9 @@ import com.meiji.daily.data.remote.IApi;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import okhttp3.Cache;
 import okhttp3.CacheControl;
@@ -24,11 +29,12 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Created by Meiji on 2017/4/22.
+ * Created by Meiji on 2017/12/28.
  */
-@Deprecated
-public class RetrofitFactory {
+@Singleton
+public class RetrofitHelper {
 
+    private final Context mContext;
     /**
      * 缓存机制
      * 在响应请求之后在 data/data/<包名>/cache 下建立一个response 文件夹，保持缓存数据。
@@ -37,17 +43,17 @@ public class RetrofitFactory {
      * 也就是：判断网络，有网络，则从网络获取，并保存到缓存中，无网络，则从缓存中获取。
      * https://werb.github.io/2016/07/29/%E4%BD%BF%E7%94%A8Retrofit2+OkHttp3%E5%AE%9E%E7%8E%B0%E7%BC%93%E5%AD%98%E5%A4%84%E7%90%86/
      */
-    private static final Interceptor cacheControlInterceptor = new Interceptor() {
+    private final Interceptor cacheControlInterceptor = new Interceptor() {
 
         @Override
-        public Response intercept(Chain chain) throws IOException {
+        public Response intercept(@NonNull Chain chain) throws IOException {
             Request request = chain.request();
-            if (!NetWorkUtil.isNetworkConnected(App.sAppContext)) {
+            if (!NetWorkUtil.isNetworkConnected(mContext)) {
                 request = request.newBuilder().cacheControl(CacheControl.FORCE_CACHE).build();
             }
 
             Response originalResponse = chain.proceed(request);
-            if (NetWorkUtil.isNetworkConnected(App.sAppContext)) {
+            if (NetWorkUtil.isNetworkConnected(mContext)) {
                 // 有网络时 设置缓存为默认值
                 String cacheControl = request.cacheControl().toString();
                 return originalResponse.newBuilder()
@@ -64,43 +70,40 @@ public class RetrofitFactory {
             }
         }
     };
-    private volatile static Retrofit sRetrofit;
 
-    public static Retrofit getRetrofit() {
-        if (sRetrofit == null) {
-            synchronized (RetrofitFactory.class) {
-                if (sRetrofit == null) {
-                    // 指定缓存路径,缓存大小 50Mb
-                    Cache cache = new Cache(new File(App.sAppContext.getCacheDir(), "HttpCache"),
-                            1024 * 1024 * 50);
+    @Inject
+    public RetrofitHelper(Context context) {
+        mContext = context;
+    }
 
-                    // Cookie 持久化
-                    ClearableCookieJar cookieJar =
-                            new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(App.sAppContext));
+    public Retrofit getRetrofit() {
+        // 指定缓存路径,缓存大小 50Mb
+        Cache cache = new Cache(new File(mContext.getCacheDir(), "HttpCache"),
+                1024 * 1024 * 50);
 
-                    OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                            .cookieJar(cookieJar)
-                            .cache(cache)
-                            .addInterceptor(cacheControlInterceptor)
-                            .connectTimeout(10, TimeUnit.SECONDS)
-                            .readTimeout(15, TimeUnit.SECONDS)
-                            .writeTimeout(15, TimeUnit.SECONDS)
-                            .retryOnConnectionFailure(true);
+        // Cookie 持久化
+        ClearableCookieJar cookieJar =
+                new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(mContext));
 
-                    // Log 拦截器
-                    if (BuildConfig.DEBUG) {
-                        builder = SdkManager.initInterceptor(builder);
-                    }
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .cookieJar(cookieJar)
+                .cache(cache)
+                .addInterceptor(cacheControlInterceptor)
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(15, TimeUnit.SECONDS)
+                .writeTimeout(15, TimeUnit.SECONDS)
+                .retryOnConnectionFailure(true);
 
-                    sRetrofit = new Retrofit.Builder()
-                            .baseUrl(IApi.API_BASE)
-                            .client(builder.build())
-                            .addConverterFactory(GsonConverterFactory.create())
-                            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                            .build();
-                }
-            }
+        // Log 拦截器
+        if (BuildConfig.DEBUG) {
+            builder = SdkManager.initInterceptor(builder);
         }
-        return sRetrofit;
+
+        return new Retrofit.Builder()
+                .baseUrl(IApi.API_BASE)
+                .client(builder.build())
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .build();
     }
 }

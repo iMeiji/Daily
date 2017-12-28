@@ -2,6 +2,7 @@ package com.meiji.daily.module.useradd;
 
 import android.arch.lifecycle.Observer;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.net.Uri;
@@ -43,15 +44,19 @@ import me.drakeet.multitype.MultiTypeAdapter;
  * Created by Meiji on 2017/12/4.
  */
 
-public class UserAddView extends BaseFragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class UserAddView extends BaseFragment
+        implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     @Inject
     UserAddViewModel mModel;
     @Inject
     SettingHelper mSettingHelper;
+    @Inject
+    SharedPreferences mSharedPreferences;
     private TextView mTvDesc;
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mRefreshLayout;
+    private FloatingActionButton mFab;
     private MaterialDialog mDialog;
     private LinearLayout mRoot;
     private List<ZhuanlanBean> mList;
@@ -107,13 +112,27 @@ public class UserAddView extends BaseFragment implements View.OnClickListener, S
                 }
             }
         });
+        mSharedPreferences.registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals("color")) {
+            mFab.setBackgroundTintList(ColorStateList.valueOf(mSettingHelper.getColor()));
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mSharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override
     protected void initViews(View view) {
         mTvDesc = view.findViewById(R.id.tv_description);
         mRecyclerView = view.findViewById(R.id.recycler_view);
-        FloatingActionButton fab_add = view.findViewById(R.id.fab_add);
+        mFab = view.findViewById(R.id.fab_add);
         mRefreshLayout = view.findViewById(R.id.refresh_layout);
         mRoot = view.findViewById(R.id.root);
 
@@ -124,8 +143,8 @@ public class UserAddView extends BaseFragment implements View.OnClickListener, S
         mRefreshLayout.setColorSchemeColors(mSettingHelper.getColor());
         mRefreshLayout.setOnRefreshListener(this);
 
-        fab_add.setBackgroundTintList(ColorStateList.valueOf(mSettingHelper.getColor()));
-        fab_add.setOnClickListener(this);
+        mFab.setBackgroundTintList(ColorStateList.valueOf(mSettingHelper.getColor()));
+        mFab.setOnClickListener(this);
 
         ItemTouchHelper helper = new ItemTouchHelper(
                 new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {

@@ -5,6 +5,7 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
 import com.meiji.daily.Constant;
@@ -12,7 +13,6 @@ import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.data.local.AppDatabase;
 import com.meiji.daily.data.remote.IApi;
 import com.meiji.daily.util.ErrorAction;
-import com.meiji.daily.util.RetrofitFactory;
 import com.meiji.daily.util.RxBus;
 
 import java.util.List;
@@ -26,25 +26,28 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Retrofit;
 
 /**
  * Created by Meiji on 2017/12/4.
  */
 
-public class UserAddViewModel extends AndroidViewModel {
+public class UserAddViewModel extends AndroidViewModel implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private final AppDatabase mAppDatabase;
+    private final Retrofit mRetrofit;
+
     private Flowable<Boolean> mRxBus;
     private MutableLiveData<Boolean> mIsLoading;
     private MutableLiveData<Boolean> mIsRefreshUI;
-    private MutableLiveData<Boolean> mIsAddResult;
+    private MutableLiveData<Boolean> mIsAddSuccess;
     private MutableLiveData<List<ZhuanlanBean>> mList;
     private CompositeDisposable mDisposable;
 
     {
         mIsLoading = new MutableLiveData<>();
         mIsRefreshUI = new MutableLiveData<>();
-        mIsAddResult = new MutableLiveData<>();
+        mIsAddSuccess = new MutableLiveData<>();
         mList = new MutableLiveData<>();
         mDisposable = new CompositeDisposable();
 
@@ -52,9 +55,10 @@ public class UserAddViewModel extends AndroidViewModel {
         mIsRefreshUI.setValue(true);
     }
 
-    UserAddViewModel(@NonNull Application application, AppDatabase appDatabase) {
+    UserAddViewModel(Application application, AppDatabase appDatabase, Retrofit retrofit) {
         super(application);
         mAppDatabase = appDatabase;
+        mRetrofit = retrofit;
 
         handleData();
         subscribeTheme();
@@ -73,7 +77,7 @@ public class UserAddViewModel extends AndroidViewModel {
     }
 
     MutableLiveData<Boolean> isAddResult() {
-        return mIsAddResult;
+        return mIsAddSuccess;
     }
 
     void handleData() {
@@ -95,7 +99,7 @@ public class UserAddViewModel extends AndroidViewModel {
     void addItem(final String input) {
         mIsLoading.setValue(true);
 
-        Disposable subscribe = RetrofitFactory.getRetrofit().create(IApi.class).getZhuanlanBean(input)
+        Disposable subscribe = mRetrofit.create(IApi.class).getZhuanlanBean(input)
                 .subscribeOn(Schedulers.io())
                 .doOnSuccess(new Consumer<ZhuanlanBean>() {
                     @Override
@@ -110,13 +114,13 @@ public class UserAddViewModel extends AndroidViewModel {
                 .subscribe(new Consumer<ZhuanlanBean>() {
                     @Override
                     public void accept(@io.reactivex.annotations.NonNull ZhuanlanBean bean) throws Exception {
-                        mIsAddResult.setValue(true);
+                        mIsAddSuccess.setValue(true);
                         handleData();
                     }
                 }, new ErrorAction() {
                     @Override
                     public void doAction() {
-                        mIsAddResult.setValue(false);
+                        mIsAddSuccess.setValue(false);
                         mIsLoading.setValue(false);
                     }
                 }.action());
@@ -151,20 +155,27 @@ public class UserAddViewModel extends AndroidViewModel {
         super.onCleared();
     }
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+
+    }
+
     public static class Factory extends ViewModelProvider.NewInstanceFactory {
 
         private final Application mApplication;
         private final AppDatabase mAppDatabase;
+        private final Retrofit mRetrofit;
 
-        Factory(@NonNull Application application, AppDatabase appDatabase) {
+        Factory(Application application, AppDatabase appDatabase, Retrofit retrofit) {
             mApplication = application;
             mAppDatabase = appDatabase;
+            mRetrofit = retrofit;
         }
 
         @NonNull
         @Override
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-            return (T) new UserAddViewModel(mApplication, mAppDatabase);
+            return (T) new UserAddViewModel(mApplication, mAppDatabase, mRetrofit);
         }
     }
 }

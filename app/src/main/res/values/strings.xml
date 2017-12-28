@@ -50,6 +50,8 @@
     <string name="md_zhuanlan_add_content">在下面输入专栏的ID,如 bilibili</string>
     <string name="md_zhuanlan_add_help">什么是专栏id</string>
     <string name="md_ok">确定</string>
+    <string name="md_back">返回</string>
+
 
     <!--AddActivity-->
     <string name="formal_incorrect">格式不正确</string>

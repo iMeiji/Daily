@@ -6,12 +6,14 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.meiji.daily.data.local.AppDatabase;
+import com.meiji.daily.util.RetrofitHelper;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import retrofit2.Retrofit;
 
 /**
  * Created by Meiji on 2017/12/21.
@@ -43,5 +45,11 @@ public class AppModule {
     @Provides
     SharedPreferences provideSharedPreferences(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context);
+    }
+
+    @Singleton
+    @Provides
+    Retrofit provideRetrofit(Context context) {
+        return new RetrofitHelper(context).getRetrofit();
     }
 }

@@ -13,7 +13,6 @@ import android.support.annotation.NonNull;
 import com.meiji.daily.bean.PostsListBean;
 import com.meiji.daily.data.remote.IApi;
 import com.meiji.daily.util.ErrorAction;
-import com.meiji.daily.util.RetrofitFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +22,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Retrofit;
 
 /**
  * Created by Meiji on 2017/12/5.
@@ -30,10 +30,10 @@ import io.reactivex.schedulers.Schedulers;
 
 public class PostsListViewModel extends AndroidViewModel {
 
+    private final Retrofit mRetrofit;
     private String mSlug;
     private int mPostCount;
     private List<PostsListBean> mList;
-
     private MutableLiveData<Boolean> mIsLoading;
     private MutableLiveData<Boolean> mIsEnd;
     private MutableLiveData<Integer> mOffset;
@@ -49,10 +49,11 @@ public class PostsListViewModel extends AndroidViewModel {
         mOffset = new MutableLiveData<>();
     }
 
-    PostsListViewModel(@NonNull Application application, String slug, int postCount) {
+    PostsListViewModel(@NonNull Application application, String slug, int postCount, Retrofit retrofit) {
         super(application);
-        this.mSlug = slug;
-        this.mPostCount = postCount;
+        mSlug = slug;
+        mPostCount = postCount;
+        mRetrofit = retrofit;
 
         mIsLoading.setValue(true);
         mOffset.setValue(0);
@@ -82,7 +83,7 @@ public class PostsListViewModel extends AndroidViewModel {
 
         final MutableLiveData<List<PostsListBean>> liveData = new MutableLiveData<>();
 
-        Disposable subscribe = RetrofitFactory.getRetrofit().create(IApi.class).getPostsList(mSlug, offset)
+        Disposable subscribe = mRetrofit.create(IApi.class).getPostsList(mSlug, offset)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<List<PostsListBean>>() {
@@ -133,17 +134,19 @@ public class PostsListViewModel extends AndroidViewModel {
         private final Application mApplication;
         private final String mSlug;
         private final int mPostCount;
+        private final Retrofit mRetrofit;
 
-        Factory(@NonNull Application application, @NonNull String slug, int postCount) {
-            this.mApplication = application;
-            this.mSlug = slug;
-            this.mPostCount = postCount;
+        Factory(Application application, String slug, int postCount, Retrofit retrofit) {
+            mApplication = application;
+            mSlug = slug;
+            mPostCount = postCount;
+            mRetrofit = retrofit;
         }
 
         @android.support.annotation.NonNull
         @Override
         public <T extends ViewModel> T create(@android.support.annotation.NonNull Class<T> modelClass) {
-            return (T) new PostsListViewModel(mApplication, mSlug, mPostCount);
+            return (T) new PostsListViewModel(mApplication, mSlug, mPostCount, mRetrofit);
         }
     }
 }

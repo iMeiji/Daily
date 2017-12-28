@@ -10,6 +10,7 @@ import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
+import retrofit2.Retrofit;
 
 /**
  * Created by Meiji on 2017/12/28.
@@ -26,8 +27,10 @@ public class PostsContentModule {
 
     @FragmentScoped
     @Provides
-    PostsContentViewModel provideModel(@Named("application") Application application, @Named("slug") int slug) {
-        PostsContentViewModel.Factory factory = new PostsContentViewModel.Factory(application, slug);
+    PostsContentViewModel provideModel(@Named("application") Application application,
+                                       @Named("slug") int slug, Retrofit retrofit) {
+        PostsContentViewModel.Factory factory
+                = new PostsContentViewModel.Factory(application, slug, retrofit);
         return ViewModelProviders.of(mPostsContentView, factory).get(PostsContentViewModel.class);
     }
 

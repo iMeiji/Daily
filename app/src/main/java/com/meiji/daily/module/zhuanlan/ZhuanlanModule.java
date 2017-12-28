@@ -12,6 +12,7 @@ import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
+import retrofit2.Retrofit;
 
 /**
  * Created by Meiji on 2017/12/21.
@@ -28,9 +29,9 @@ public class ZhuanlanModule {
     @FragmentScoped
     @Provides
     ZhuanlanViewModel provideModel(@Named("application") Application application,
-                                   int type, AppDatabase appDatabase) {
+                                   int type, AppDatabase appDatabase, Retrofit retrofit) {
         ZhuanlanViewModel.Factory factory =
-                new ZhuanlanViewModel.Factory(application, type, appDatabase);
+                new ZhuanlanViewModel.Factory(application, type, appDatabase, retrofit);
         return ViewModelProviders.of(mZhuanlanView, factory).get(ZhuanlanViewModel.class);
     }
 

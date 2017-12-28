@@ -10,13 +10,13 @@ import android.support.annotation.NonNull;
 import com.meiji.daily.bean.PostsContentBean;
 import com.meiji.daily.data.remote.IApi;
 import com.meiji.daily.util.ErrorAction;
-import com.meiji.daily.util.RetrofitFactory;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Retrofit;
 
 /**
  * Created by Meiji on 2017/12/5.
@@ -24,6 +24,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public class PostsContentViewModel extends AndroidViewModel {
 
+    private final Retrofit mRetrofit;
     private MutableLiveData<Boolean> mIsLoading;
     private MutableLiveData<String> mHTML;
     private CompositeDisposable mDisposable;
@@ -34,8 +35,9 @@ public class PostsContentViewModel extends AndroidViewModel {
         mDisposable = new CompositeDisposable();
     }
 
-    PostsContentViewModel(@NonNull Application application, int slug) {
+    PostsContentViewModel(Application application, int slug, Retrofit retrofit) {
         super(application);
+        mRetrofit = retrofit;
 
         handleData(slug);
     }
@@ -51,7 +53,7 @@ public class PostsContentViewModel extends AndroidViewModel {
     private void handleData(final int slug) {
         mIsLoading.setValue(true);
 
-        Disposable subscribe = RetrofitFactory.getRetrofit().create(IApi.class).getPostsContentBean(slug)
+        Disposable subscribe = mRetrofit.create(IApi.class).getPostsContentBean(slug)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<PostsContentBean>() {
@@ -95,16 +97,18 @@ public class PostsContentViewModel extends AndroidViewModel {
 
         private final Application mApplication;
         private final int mSlug;
+        private final Retrofit mRetrofit;
 
-        Factory(@NonNull Application application, int slug) {
-            this.mApplication = application;
-            this.mSlug = slug;
+        Factory(Application application, int slug, Retrofit retrofit) {
+            mApplication = application;
+            mSlug = slug;
+            mRetrofit = retrofit;
         }
 
         @NonNull
         @Override
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-            return (T) new PostsContentViewModel(mApplication, mSlug);
+            return (T) new PostsContentViewModel(mApplication, mSlug, mRetrofit);
         }
     }
 }

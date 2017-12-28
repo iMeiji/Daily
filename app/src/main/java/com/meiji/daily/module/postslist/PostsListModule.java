@@ -10,6 +10,7 @@ import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
+import retrofit2.Retrofit;
 
 /**
  * Created by Meiji on 2017/12/28.
@@ -27,9 +28,9 @@ public class PostsListModule {
     @FragmentScoped
     @Provides
     PostsListViewModel provideModule(@Named("application") Application application,
-                                     @Named("slug") String slug, int postCount) {
+                                     @Named("slug") String slug, int postCount, Retrofit retrofit) {
         PostsListViewModel.Factory factory =
-                new PostsListViewModel.Factory(application, slug, postCount);
+                new PostsListViewModel.Factory(application, slug, postCount, retrofit);
         return ViewModelProviders.of(mPostsListView, factory).get(PostsListViewModel.class);
     }
 

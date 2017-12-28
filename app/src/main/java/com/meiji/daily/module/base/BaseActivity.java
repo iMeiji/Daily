@@ -44,12 +44,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void initData(Bundle savedInstanceState) {
     }
 
-    /**
-     * 初始化 Dagger
-     */
-    protected void initInject() {
-    }
-
     protected void initTheme() {
         boolean isNightMode = mSettingHelper.getIsNightMode();
         if (isNightMode) {

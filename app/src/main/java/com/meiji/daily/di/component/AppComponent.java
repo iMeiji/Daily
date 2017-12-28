@@ -2,6 +2,7 @@ package com.meiji.daily.di.component;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.meiji.daily.App;
 import com.meiji.daily.data.local.AppDatabase;
@@ -13,6 +14,7 @@ import javax.inject.Singleton;
 
 import dagger.BindsInstance;
 import dagger.Component;
+import retrofit2.Retrofit;
 
 /**
  * Created by Meiji on 2017/12/21.
@@ -32,6 +34,10 @@ public interface AppComponent {
     AppDatabase getAppDatabase();
 
     SettingHelper getSettingHelper();
+
+    Retrofit getRetrofit();
+
+    SharedPreferences getSharedPreferences();
 
     @Component.Builder
     interface Builder {

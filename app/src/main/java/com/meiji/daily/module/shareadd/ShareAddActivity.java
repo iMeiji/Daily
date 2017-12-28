@@ -10,12 +10,12 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
+import com.meiji.daily.App;
 import com.meiji.daily.Constant;
 import com.meiji.daily.R;
 import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.data.local.AppDatabase;
 import com.meiji.daily.data.remote.IApi;
-import com.meiji.daily.util.RetrofitFactory;
 import com.meiji.daily.util.SettingHelper;
 
 import java.util.List;
@@ -31,6 +31,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Retrofit;
 
 /**
  * Created by Meiji on 2016/12/1.
@@ -43,6 +44,8 @@ public class ShareAddActivity extends AppCompatActivity {
     SettingHelper mSettingHelper;
     @Inject
     AppDatabase mAppDatabase;
+    @Inject
+    Retrofit mRetrofit;
     private boolean isResult = false;
     private MaterialDialog mDialog;
     private CompositeDisposable mDisposable;
@@ -53,6 +56,9 @@ public class ShareAddActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        DaggerShareAddComponent.builder()
+                .appComponent(App.sAppComponent)
+                .build().inject(this);
         super.onCreate(savedInstanceState);
         mDialog = new MaterialDialog.Builder(this)
                 .progress(true, 0)
@@ -99,7 +105,7 @@ public class ShareAddActivity extends AppCompatActivity {
                     });
             mDisposable.add(subscribe);
 
-            Disposable disposable = RetrofitFactory.getRetrofit().create(IApi.class).getZhuanlanBean(slug)
+            Disposable disposable = mRetrofit.create(IApi.class).getZhuanlanBean(slug)
                     .subscribeOn(Schedulers.io())
                     .map(new Function<ZhuanlanBean, Boolean>() {
                         @Override

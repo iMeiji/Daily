@@ -10,6 +10,7 @@ import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
+import retrofit2.Retrofit;
 
 /**
  * Created by Meiji on 2017/12/28.
@@ -25,9 +26,10 @@ public class UserAddModule {
 
     @FragmentScoped
     @Provides
-    UserAddViewModel provideModel(@Named("application") Application application, AppDatabase appDatabase) {
+    UserAddViewModel provideModel(@Named("application") Application application, AppDatabase appDatabase,
+                                  Retrofit retrofit) {
         UserAddViewModel.Factory factory =
-                new UserAddViewModel.Factory(application, appDatabase);
+                new UserAddViewModel.Factory(application, appDatabase, retrofit);
         return ViewModelProviders.of(mUserAddView, factory).get(UserAddViewModel.class);
     }
 }
