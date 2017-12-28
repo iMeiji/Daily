@@ -16,6 +16,8 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -193,7 +195,10 @@ public class MainActivity extends BaseActivity
     }
 
     private void replaceFragment(int type) {
-        Fragment fragmentById = getSupportFragmentManager().findFragmentByTag(String.valueOf(type));
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        Fragment fragmentById = fragmentManager.findFragmentByTag(String.valueOf(type));
         if (fragmentById == null) {
             Fragment fragment;
             if (type != Constant.TYPE_USERADD) {
@@ -201,10 +206,15 @@ public class MainActivity extends BaseActivity
             } else {
                 fragment = new UserAddView();
             }
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.content_main, fragment, String.valueOf(type))
-                    .commit();
+            fragmentTransaction
+                    .add(R.id.content_main, fragment, String.valueOf(type));
+        } else {
+            for (Fragment fragment : fragmentManager.getFragments()) {
+                fragmentTransaction.hide(fragment);
+            }
+            fragmentTransaction.show(fragmentById);
         }
+        fragmentTransaction.commit();
     }
 
     private void createColorChooserDialog() {
