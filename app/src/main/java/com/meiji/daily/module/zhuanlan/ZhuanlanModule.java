@@ -7,6 +7,7 @@ import android.os.Bundle;
 import com.meiji.daily.Constant;
 import com.meiji.daily.data.local.AppDatabase;
 import com.meiji.daily.di.scope.FragmentScoped;
+import com.meiji.daily.util.RxBusHelper;
 
 import javax.inject.Named;
 
@@ -29,9 +30,9 @@ public class ZhuanlanModule {
     @FragmentScoped
     @Provides
     ZhuanlanViewModel provideModel(@Named("application") Application application,
-                                   int type, AppDatabase appDatabase, Retrofit retrofit) {
+                                   int type, AppDatabase appDatabase, Retrofit retrofit, RxBusHelper rxBusHelper) {
         ZhuanlanViewModel.Factory factory =
-                new ZhuanlanViewModel.Factory(application, type, appDatabase, retrofit);
+                new ZhuanlanViewModel.Factory(application, type, appDatabase, retrofit, rxBusHelper);
         return ViewModelProviders.of(mZhuanlanView, factory).get(ZhuanlanViewModel.class);
     }
 

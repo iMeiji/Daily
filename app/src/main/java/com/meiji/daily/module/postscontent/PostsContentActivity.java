@@ -14,9 +14,9 @@ import com.meiji.daily.module.base.BaseActivity;
 
 public class PostsContentActivity extends BaseActivity {
 
-    private static final String EXTRA_TITLEIMAGE = "EXTRA_TITLEIMAGE";
-    private static final String EXTRA_TITLE = "EXTRA_TITLE";
-    private static final String EXTRA_SLUG = "EXTRA_SLUG";
+    static final String EXTRA_TITLEIMAGE = "EXTRA_TITLEIMAGE";
+    static final String EXTRA_TITLE = "EXTRA_TITLE";
+    static final String EXTRA_SLUG = "EXTRA_SLUG";
 
     public static void start(@NonNull Context context, @NonNull String titleImage, @NonNull String title, int slug) {
         Intent starter = new Intent(context, PostsContentActivity.class);

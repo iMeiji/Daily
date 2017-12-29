@@ -36,10 +36,11 @@ import me.drakeet.multitype.MultiTypeAdapter;
 
 public class PostsListView extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    protected static final String ARGUMENT_SLUG = "ARGUMENT_SLUG";
-    protected static final String ARGUMENT_NAME = "ARGUMENT_NAME";
-    protected static final String ARGUMENT_POSTSCOUNT = "ARGUMENT_POSTSCOUNT";
-    private static final String TAG = "PostsListView";
+    static final String ARGUMENT_SLUG = "ARGUMENT_SLUG";
+    static final String ARGUMENT_NAME = "ARGUMENT_NAME";
+    static final String ARGUMENT_POSTSCOUNT = "ARGUMENT_POSTSCOUNT";
+    static final String TAG = "PostsListView";
+
     @Inject
     @Named("title")
     String mTitle;
@@ -47,6 +48,7 @@ public class PostsListView extends BaseFragment implements SwipeRefreshLayout.On
     PostsListViewModel mModel;
     @Inject
     SettingHelper mSettingHelper;
+
     private SwipeRefreshLayout mRefreshLayout;
     private RecyclerView mRecyclerView;
     private Items mOldItems = new Items();

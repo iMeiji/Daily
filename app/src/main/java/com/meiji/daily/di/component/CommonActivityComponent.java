@@ -1,7 +1,8 @@
-package com.meiji.daily.module.base;
+package com.meiji.daily.di.component;
 
-import com.meiji.daily.di.component.AppComponent;
+import com.meiji.daily.MainActivity;
 import com.meiji.daily.di.scope.ActivityScoped;
+import com.meiji.daily.module.base.BaseActivity;
 
 import dagger.Component;
 
@@ -11,7 +12,9 @@ import dagger.Component;
 
 @ActivityScoped
 @Component(dependencies = AppComponent.class)
-public interface BaseActivityComponent {
+public interface CommonActivityComponent {
 
     void inject(BaseActivity baseActivity);
+
+    void inject(MainActivity mainActivity);
 }

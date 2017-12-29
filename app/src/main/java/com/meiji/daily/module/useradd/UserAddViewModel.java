@@ -13,7 +13,7 @@ import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.data.local.AppDatabase;
 import com.meiji.daily.data.remote.IApi;
 import com.meiji.daily.util.ErrorAction;
-import com.meiji.daily.util.RxBus;
+import com.meiji.daily.util.RxBusHelper;
 
 import java.util.List;
 
@@ -36,13 +36,14 @@ public class UserAddViewModel extends AndroidViewModel implements SharedPreferen
 
     private final AppDatabase mAppDatabase;
     private final Retrofit mRetrofit;
+    private final RxBusHelper mRxBusHelper;
+    private final CompositeDisposable mDisposable;
 
     private Flowable<Boolean> mRxBus;
     private MutableLiveData<Boolean> mIsLoading;
     private MutableLiveData<Boolean> mIsRefreshUI;
     private MutableLiveData<Boolean> mIsAddSuccess;
     private MutableLiveData<List<ZhuanlanBean>> mList;
-    private CompositeDisposable mDisposable;
 
     {
         mIsLoading = new MutableLiveData<>();
@@ -55,10 +56,12 @@ public class UserAddViewModel extends AndroidViewModel implements SharedPreferen
         mIsRefreshUI.setValue(true);
     }
 
-    UserAddViewModel(Application application, AppDatabase appDatabase, Retrofit retrofit) {
+    UserAddViewModel(Application application, AppDatabase appDatabase,
+                     Retrofit retrofit, RxBusHelper rxBusHelper) {
         super(application);
         mAppDatabase = appDatabase;
         mRetrofit = retrofit;
+        mRxBusHelper = rxBusHelper;
 
         handleData();
         subscribeTheme();
@@ -128,7 +131,7 @@ public class UserAddViewModel extends AndroidViewModel implements SharedPreferen
     }
 
     private void subscribeTheme() {
-        mRxBus = RxBus.getInstance().register(Constant.RxBusEvent.REFRESHUI);
+        mRxBus = mRxBusHelper.register(Constant.RxBusEvent.REFRESHUI);
         Disposable subscribe = mRxBus.subscribe(new Consumer<Boolean>() {
             @Override
             public void accept(Boolean aBoolean) throws Exception {
@@ -150,7 +153,7 @@ public class UserAddViewModel extends AndroidViewModel implements SharedPreferen
 
     @Override
     protected void onCleared() {
-        RxBus.getInstance().unregister(Constant.RxBusEvent.REFRESHUI, mRxBus);
+        mRxBusHelper.unregister(Constant.RxBusEvent.REFRESHUI, mRxBus);
         mDisposable.clear();
         super.onCleared();
     }
@@ -165,17 +168,20 @@ public class UserAddViewModel extends AndroidViewModel implements SharedPreferen
         private final Application mApplication;
         private final AppDatabase mAppDatabase;
         private final Retrofit mRetrofit;
+        private final RxBusHelper mRxBusHelper;
 
-        Factory(Application application, AppDatabase appDatabase, Retrofit retrofit) {
+        Factory(Application application, AppDatabase appDatabase,
+                Retrofit retrofit, RxBusHelper rxBusHelper) {
             mApplication = application;
             mAppDatabase = appDatabase;
             mRetrofit = retrofit;
+            mRxBusHelper = rxBusHelper;
         }
 
         @NonNull
         @Override
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-            return (T) new UserAddViewModel(mApplication, mAppDatabase, mRetrofit);
+            return (T) new UserAddViewModel(mApplication, mAppDatabase, mRetrofit, mRxBusHelper);
         }
     }
 }

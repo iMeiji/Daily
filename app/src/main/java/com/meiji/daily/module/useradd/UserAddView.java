@@ -53,12 +53,14 @@ public class UserAddView extends BaseFragment
     SettingHelper mSettingHelper;
     @Inject
     SharedPreferences mSharedPreferences;
+
     private TextView mTvDesc;
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mRefreshLayout;
     private FloatingActionButton mFab;
     private MaterialDialog mDialog;
     private LinearLayout mRoot;
+
     private List<ZhuanlanBean> mList;
     private MultiTypeAdapter mAdapter;
     private boolean mIsdelete;

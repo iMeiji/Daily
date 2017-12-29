@@ -25,9 +25,10 @@ import retrofit2.Retrofit;
 public class PostsContentViewModel extends AndroidViewModel {
 
     private final Retrofit mRetrofit;
+    private final CompositeDisposable mDisposable;
+
     private MutableLiveData<Boolean> mIsLoading;
     private MutableLiveData<String> mHTML;
-    private CompositeDisposable mDisposable;
 
     {
         mIsLoading = new MutableLiveData<>();

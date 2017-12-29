@@ -31,6 +31,8 @@ import retrofit2.Retrofit;
 public class PostsListViewModel extends AndroidViewModel {
 
     private final Retrofit mRetrofit;
+    private final CompositeDisposable mDisposable;
+
     private String mSlug;
     private int mPostCount;
     private List<PostsListBean> mList;
@@ -38,7 +40,6 @@ public class PostsListViewModel extends AndroidViewModel {
     private MutableLiveData<Boolean> mIsEnd;
     private MutableLiveData<Integer> mOffset;
     private LiveData<List<PostsListBean>> mListLiveData;
-    private CompositeDisposable mDisposable;
 
     {
         mList = new ArrayList<>();

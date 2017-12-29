@@ -13,7 +13,7 @@ import com.meiji.daily.bean.ZhuanlanBean;
 import com.meiji.daily.data.local.AppDatabase;
 import com.meiji.daily.data.remote.IApi;
 import com.meiji.daily.util.ErrorAction;
-import com.meiji.daily.util.RxBus;
+import com.meiji.daily.util.RxBusHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,16 +36,19 @@ import retrofit2.Retrofit;
 
 public class ZhuanlanViewModel extends AndroidViewModel {
 
-    public static final String TAG = "ZhuanlanViewModel";
+    static final String TAG = "ZhuanlanViewModel";
+
     private final AppDatabase mAppDatabase;
     private final Retrofit mRetrofit;
-    private int mType;
+    private final RxBusHelper mRxBusHelper;
+    private final CompositeDisposable mDisposable;
+
+    private final int mType;
     private String[] mIdArr;
     private Flowable<Boolean> mRxBus;
     private MutableLiveData<Boolean> mIsLoading;
     private MutableLiveData<Boolean> mIsRefreshUI;
     private MutableLiveData<List<ZhuanlanBean>> mList;
-    private CompositeDisposable mDisposable;
 
     {
         mIsLoading = new MutableLiveData<>();
@@ -58,18 +61,19 @@ public class ZhuanlanViewModel extends AndroidViewModel {
     }
 
     private ZhuanlanViewModel(Application application, int type,
-                              AppDatabase appDatabase, Retrofit retrofit) {
+                              AppDatabase appDatabase, Retrofit retrofit, RxBusHelper rxBusHelper) {
         super(application);
         mType = type;
         mAppDatabase = appDatabase;
         mRetrofit = retrofit;
+        mRxBusHelper = rxBusHelper;
 
         handleData();
         subscribeTheme();
     }
 
     private void subscribeTheme() {
-        mRxBus = RxBus.getInstance().register(Constant.RxBusEvent.REFRESHUI);
+        mRxBus = mRxBusHelper.register(Constant.RxBusEvent.REFRESHUI);
         Disposable subscribe = mRxBus.subscribe(new Consumer<Boolean>() {
             @Override
             public void accept(Boolean aBoolean) throws Exception {
@@ -112,7 +116,7 @@ public class ZhuanlanViewModel extends AndroidViewModel {
 
     @Override
     protected void onCleared() {
-        RxBus.getInstance().unregister(Constant.RxBusEvent.REFRESHUI, mRxBus);
+        mRxBusHelper.unregister(Constant.RxBusEvent.REFRESHUI, mRxBus);
         mDisposable.clear();
         super.onCleared();
     }
@@ -188,19 +192,21 @@ public class ZhuanlanViewModel extends AndroidViewModel {
         private final int mType;
         private final AppDatabase mAppDatabase;
         private final Retrofit mRetrofit;
+        private final RxBusHelper mRxBusHelper;
 
         public Factory(Application application, int type,
-                       AppDatabase appDatabase, Retrofit retrofit) {
+                       AppDatabase appDatabase, Retrofit retrofit, RxBusHelper rxBusHelper) {
             mApplication = application;
             mType = type;
             mAppDatabase = appDatabase;
             mRetrofit = retrofit;
+            mRxBusHelper = rxBusHelper;
         }
 
         @NonNull
         @Override
         public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-            return (T) new ZhuanlanViewModel(mApplication, mType, mAppDatabase, mRetrofit);
+            return (T) new ZhuanlanViewModel(mApplication, mType, mAppDatabase, mRetrofit, mRxBusHelper);
         }
     }
 }

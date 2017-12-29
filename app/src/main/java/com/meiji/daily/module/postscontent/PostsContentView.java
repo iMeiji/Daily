@@ -38,9 +38,10 @@ import javax.inject.Named;
 
 public class PostsContentView extends BaseFragment {
 
-    protected static final String ARGUMENT_TITLEIMAGE = "ARGUMENT_TITLEIMAGE";
-    protected static final String ARGUMENT_TITLE = "ARGUMENT_TITLE";
-    protected static final String ARGUMENT_SLUG = "ARGUMENT_SLUG";
+    static final String ARGUMENT_TITLEIMAGE = "ARGUMENT_TITLEIMAGE";
+    static final String ARGUMENT_TITLE = "ARGUMENT_TITLE";
+    static final String ARGUMENT_SLUG = "ARGUMENT_SLUG";
+
     @Inject
     @Named("image")
     String mImage;
@@ -54,6 +55,7 @@ public class PostsContentView extends BaseFragment {
     PostsContentViewModel mModel;
     @Inject
     SettingHelper mSettingHelper;
+
     private WebView mWebView;
     private MaterialDialog mDialog;
 

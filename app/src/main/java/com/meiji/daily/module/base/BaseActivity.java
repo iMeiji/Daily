@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import com.afollestad.materialdialogs.color.CircleView;
 import com.meiji.daily.App;
 import com.meiji.daily.R;
+import com.meiji.daily.di.component.DaggerCommonActivityComponent;
 import com.meiji.daily.util.SettingHelper;
 
 import javax.inject.Inject;
@@ -70,7 +71,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        DaggerBaseActivityComponent.builder()
+        DaggerCommonActivityComponent.builder()
                 .appComponent(App.sAppComponent)
                 .build().inject(this);
         super.onCreate(savedInstanceState);

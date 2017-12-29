@@ -39,7 +39,8 @@ import retrofit2.Retrofit;
 
 public class ShareAddActivity extends AppCompatActivity {
 
-    private static final String TAG = "ShareAddActivity";
+    static final String TAG = "ShareAddActivity";
+    private final CompositeDisposable mDisposable;
     @Inject
     SettingHelper mSettingHelper;
     @Inject
@@ -48,7 +49,6 @@ public class ShareAddActivity extends AppCompatActivity {
     Retrofit mRetrofit;
     private boolean isResult = false;
     private MaterialDialog mDialog;
-    private CompositeDisposable mDisposable;
 
     {
         mDisposable = new CompositeDisposable();

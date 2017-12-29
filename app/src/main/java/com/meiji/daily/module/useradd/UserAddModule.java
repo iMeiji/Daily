@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders;
 
 import com.meiji.daily.data.local.AppDatabase;
 import com.meiji.daily.di.scope.FragmentScoped;
+import com.meiji.daily.util.RxBusHelper;
 
 import javax.inject.Named;
 
@@ -27,9 +28,9 @@ public class UserAddModule {
     @FragmentScoped
     @Provides
     UserAddViewModel provideModel(@Named("application") Application application, AppDatabase appDatabase,
-                                  Retrofit retrofit) {
+                                  Retrofit retrofit, RxBusHelper rxBusHelper) {
         UserAddViewModel.Factory factory =
-                new UserAddViewModel.Factory(application, appDatabase, retrofit);
+                new UserAddViewModel.Factory(application, appDatabase, retrofit, rxBusHelper);
         return ViewModelProviders.of(mUserAddView, factory).get(UserAddViewModel.class);
     }
 }

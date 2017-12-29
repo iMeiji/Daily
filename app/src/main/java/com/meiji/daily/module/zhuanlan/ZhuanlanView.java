@@ -35,12 +35,13 @@ import me.drakeet.multitype.MultiTypeAdapter;
 
 public class ZhuanlanView extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    protected static final String ARGUMENT_TYPE = "ARGUMENT_TYPE";
-    private static final String TAG = "ZhuanlanView";
+    static final String ARGUMENT_TYPE = "ARGUMENT_TYPE";
+    static final String TAG = "ZhuanlanView";
     @Inject
     ZhuanlanViewModel mModel;
     @Inject
     SettingHelper mSettingHelper;
+
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private LinearLayout mRoot;

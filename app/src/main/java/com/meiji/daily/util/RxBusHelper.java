@@ -6,25 +6,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import io.reactivex.Flowable;
 import io.reactivex.processors.PublishProcessor;
 
 /**
- * Created by Meiji on 2017/12/14.
+ * Created by Meiji on 2017/12/29.
  * 参考 ：https://juejin.im/entry/58ff2e26a0bb9f0065d2c5f2
  */
 
-@Deprecated
-public class RxBus {
+@Singleton
+public class RxBusHelper {
 
     private ConcurrentHashMap<Object, List<PublishProcessor>> mPublishMap = new ConcurrentHashMap<>();
 
-    private RxBus() {
+    @Inject
+    public RxBusHelper() {
 
-    }
-
-    public static RxBus getInstance() {
-        return Holder.sInstance;
     }
 
     public <T> Flowable<T> register(@NonNull Class<T> clz) {
@@ -71,9 +71,5 @@ public class RxBus {
                 processor.onNext(content);
             }
         }
-    }
-
-    private static class Holder {
-        private static RxBus sInstance = new RxBus();
     }
 }

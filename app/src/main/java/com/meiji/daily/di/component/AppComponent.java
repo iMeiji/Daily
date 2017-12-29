@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import com.meiji.daily.App;
 import com.meiji.daily.data.local.AppDatabase;
 import com.meiji.daily.di.module.AppModule;
+import com.meiji.daily.util.RxBusHelper;
 import com.meiji.daily.util.SettingHelper;
 
 import javax.inject.Named;
@@ -38,6 +39,8 @@ public interface AppComponent {
     Retrofit getRetrofit();
 
     SharedPreferences getSharedPreferences();
+
+    RxBusHelper getRxBus();
 
     @Component.Builder
     interface Builder {

@@ -32,10 +32,13 @@ import android.widget.CompoundButton;
 import com.afollestad.materialdialogs.Theme;
 import com.afollestad.materialdialogs.color.CircleView;
 import com.afollestad.materialdialogs.color.ColorChooserDialog;
+import com.meiji.daily.di.component.DaggerCommonActivityComponent;
 import com.meiji.daily.module.base.BaseActivity;
 import com.meiji.daily.module.useradd.UserAddView;
 import com.meiji.daily.module.zhuanlan.ZhuanlanView;
-import com.meiji.daily.util.RxBus;
+import com.meiji.daily.util.RxBusHelper;
+
+import javax.inject.Inject;
 
 import io.reactivex.Flowable;
 import io.reactivex.functions.Consumer;
@@ -43,17 +46,22 @@ import io.reactivex.functions.Consumer;
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, ColorChooserDialog.ColorCallback {
 
-    private static final String TAG = "MainActivity";
+    static final String TAG = "MainActivity";
+    @Inject
+    RxBusHelper mRxBusHelper;
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
+    private SwitchCompat mSwitchCompat;
     private long mExitTime;
     private Flowable<Boolean> mRxBus;
-    private SwitchCompat mSwitchCompat;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        DaggerCommonActivityComponent.builder()
+                .appComponent(App.sAppComponent)
+                .build().inject(this);
         super.onCreate(savedInstanceState);
-        mRxBus = RxBus.getInstance().register(Constant.RxBusEvent.REFRESHUI);
+        mRxBus = mRxBusHelper.register(Constant.RxBusEvent.REFRESHUI);
         mRxBus.subscribe(new Consumer<Boolean>() {
             @Override
             public void accept(Boolean isNightMode) throws Exception {
@@ -65,7 +73,7 @@ public class MainActivity extends BaseActivity
 
     @Override
     protected void onDestroy() {
-        RxBus.getInstance().unregister(Constant.RxBusEvent.REFRESHUI, mRxBus);
+        mRxBusHelper.unregister(Constant.RxBusEvent.REFRESHUI, mRxBus);
         super.onDestroy();
     }
 
@@ -109,8 +117,7 @@ public class MainActivity extends BaseActivity
                 } else {
                     setTheme(R.style.LightTheme);
                 }
-                RxBus rxBus = RxBus.getInstance();
-                rxBus.post(Constant.RxBusEvent.REFRESHUI, isNightMode);
+                mRxBusHelper.post(Constant.RxBusEvent.REFRESHUI, isNightMode);
             }
         });
     }
