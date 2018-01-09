@@ -72,7 +72,7 @@ public class PostsContentView extends BaseFragment {
     @Override
     protected void initInject() {
         DaggerPostsContentComponent.builder()
-                .appComponent(App.sAppComponent)
+                .appComponent(App.Companion.getSAppComponent())
                 .postsContentModule(new PostsContentModule(this))
                 .build().inject(this);
     }

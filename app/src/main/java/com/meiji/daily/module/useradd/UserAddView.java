@@ -68,7 +68,7 @@ public class UserAddView extends BaseFragment
     @Override
     protected void initInject() {
         DaggerUserAddComponent.builder()
-                .appComponent(App.sAppComponent)
+                .appComponent(App.Companion.getSAppComponent())
                 .userAddModule(new UserAddModule(this))
                 .build().inject(this);
     }

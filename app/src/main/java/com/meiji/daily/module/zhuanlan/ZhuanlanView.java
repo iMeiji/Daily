@@ -90,7 +90,7 @@ public class ZhuanlanView extends BaseFragment implements SwipeRefreshLayout.OnR
     @Override
     protected void initInject() {
         DaggerZhuanlanComponent.builder()
-                .appComponent(App.sAppComponent)
+                .appComponent(App.Companion.getSAppComponent())
                 .zhuanlanModule(new ZhuanlanModule(this))
                 .build().inject(this);
     }

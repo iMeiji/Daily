@@ -13,18 +13,18 @@ import com.meiji.daily.R;
 @Deprecated
 public class SettingUtil {
 
-    private SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(App.sAppContext);
+    private SharedPreferences setting = PreferenceManager.getDefaultSharedPreferences(App.Companion.getSAppContext());
 
     public static SettingUtil getInstance() {
         return SettingsUtilInstance.instance;
     }
 
     public boolean getIsNoPhotoMode() {
-        return setting.getBoolean("switch_noPhotoMode", false) && NetWorkUtil.isMobileConnected(App.sAppContext);
+        return setting.getBoolean("switch_noPhotoMode", false) && NetWorkUtil.isMobileConnected(App.Companion.getSAppContext());
     }
 
     public int getColor() {
-        int defaultColor = App.sAppContext.getResources().getColor(R.color.colorPrimary);
+        int defaultColor = App.Companion.getSAppContext().getResources().getColor(R.color.colorPrimary);
         int color = setting.getInt("color", defaultColor);
         if ((color != 0) && Color.alpha(color) != 255) {
             return defaultColor;

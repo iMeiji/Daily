@@ -58,7 +58,7 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         DaggerCommonActivityComponent.builder()
-                .appComponent(App.sAppComponent)
+                .appComponent(App.Companion.getSAppComponent())
                 .build().inject(this);
         super.onCreate(savedInstanceState);
         mRxBus = mRxBusHelper.register(Constant.RxBusEvent.REFRESHUI);

@@ -57,7 +57,7 @@ public class ShareAddActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         DaggerShareAddComponent.builder()
-                .appComponent(App.sAppComponent)
+                .appComponent(App.Companion.getSAppComponent())
                 .build().inject(this);
         super.onCreate(savedInstanceState);
         mDialog = new MaterialDialog.Builder(this)

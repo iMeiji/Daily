@@ -42,12 +42,12 @@ public class RetrofitFactory {
         @Override
         public Response intercept(Chain chain) throws IOException {
             Request request = chain.request();
-            if (!NetWorkUtil.isNetworkConnected(App.sAppContext)) {
+            if (!NetWorkUtil.isNetworkConnected(App.Companion.getSAppContext())) {
                 request = request.newBuilder().cacheControl(CacheControl.FORCE_CACHE).build();
             }
 
             Response originalResponse = chain.proceed(request);
-            if (NetWorkUtil.isNetworkConnected(App.sAppContext)) {
+            if (NetWorkUtil.isNetworkConnected(App.Companion.getSAppContext())) {
                 // 有网络时 设置缓存为默认值
                 String cacheControl = request.cacheControl().toString();
                 return originalResponse.newBuilder()
@@ -71,12 +71,12 @@ public class RetrofitFactory {
             synchronized (RetrofitFactory.class) {
                 if (sRetrofit == null) {
                     // 指定缓存路径,缓存大小 50Mb
-                    Cache cache = new Cache(new File(App.sAppContext.getCacheDir(), "HttpCache"),
+                    Cache cache = new Cache(new File(App.Companion.getSAppContext().getCacheDir(), "HttpCache"),
                             1024 * 1024 * 50);
 
                     // Cookie 持久化
                     ClearableCookieJar cookieJar =
-                            new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(App.sAppContext));
+                            new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(App.Companion.getSAppContext()));
 
                     OkHttpClient.Builder builder = new OkHttpClient.Builder()
                             .cookieJar(cookieJar)

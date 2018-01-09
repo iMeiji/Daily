@@ -34,7 +34,7 @@ public class FooterViewBinder extends ItemViewBinder<FooterBean, FooterViewBinde
     @Override
     protected FooterViewBinder.ViewHolder onCreateViewHolder(@NonNull LayoutInflater inflater, @NonNull ViewGroup parent) {
         DaggerItemViewComponent.builder()
-                .appComponent(App.sAppComponent)
+                .appComponent(App.Companion.getSAppComponent())
                 .build().inject(this);
         View view = inflater.inflate(R.layout.item_loading, parent, false);
         return new ViewHolder(view);

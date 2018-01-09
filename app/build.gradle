@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 apply plugin: 'io.fabric'
 
 android {
@@ -119,6 +121,7 @@ dependencies {
 //    implementation 'com.google.dagger:dagger-android-support:2.13'
 //    annotationProcessor 'com.google.dagger:dagger-android-processor:2.13'
 
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
 

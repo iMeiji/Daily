@@ -68,7 +68,7 @@ public class PostsListView extends BaseFragment implements SwipeRefreshLayout.On
     @Override
     protected void initInject() {
         DaggerPostsListComponent.builder()
-                .appComponent(App.sAppComponent)
+                .appComponent(App.Companion.getSAppComponent())
                 .postsListModule(new PostsListModule(this))
                 .build().inject(this);
     }
