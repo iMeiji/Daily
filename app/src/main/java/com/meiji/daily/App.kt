@@ -2,14 +2,11 @@ package com.meiji.daily
 
 import android.app.Application
 import android.content.Context
-import android.os.Build
 import android.support.multidex.MultiDex
-
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import com.meiji.daily.di.component.AppComponent
 import com.meiji.daily.di.component.DaggerAppComponent
-
 import io.fabric.sdk.android.Fabric
 
 /**
@@ -20,10 +17,7 @@ class App : Application() {
 
     override fun attachBaseContext(base: Context) {
         super.attachBaseContext(base)
-        // Android 5.0 之前版本的 Dalvik 可执行文件分包支持
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            MultiDex.install(this)
-        }
+        MultiDex.install(this)
     }
 
     override fun onCreate() {

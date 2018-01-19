@@ -96,7 +96,7 @@ public class RetrofitHelper {
 
         // Log 拦截器
         if (BuildConfig.DEBUG) {
-            builder = SdkManager.initInterceptor(builder);
+            builder = SdkManager.INSTANCE.initInterceptor(builder);
         }
 
         return new Retrofit.Builder()
