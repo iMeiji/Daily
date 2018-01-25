@@ -20,7 +20,7 @@ public class SettingUtil {
     }
 
     public boolean getIsNoPhotoMode() {
-        return setting.getBoolean("switch_noPhotoMode", false) && NetWorkUtil.isMobileConnected(App.Companion.getSAppContext());
+        return setting.getBoolean("switch_noPhotoMode", false) && NetWorkUtil.INSTANCE.isMobileConnected(App.Companion.getSAppContext());
     }
 
     public int getColor() {

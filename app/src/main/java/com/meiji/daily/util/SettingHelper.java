@@ -26,7 +26,7 @@ public class SettingHelper {
     }
 
     public boolean getIsNoPhotoMode() {
-        return mPreferences.getBoolean("switch_noPhotoMode", false) && NetWorkUtil.isMobileConnected(mContext);
+        return mPreferences.getBoolean("switch_noPhotoMode", false) && NetWorkUtil.INSTANCE.isMobileConnected(mContext);
     }
 
     public int getColor() {

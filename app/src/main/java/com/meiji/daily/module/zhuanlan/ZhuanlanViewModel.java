@@ -79,7 +79,7 @@ public class ZhuanlanViewModel extends AndroidViewModel {
             public void accept(Boolean aBoolean) throws Exception {
                 mIsRefreshUI.setValue(mIsRefreshUI.getValue() != null && !mIsRefreshUI.getValue());
             }
-        }, ErrorAction.error());
+        }, ErrorAction.Companion.error());
         mDisposable.add(subscribe);
     }
 
@@ -179,7 +179,7 @@ public class ZhuanlanViewModel extends AndroidViewModel {
                             list.add(bean);
                         }
                     }
-                }, ErrorAction.error());
+                }, ErrorAction.Companion.error());
         mDisposable.add(subscribe);
 
         return list;

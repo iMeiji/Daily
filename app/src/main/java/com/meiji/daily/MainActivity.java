@@ -179,7 +179,7 @@ public class MainActivity extends BaseActivity
             createColorChooserDialog();
 
         } else if (id == R.id.nav_about) {
-            AboutActivity.start(this);
+            AboutActivity.Companion.start(this);
 
         }
 

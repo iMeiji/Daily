@@ -9,16 +9,12 @@ import okhttp3.OkHttpClient
  * Created by Meiji on 2018/1/19.
  */
 
-public class SdkManager {
+object SdkManager {
 
-    companion object {
-        @JvmStatic
-        fun initStetho(context: Context) {
-        }
+    fun initStetho(context: Context) {
+    }
 
-        @JvmStatic
-        fun initInterceptor(builder: OkHttpClient.Builder): OkHttpClient.Builder {
-            return builder
-        }
+    fun initInterceptor(builder: OkHttpClient.Builder): OkHttpClient.Builder {
+        return builder
     }
 }

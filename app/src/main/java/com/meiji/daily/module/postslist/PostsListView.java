@@ -141,7 +141,7 @@ public class PostsListView extends BaseFragment implements SwipeRefreshLayout.On
         Items newItems = new Items(list);
         newItems.add(new FooterBean());
 
-        DiffCallback.create(mOldItems, newItems, mAdapter);
+        DiffCallback.Companion.create(mOldItems, newItems, mAdapter);
         mOldItems.clear();
         mOldItems.addAll(newItems);
 

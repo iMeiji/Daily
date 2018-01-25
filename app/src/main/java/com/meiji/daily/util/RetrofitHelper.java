@@ -48,12 +48,12 @@ public class RetrofitHelper {
         @Override
         public Response intercept(@NonNull Chain chain) throws IOException {
             Request request = chain.request();
-            if (!NetWorkUtil.isNetworkConnected(mContext)) {
+            if (!NetWorkUtil.INSTANCE.isNetworkConnected(mContext)) {
                 request = request.newBuilder().cacheControl(CacheControl.FORCE_CACHE).build();
             }
 
             Response originalResponse = chain.proceed(request);
-            if (NetWorkUtil.isNetworkConnected(mContext)) {
+            if (NetWorkUtil.INSTANCE.isNetworkConnected(mContext)) {
                 // 有网络时 设置缓存为默认值
                 String cacheControl = request.cacheControl().toString();
                 return originalResponse.newBuilder()

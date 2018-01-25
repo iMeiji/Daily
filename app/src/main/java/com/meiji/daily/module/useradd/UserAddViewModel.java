@@ -94,7 +94,7 @@ public class UserAddViewModel extends AndroidViewModel implements SharedPreferen
                     public void accept(List<ZhuanlanBean> list) throws Exception {
                         mList.setValue(list);
                     }
-                }, ErrorAction.error());
+                }, ErrorAction.Companion.error());
         mDisposable.add(subscribe);
         mIsLoading.setValue(false);
     }
@@ -137,7 +137,7 @@ public class UserAddViewModel extends AndroidViewModel implements SharedPreferen
             public void accept(Boolean aBoolean) throws Exception {
                 mIsRefreshUI.setValue(mIsRefreshUI.getValue() != null && !mIsRefreshUI.getValue());
             }
-        }, ErrorAction.error());
+        }, ErrorAction.Companion.error());
         mDisposable.add(subscribe);
     }
 
