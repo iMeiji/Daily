@@ -36,7 +36,6 @@ class AboutActivity : BaseActivity(), View.OnClickListener {
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
         }
-
     }
 
     override fun initViews() {
