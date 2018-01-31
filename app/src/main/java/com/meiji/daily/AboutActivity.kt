@@ -29,7 +29,7 @@ class AboutActivity : BaseActivity(), View.OnClickListener {
 
     override fun attachLayoutId() = R.layout.activity_about
 
-    override fun initData(savedInstanceState: Bundle) {
+    override fun initData(savedInstanceState: Bundle?) {
         try {
             val version = packageManager.getPackageInfo(packageName, 0).versionName
             tv_version.text = version

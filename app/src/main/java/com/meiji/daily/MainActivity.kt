@@ -25,6 +25,7 @@ import android.view.ViewGroup
 import com.afollestad.materialdialogs.Theme
 import com.afollestad.materialdialogs.color.CircleView
 import com.afollestad.materialdialogs.color.ColorChooserDialog
+import com.meiji.daily.di.component.DaggerCommonActivityComponent
 import com.meiji.daily.module.base.BaseActivity
 import com.meiji.daily.module.useradd.UserAddView
 import com.meiji.daily.module.zhuanlan.ZhuanlanView
@@ -34,7 +35,7 @@ import javax.inject.Inject
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener, ColorChooserDialog.ColorCallback {
     @Inject
-    internal var mRxBusHelper: RxBusHelper? = null
+    lateinit var mRxBusHelper: RxBusHelper
     private var mDrawerLayout: DrawerLayout? = null
     private var mNavigationView: NavigationView? = null
     private var mSwitchCompat: SwitchCompat? = null
@@ -46,7 +47,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 .appComponent(App.sAppComponent)
                 .build().inject(this)
         super.onCreate(savedInstanceState)
-        mRxBus = mRxBusHelper?.register(Constant.RxBusEvent.REFRESHUI)
+        mRxBus = mRxBusHelper.register(Constant.RxBusEvent.REFRESHUI)
         mRxBus?.subscribe {
             showAnimation()
             refreshUI()
@@ -54,7 +55,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     override fun onDestroy() {
-        mRxBusHelper!!.unregister(Constant.RxBusEvent.REFRESHUI, mRxBus!!)
+        mRxBusHelper.unregister(Constant.RxBusEvent.REFRESHUI, mRxBus!!)
         super.onDestroy()
     }
 
@@ -62,7 +63,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         return R.layout.activity_main
     }
 
-    override fun initData(savedInstanceState: Bundle) {
+    override fun initData(savedInstanceState: Bundle?) {
         replaceFragment(Constant.TYPE_PRODUCT)
         mNavigationView!!.setCheckedItem(R.id.nav_product)
     }
@@ -93,7 +94,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             } else {
                 setTheme(R.style.LightTheme)
             }
-            mRxBusHelper!!.post(Constant.RxBusEvent.REFRESHUI, isNightMode)
+            mRxBusHelper.post(Constant.RxBusEvent.REFRESHUI, isNightMode)
         }
     }
 

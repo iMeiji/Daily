@@ -12,9 +12,7 @@ import javax.inject.Singleton
  */
 
 @Singleton
-class RxBusHelper
-@Inject
-constructor() {
+class RxBusHelper @Inject constructor() {
 
     private val mPublishMap = ConcurrentHashMap<Any, MutableList<PublishProcessor<Any>>>()
 
