@@ -76,7 +76,7 @@ public class PostsListViewBinder extends ItemViewBinder<PostsListBean, PostsList
 
         ViewHolder(View itemView) {
             super(itemView);
-            this.root = itemView.findViewById(R.id.root);
+            this.root = itemView.findViewById(R.id.ll_root);
             this.tv_publishedTime = itemView.findViewById(R.id.tv_publishedTime);
             this.tv_likesCount = itemView.findViewById(R.id.tv_likesCount);
             this.tv_commentsCount = itemView.findViewById(R.id.tv_commentsCount);

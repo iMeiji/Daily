@@ -2,7 +2,6 @@ package com.meiji.daily
 
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.support.v7.widget.Toolbar
@@ -30,11 +29,8 @@ class AboutActivity : BaseActivity(), View.OnClickListener {
     override fun attachLayoutId() = R.layout.activity_about
 
     override fun initData(savedInstanceState: Bundle?) {
-        try {
-            val version = packageManager.getPackageInfo(packageName, 0).versionName
-            tv_version.text = version
-        } catch (e: PackageManager.NameNotFoundException) {
-            e.printStackTrace()
+        packageManager?.getPackageInfo(packageName, 0)?.versionName.let {
+            tv_version.text = it
         }
     }
 
@@ -110,7 +106,6 @@ class AboutActivity : BaseActivity(), View.OnClickListener {
     }
 
     companion object {
-
         fun start(context: Context) {
             val starter = Intent(context, AboutActivity::class.java)
             context.startActivity(starter)

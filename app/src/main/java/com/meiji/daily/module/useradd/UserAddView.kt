@@ -107,7 +107,7 @@ class UserAddView : BaseFragment(), View.OnClickListener, SwipeRefreshLayout.OnR
         mRecyclerView = view.findViewById(R.id.recycler_view)
         mFab = view.findViewById(R.id.fab_add)
         mRefreshLayout = view.findViewById(R.id.refresh_layout)
-        mRoot = view.findViewById(R.id.root)
+        mRoot = view.findViewById(R.id.ll_root)
 
         mRecyclerView!!.setHasFixedSize(true)
         mRecyclerView!!.layoutManager = LinearLayoutManager(activity)

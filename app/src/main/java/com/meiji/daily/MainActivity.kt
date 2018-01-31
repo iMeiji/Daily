@@ -14,10 +14,8 @@ import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
-import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.widget.SwitchCompat
-import android.support.v7.widget.Toolbar
 import android.util.TypedValue
 import android.view.MenuItem
 import android.view.View
@@ -31,14 +29,14 @@ import com.meiji.daily.module.useradd.UserAddView
 import com.meiji.daily.module.zhuanlan.ZhuanlanView
 import com.meiji.daily.util.RxBusHelper
 import io.reactivex.Flowable
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.toolbar.*
 import javax.inject.Inject
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener, ColorChooserDialog.ColorCallback {
     @Inject
     lateinit var mRxBusHelper: RxBusHelper
-    private var mDrawerLayout: DrawerLayout? = null
-    private var mNavigationView: NavigationView? = null
-    private var mSwitchCompat: SwitchCompat? = null
+    private lateinit var mSwitchCompat: SwitchCompat
     private var mExitTime: Long = 0
     private var mRxBus: Flowable<Any>? = null
 
@@ -59,34 +57,30 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         super.onDestroy()
     }
 
-    override fun attachLayoutId(): Int {
-        return R.layout.activity_main
-    }
+    override fun attachLayoutId() = R.layout.activity_main
 
     override fun initData(savedInstanceState: Bundle?) {
         replaceFragment(Constant.TYPE_PRODUCT)
-        mNavigationView!!.setCheckedItem(R.id.nav_product)
+        nav_view.setCheckedItem(R.id.nav_product)
     }
 
     override fun initViews() {
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         initToolBar(toolbar, false, null)
 
-        mDrawerLayout = findViewById(R.id.drawer_layout)
-        val toggle = ActionBarDrawerToggle(
-                this, mDrawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        mDrawerLayout!!.addDrawerListener(toggle)
-        toggle.syncState()
+        ActionBarDrawerToggle(this, drawer_layout, toolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close).let {
+            drawer_layout.addDrawerListener(it)
+            it.syncState()
+        }
 
-        mNavigationView = findViewById(R.id.nav_view)
-        mNavigationView!!.setNavigationItemSelectedListener(this)
+        nav_view.setNavigationItemSelectedListener(this)
 
-        mSwitchCompat = mNavigationView!!.menu.findItem(R.id.app_bar_switch).actionView.findViewById(R.id.switch_input)
-        mSwitchCompat!!.isChecked = mSettingHelper.isNightMode
+        mSwitchCompat = nav_view.menu.findItem(R.id.app_bar_switch).actionView.findViewById(R.id.switch_input)
+        mSwitchCompat.isChecked = mSettingHelper.isNightMode
 
         setUpSwitch()
 
-        mSwitchCompat!!.setOnCheckedChangeListener { compoundButton, isNightMode ->
+        mSwitchCompat.setOnCheckedChangeListener { compoundButton, isNightMode ->
             mSettingHelper.isNightMode = isNightMode
             setUpSwitch()
             if (isNightMode) {
@@ -101,24 +95,24 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private fun setUpSwitch() {
         val isNightMode = mSettingHelper.isNightMode
         if (isNightMode) {
-            mSwitchCompat!!.thumbTintList = ColorStateList.valueOf(mSettingHelper.color)
+            mSwitchCompat.thumbTintList = ColorStateList.valueOf(mSettingHelper.color)
         } else {
             val theme = theme
             val resources = resources
             val textColorPrimary = TypedValue()
             theme.resolveAttribute(R.attr.textColorPrimary, textColorPrimary, true)
-            mSwitchCompat!!.thumbTintList = resources.getColorStateList(textColorPrimary.resourceId)
+            mSwitchCompat.thumbTintList = resources.getColorStateList(textColorPrimary.resourceId)
         }
     }
 
     override fun onBackPressed() {
         val currentTime = System.currentTimeMillis()
-        if (mDrawerLayout!!.isDrawerOpen(GravityCompat.START)) {
-            mDrawerLayout!!.closeDrawer(GravityCompat.START)
+        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
+            drawer_layout.closeDrawer(GravityCompat.START)
         } else if (currentTime - mExitTime < 2000) {
             super.onBackPressed()
         } else {
-            Snackbar.make(mDrawerLayout!!, getString(R.string.double_click_exit), Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(drawer_layout, getString(R.string.double_click_exit), Snackbar.LENGTH_SHORT).show()
             mExitTime = currentTime
         }
     }
@@ -127,50 +121,33 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         // Handle navigation view item clicks here.
         val id = item.itemId
 
-        if (id == R.id.nav_product) {
-            replaceFragment(Constant.TYPE_PRODUCT)
-
-        } else if (id == R.id.nav_life) {
-            replaceFragment(Constant.TYPE_LIFE)
-
-        } else if (id == R.id.nav_music) {
-            replaceFragment(Constant.TYPE_MUSIC)
-
-        } else if (id == R.id.nav_emotion) {
-            replaceFragment(Constant.TYPE_EMOTION)
-
-        } else if (id == R.id.nav_profession) {
-            replaceFragment(Constant.TYPE_FINANCE)
-
-        } else if (id == R.id.nav_zhihu) {
-            replaceFragment(Constant.TYPE_ZHIHU)
-
-        } else if (id == R.id.nav_user_add) {
-            replaceFragment(Constant.TYPE_USERADD)
-
-        } else if (id == R.id.nav_color_chooser) {
-            createColorChooserDialog()
-
-        } else if (id == R.id.nav_about) {
-            AboutActivity.start(this)
-
+        when (id) {
+            R.id.nav_product -> replaceFragment(Constant.TYPE_PRODUCT)
+            R.id.nav_life -> replaceFragment(Constant.TYPE_LIFE)
+            R.id.nav_music -> replaceFragment(Constant.TYPE_MUSIC)
+            R.id.nav_emotion -> replaceFragment(Constant.TYPE_EMOTION)
+            R.id.nav_profession -> replaceFragment(Constant.TYPE_FINANCE)
+            R.id.nav_zhihu -> replaceFragment(Constant.TYPE_ZHIHU)
+            R.id.nav_user_add -> replaceFragment(Constant.TYPE_USERADD)
+            R.id.nav_color_chooser -> createColorChooserDialog()
+            R.id.nav_about -> AboutActivity.start(this)
         }
 
-        mDrawerLayout!!.closeDrawer(GravityCompat.START)
+        drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
 
-    protected fun refreshUI() {
+    private fun refreshUI() {
         val theme = theme
         val rootViewBackground = TypedValue()
         val textColorPrimary = TypedValue()
         theme.resolveAttribute(R.attr.rootViewBackground, rootViewBackground, true)
         theme.resolveAttribute(R.attr.textColorPrimary, textColorPrimary, true)
         val resources = resources
-        mNavigationView!!.setBackgroundResource(rootViewBackground.resourceId)
-        mNavigationView!!.setItemBackgroundResource(rootViewBackground.resourceId)
-        mNavigationView!!.itemTextColor = resources.getColorStateList(textColorPrimary.resourceId)
-        mNavigationView!!.itemIconTintList = resources.getColorStateList(textColorPrimary.resourceId)
+        nav_view.setBackgroundResource(rootViewBackground.resourceId)
+        nav_view.setItemBackgroundResource(rootViewBackground.resourceId)
+        nav_view.itemTextColor = resources.getColorStateList(textColorPrimary.resourceId)
+        nav_view.itemIconTintList = resources.getColorStateList(textColorPrimary.resourceId)
     }
 
     private fun replaceFragment(type: Int) {
@@ -179,11 +156,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         val fragmentById = fragmentManager.findFragmentByTag(type.toString())
         if (fragmentById == null) {
-            val fragment: Fragment
-            if (type != Constant.TYPE_USERADD) {
-                fragment = ZhuanlanView.newInstance(type)
+            val fragment: Fragment = if (type != Constant.TYPE_USERADD) {
+                ZhuanlanView.newInstance(type)
             } else {
-                fragment = UserAddView()
+                UserAddView()
             }
             fragmentTransaction
                     .add(R.id.content_main, fragment, type.toString())
@@ -210,7 +186,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     override fun onColorSelection(dialog: ColorChooserDialog, @ColorInt selectedColor: Int) {
         if (supportActionBar != null)
-            supportActionBar!!.setBackgroundDrawable(ColorDrawable(selectedColor))
+            supportActionBar?.setBackgroundDrawable(ColorDrawable(selectedColor))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.statusBarColor = CircleView.shiftColorDown(selectedColor)
             window.navigationBarColor = selectedColor
@@ -225,20 +201,20 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     private fun showAnimation() {
-        val decorview = window.decorView
-        val cacheBitmap = getCacheBitmapFromView(decorview)
-        if (decorview is ViewGroup && cacheBitmap != null) {
+        val decorView = window.decorView
+        val cacheBitmap = getCacheBitmapFromView(decorView)
+        if (decorView is ViewGroup && cacheBitmap != null) {
             val view = View(this)
             view.background = BitmapDrawable(resources, cacheBitmap)
             val layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT)
-            decorview.addView(view, layoutParams)
+            decorView.addView(view, layoutParams)
             val objectAnimator = ObjectAnimator.ofFloat(view, "alpha", 1f, 0f)
             objectAnimator.duration = 300
             objectAnimator.addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
                     super.onAnimationEnd(animation)
-                    decorview.removeView(view)
+                    decorView.removeView(view)
                 }
             })
             objectAnimator.start()
@@ -261,7 +237,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     companion object {
-
         internal val TAG = "MainActivity"
     }
 }

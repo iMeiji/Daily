@@ -20,7 +20,8 @@ class ZhuanlanModule(private val mZhuanlanView: ZhuanlanView) {
     @FragmentScoped
     @Provides
     internal fun provideModel(@Named("application") application: Application,
-                              type: Int, appDatabase: AppDatabase, retrofit: Retrofit, rxBusHelper: RxBusHelper): ZhuanlanViewModel {
+                              type: Int, appDatabase: AppDatabase,
+                              retrofit: Retrofit, rxBusHelper: RxBusHelper): ZhuanlanViewModel {
         val factory = ZhuanlanViewModel.Factory(application, type, appDatabase, retrofit, rxBusHelper)
         return ViewModelProviders.of(mZhuanlanView, factory).get(ZhuanlanViewModel::class.java)
     }

@@ -27,15 +27,17 @@ import java.util.*
 
 class ZhuanlanViewModel
 constructor(application: Application, private val mType: Int,
-            private val mAppDatabase: AppDatabase, private val mRetrofit: Retrofit, private val mRxBusHelper: RxBusHelper) : AndroidViewModel(application) {
+            private val mAppDatabase: AppDatabase, private val mRetrofit: Retrofit,
+            private val mRxBusHelper: RxBusHelper) : AndroidViewModel(application) {
+
     private val mDisposable: CompositeDisposable
-    private var mIdArr: Array<String>? = null
-    private var mRxBus: Flowable<Any>? = null
-    var isLoading: MutableLiveData<Boolean>? = null
+    private lateinit var mIdArr: Array<String>
+    private lateinit var mRxBus: Flowable<Any>
+    var isLoading: MutableLiveData<Boolean>
         private set
-    internal var isRefreshUI: MutableLiveData<Boolean>? = null
+    var isRefreshUI: MutableLiveData<Boolean>
         private set
-    internal var mList: MutableLiveData<List<ZhuanlanBean>>? = null
+    var mList: MutableLiveData<List<ZhuanlanBean>>
         private set
 
     init {
@@ -44,24 +46,24 @@ constructor(application: Application, private val mType: Int,
         mList = MutableLiveData()
         mDisposable = CompositeDisposable()
 
-        isLoading!!.value = true
-        isRefreshUI!!.value = true
+        isLoading.value = true
+        isRefreshUI.value = true
     }
 
     init {
-
         handleData()
         subscribeTheme()
     }
 
     private fun subscribeTheme() {
         mRxBus = mRxBusHelper.register(Constant.RxBusEvent.REFRESHUI)
-        val subscribe = mRxBus!!.subscribe(Consumer { isRefreshUI!!.setValue(isRefreshUI!!.value != null && (!isRefreshUI!!.value!!)) }, ErrorAction.error())
-        mDisposable.add(subscribe)
+        mRxBus.subscribe(Consumer {
+            isRefreshUI.setValue(!(isRefreshUI.value)!!)
+        }, ErrorAction.error()).let { mDisposable.add(it) }
     }
 
     internal fun handleData() {
-        val subscribe = mAppDatabase.ZhuanlanNewDao().query(mType)
+        mAppDatabase.ZhuanlanNewDao().query(mType)
                 .subscribeOn(Schedulers.io())
                 .flatMap {
                     if (it.size > 0) {
@@ -73,19 +75,18 @@ constructor(application: Application, private val mType: Int,
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(Consumer<List<ZhuanlanBean>> { list ->
-                    mList!!.value = list
-                    isLoading!!.setValue(false)
+                    mList.value = list
+                    isLoading.setValue(false)
                 }, object : ErrorAction() {
                     override fun doAction() {
-                        mList!!.value = null
-                        isLoading!!.value = false
+                        mList.value = null
+                        isLoading.value = false
                     }
-                }.action())
-        mDisposable.add(subscribe)
+                }.action()).let { mDisposable.add(it) }
     }
 
     override fun onCleared() {
-        mRxBusHelper.unregister(Constant.RxBusEvent.REFRESHUI, mRxBus!!)
+        mRxBusHelper.unregister(Constant.RxBusEvent.REFRESHUI, mRxBus)
         mDisposable.clear()
         super.onCleared()
     }
@@ -102,29 +103,25 @@ constructor(application: Application, private val mType: Int,
         }
 
         val list = ArrayList<ZhuanlanBean>()
-        val maybeList = ArrayList<Maybe<ZhuanlanBean>>()
         val api = mRetrofit.create(IApi::class.java)
 
-        for (id in mIdArr!!) {
-            maybeList.add(api.getZhuanlanBean(id))
-        }
+        val maybeList = mIdArr.map { api.getZhuanlanBean(it) }
 
-        val subscribe = Maybe.merge(maybeList)
+        Maybe.merge(maybeList)
                 .doOnComplete { mAppDatabase.ZhuanlanNewDao().insert(list) }
                 .subscribe(Consumer { bean ->
                     if (bean != null) {
                         bean.type = mType
                         list.add(bean)
                     }
-                }, ErrorAction.error())
-        mDisposable.add(subscribe)
+                }, ErrorAction.error()).let { mDisposable.add(it) }
 
         return list
     }
 
-
     class Factory(private val mApplication: Application, private val mType: Int,
-                  private val mAppDatabase: AppDatabase, private val mRetrofit: Retrofit, private val mRxBusHelper: RxBusHelper) : ViewModelProvider.NewInstanceFactory() {
+                  private val mAppDatabase: AppDatabase, private val mRetrofit: Retrofit,
+                  private val mRxBusHelper: RxBusHelper) : ViewModelProvider.NewInstanceFactory() {
 
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return ZhuanlanViewModel(mApplication, mType, mAppDatabase, mRetrofit, mRxBusHelper) as T
