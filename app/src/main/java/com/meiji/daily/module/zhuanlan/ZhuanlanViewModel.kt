@@ -26,8 +26,10 @@ import java.util.*
  */
 
 class ZhuanlanViewModel
-constructor(application: Application, private val mType: Int,
-            private val mAppDatabase: AppDatabase, private val mRetrofit: Retrofit,
+constructor(application: Application,
+            private val mType: Int,
+            private val mAppDatabase: AppDatabase,
+            private val mRetrofit: Retrofit,
             private val mRxBusHelper: RxBusHelper) : AndroidViewModel(application) {
 
     private val mDisposable: CompositeDisposable
@@ -93,13 +95,15 @@ constructor(application: Application, private val mType: Int,
 
     private fun retrofitRequest(): List<ZhuanlanBean> {
 
+        val resources = getApplication<Application>().resources
+
         when (mType) {
-            Constant.TYPE_PRODUCT -> mIdArr = getApplication<Application>().resources.getStringArray(R.array.product)
-            Constant.TYPE_MUSIC -> mIdArr = getApplication<Application>().resources.getStringArray(R.array.music)
-            Constant.TYPE_LIFE -> mIdArr = getApplication<Application>().resources.getStringArray(R.array.life)
-            Constant.TYPE_EMOTION -> mIdArr = getApplication<Application>().resources.getStringArray(R.array.emotion)
-            Constant.TYPE_FINANCE -> mIdArr = getApplication<Application>().resources.getStringArray(R.array.profession)
-            Constant.TYPE_ZHIHU -> mIdArr = getApplication<Application>().resources.getStringArray(R.array.zhihu)
+            Constant.TYPE_PRODUCT -> mIdArr = resources.getStringArray(R.array.product)
+            Constant.TYPE_MUSIC -> mIdArr = resources.getStringArray(R.array.music)
+            Constant.TYPE_LIFE -> mIdArr = resources.getStringArray(R.array.life)
+            Constant.TYPE_EMOTION -> mIdArr = resources.getStringArray(R.array.emotion)
+            Constant.TYPE_FINANCE -> mIdArr = resources.getStringArray(R.array.profession)
+            Constant.TYPE_ZHIHU -> mIdArr = resources.getStringArray(R.array.zhihu)
         }
 
         val list = ArrayList<ZhuanlanBean>()
@@ -119,8 +123,10 @@ constructor(application: Application, private val mType: Int,
         return list
     }
 
-    class Factory(private val mApplication: Application, private val mType: Int,
-                  private val mAppDatabase: AppDatabase, private val mRetrofit: Retrofit,
+    class Factory(private val mApplication: Application,
+                  private val mType: Int,
+                  private val mAppDatabase: AppDatabase,
+                  private val mRetrofit: Retrofit,
                   private val mRxBusHelper: RxBusHelper) : ViewModelProvider.NewInstanceFactory() {
 
         override fun <T : ViewModel> create(modelClass: Class<T>): T {

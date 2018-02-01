@@ -18,8 +18,10 @@ class UserAddModule(private val mUserAddView: UserAddView) {
 
     @FragmentScoped
     @Provides
-    internal fun provideModel(@Named("application") application: Application, appDatabase: AppDatabase,
-                              retrofit: Retrofit, rxBusHelper: RxBusHelper): UserAddViewModel {
+    internal fun provideModel(@Named("application") application: Application,
+                              appDatabase: AppDatabase,
+                              retrofit: Retrofit,
+                              rxBusHelper: RxBusHelper): UserAddViewModel {
         val factory = UserAddViewModel.Factory(application, appDatabase, retrofit, rxBusHelper)
         return ViewModelProviders.of(mUserAddView, factory).get(UserAddViewModel::class.java)
     }

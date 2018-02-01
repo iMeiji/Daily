@@ -6,10 +6,8 @@ import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Handler
-import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
@@ -17,8 +15,6 @@ import android.text.InputType
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.TextView
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.Theme
@@ -29,6 +25,8 @@ import com.meiji.daily.binder.ZhuanlanViewBinder
 import com.meiji.daily.module.base.BaseFragment
 import com.meiji.daily.util.RecyclerViewUtil
 import com.meiji.daily.util.SettingHelper
+import kotlinx.android.synthetic.main.fragment_useradd.*
+import kotlinx.android.synthetic.main.item_zhuanlan.view.*
 import me.drakeet.multitype.MultiTypeAdapter
 import javax.inject.Inject
 
@@ -45,12 +43,7 @@ class UserAddView : BaseFragment(), View.OnClickListener, SwipeRefreshLayout.OnR
     @Inject
     lateinit var mSharedPreferences: SharedPreferences
 
-    private var mTvDesc: TextView? = null
-    private var mRecyclerView: RecyclerView? = null
-    private var mRefreshLayout: SwipeRefreshLayout? = null
-    private var mFab: FloatingActionButton? = null
-    private var mDialog: MaterialDialog? = null
-    private var mRoot: LinearLayout? = null
+    private lateinit var mDialog: MaterialDialog
 
     private var mList: MutableList<ZhuanlanBean>? = null
     private var mAdapter: MultiTypeAdapter? = null
@@ -63,25 +56,23 @@ class UserAddView : BaseFragment(), View.OnClickListener, SwipeRefreshLayout.OnR
                 .build().inject(this)
     }
 
-    override fun attachLayoutId(): Int {
-        return R.layout.fragment_useradd
-    }
+    override fun attachLayoutId() = R.layout.fragment_useradd
 
     override fun subscribeUI() {
-        mModel.mList!!.observe(this, Observer { list ->
+        mModel.mList.observe(this, Observer { list ->
             if (null != list && list.size > 0) {
                 onSetAdapter(list)
             }
         })
-        mModel.isLoading!!.observe(this, Observer { aBoolean ->
+        mModel.isLoading.observe(this, Observer { aBoolean ->
             if (aBoolean!!) {
                 onShowLoading()
             } else {
                 onHideLoading()
             }
         })
-        mModel.isRefreshUI!!.observe(this, Observer { refreshUI() })
-        mModel.isAddResult!!.observe(this, Observer { aBoolean ->
+        mModel.isRefreshUI.observe(this, Observer { refreshUI() })
+        mModel.isAddResult.observe(this, Observer { aBoolean ->
             if (aBoolean!!) {
                 onAddSuccess()
             } else {
@@ -93,7 +84,7 @@ class UserAddView : BaseFragment(), View.OnClickListener, SwipeRefreshLayout.OnR
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         if (key == "color") {
-            mFab!!.backgroundTintList = ColorStateList.valueOf(mSettingHelper.color)
+            fab_add.backgroundTintList = ColorStateList.valueOf(mSettingHelper.color)
         }
     }
 
@@ -103,21 +94,15 @@ class UserAddView : BaseFragment(), View.OnClickListener, SwipeRefreshLayout.OnR
     }
 
     override fun initViews(view: View) {
-        mTvDesc = view.findViewById(R.id.tv_description)
-        mRecyclerView = view.findViewById(R.id.recycler_view)
-        mFab = view.findViewById(R.id.fab_add)
-        mRefreshLayout = view.findViewById(R.id.refresh_layout)
-        mRoot = view.findViewById(R.id.ll_root)
-
-        mRecyclerView!!.setHasFixedSize(true)
-        mRecyclerView!!.layoutManager = LinearLayoutManager(activity)
+        recycler_view.setHasFixedSize(true)
+        recycler_view.layoutManager = LinearLayoutManager(activity)
 
         // 设置下拉刷新的按钮的颜色
-        mRefreshLayout!!.setColorSchemeColors(mSettingHelper.color)
-        mRefreshLayout!!.setOnRefreshListener(this)
+        refresh_layout.setColorSchemeColors(mSettingHelper.color)
+        refresh_layout.setOnRefreshListener(this)
 
-        mFab!!.backgroundTintList = ColorStateList.valueOf(mSettingHelper.color)
-        mFab!!.setOnClickListener(this)
+        fab_add.backgroundTintList = ColorStateList.valueOf(mSettingHelper.color)
+        fab_add.setOnClickListener(this)
 
         val helper = ItemTouchHelper(
                 object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
@@ -132,7 +117,7 @@ class UserAddView : BaseFragment(), View.OnClickListener, SwipeRefreshLayout.OnR
                         mList!!.remove(bean)
                         mAdapter!!.notifyDataSetChanged()
                         mIsdelete = true
-                        Snackbar.make(mRecyclerView!!, getString(R.string.deleted) + name, Snackbar.LENGTH_LONG)
+                        Snackbar.make(recycler_view, getString(R.string.deleted) + name, Snackbar.LENGTH_LONG)
                                 .setAction(getString(R.string.undo)) {
                                     mIsdelete = false
                                     mModel.handleData()
@@ -145,7 +130,7 @@ class UserAddView : BaseFragment(), View.OnClickListener, SwipeRefreshLayout.OnR
                         }, 1500)
                     }
                 })
-        helper.attachToRecyclerView(mRecyclerView)
+        helper.attachToRecyclerView(recycler_view)
     }
 
     override fun onClick(v: View) {
@@ -163,28 +148,21 @@ class UserAddView : BaseFragment(), View.OnClickListener, SwipeRefreshLayout.OnR
         theme.resolveAttribute(R.attr.rootViewBackground, rootViewBackground, true)
         theme.resolveAttribute(R.attr.itemViewBackground, itemViewBackground, true)
         theme.resolveAttribute(R.attr.textColorPrimary, textColorPrimary, true)
-        mRoot!!.setBackgroundResource(rootViewBackground.resourceId)
-        mTvDesc!!.setTextColor(resources.getColor(textColorPrimary.resourceId))
+        ll_root.setBackgroundResource(rootViewBackground.resourceId)
+        tv_description.setTextColor(resources.getColor(textColorPrimary.resourceId))
 
-        val childCount = mRecyclerView!!.childCount
+        val childCount = recycler_view.childCount
         for (i in 0 until childCount) {
-            val cardView = mRecyclerView!!.getChildAt(i).findViewById<CardView>(R.id.cardview)
+            val cardView = recycler_view.getChildAt(i).cardview
             cardView.setBackgroundResource(itemViewBackground.resourceId)
 
-            val tv_name = cardView.findViewById<TextView>(R.id.tv_name)
-            tv_name.setTextColor(resources.getColor(textColorPrimary.resourceId))
-
-            val tv_followersCount = cardView.findViewById<TextView>(R.id.tv_followersCount)
-            tv_followersCount.setTextColor(resources.getColor(textColorPrimary.resourceId))
-
-            val tv_postsCount = cardView.findViewById<TextView>(R.id.tv_postsCount)
-            tv_postsCount.setTextColor(resources.getColor(textColorPrimary.resourceId))
-
-            val tv_intro = cardView.findViewById<TextView>(R.id.tv_intro)
-            tv_intro.setTextColor(resources.getColor(textColorPrimary.resourceId))
+            cardView.tv_name.setTextColor(resources.getColor(textColorPrimary.resourceId))
+            cardView.tv_followersCount.setTextColor(resources.getColor(textColorPrimary.resourceId))
+            cardView.tv_postsCount.setTextColor(resources.getColor(textColorPrimary.resourceId))
+            cardView.tv_intro.setTextColor(resources.getColor(textColorPrimary.resourceId))
         }
 
-        RecyclerViewUtil.invalidateCacheItem(mRecyclerView)
+        RecyclerViewUtil.invalidateCacheItem(recycler_view)
     }
 
     private fun createDialog() {
@@ -197,48 +175,48 @@ class UserAddView : BaseFragment(), View.OnClickListener, SwipeRefreshLayout.OnR
                 .build()
 
         // 设置3个按键
-        mDialog!!.setActionButton(DialogAction.NEGATIVE, R.string.md_cancel)
-        mDialog!!.setActionButton(DialogAction.POSITIVE, R.string.md_ok)
-        mDialog!!.setActionButton(DialogAction.NEUTRAL, R.string.md_zhuanlan_add_help)
+        mDialog.setActionButton(DialogAction.NEGATIVE, R.string.md_cancel)
+        mDialog.setActionButton(DialogAction.POSITIVE, R.string.md_ok)
+        mDialog.setActionButton(DialogAction.NEUTRAL, R.string.md_zhuanlan_add_help)
 
-        mDialog!!.getActionButton(DialogAction.NEGATIVE).setOnClickListener { mDialog!!.dismiss() }
+        mDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener { mDialog.dismiss() }
 
-        mDialog!!.getActionButton(DialogAction.POSITIVE).setOnClickListener {
+        mDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener {
             // 校验填写 id 是否正确
             onCheckInputId()
-            mDialog!!.dismiss()
+            mDialog.dismiss()
         }
 
-        mDialog!!.getActionButton(DialogAction.NEUTRAL).setOnClickListener {
+        mDialog.getActionButton(DialogAction.NEUTRAL).setOnClickListener {
             // 什么是专栏 id
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.add_zhuanlan_id_help_url))))
-            mDialog!!.dismiss()
+            mDialog.dismiss()
         }
 
-        mDialog!!.show()
+        mDialog.show()
     }
 
     fun onCheckInputId() {
-        val input = mDialog!!.inputEditText!!.text.toString()
+        val input = mDialog.inputEditText?.text.toString()
         if (!TextUtils.isEmpty(input)) {
-            mModel.addItem(input.trim { it <= ' ' }.toLowerCase())
+            mModel.addItem(input.trim().toLowerCase())
         }
     }
 
     fun onSetAdapter(list: MutableList<ZhuanlanBean>?) {
         if (mAdapter == null) {
             mAdapter = MultiTypeAdapter()
-            mAdapter!!.register(ZhuanlanBean::class.java, ZhuanlanViewBinder())
-            mRecyclerView!!.adapter = mAdapter
+            mAdapter?.register(ZhuanlanBean::class.java, ZhuanlanViewBinder())
+            recycler_view.adapter = mAdapter
         }
         mList = list
         mAdapter!!.items = mList!!
         mAdapter!!.notifyDataSetChanged()
 
         if (mList!!.size == 0) {
-            mTvDesc!!.visibility = View.VISIBLE
+            tv_description.visibility = View.VISIBLE
         } else {
-            mTvDesc!!.visibility = View.GONE
+            tv_description.visibility = View.GONE
         }
     }
 
@@ -247,20 +225,20 @@ class UserAddView : BaseFragment(), View.OnClickListener, SwipeRefreshLayout.OnR
     }
 
     fun onAddSuccess() {
-        Snackbar.make(mRecyclerView!!, R.string.add_zhuanlan_id_success, Snackbar.LENGTH_SHORT).show()
-        mTvDesc!!.visibility = View.GONE
+        Snackbar.make(recycler_view, R.string.add_zhuanlan_id_success, Snackbar.LENGTH_SHORT).show()
+        tv_description.visibility = View.GONE
     }
 
     fun onShowLoading() {
-        mRefreshLayout!!.isRefreshing = true
+        refresh_layout.isRefreshing = true
     }
 
     fun onHideLoading() {
-        mRefreshLayout!!.isRefreshing = false
+        refresh_layout.isRefreshing = false
     }
 
     fun onAddFail() {
-        Snackbar.make(mRecyclerView!!, R.string.add_zhuanlan_id_error, Snackbar.LENGTH_SHORT).show()
-        mRefreshLayout!!.isEnabled = true
+        Snackbar.make(recycler_view, R.string.add_zhuanlan_id_error, Snackbar.LENGTH_SHORT).show()
+        refresh_layout.isEnabled = true
     }
 }
