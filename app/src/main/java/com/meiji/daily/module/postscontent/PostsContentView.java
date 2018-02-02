@@ -157,7 +157,7 @@ public class PostsContentView extends BaseFragment {
         mDialog = new MaterialDialog.Builder(getContext())
                 .progress(true, 0)
                 .content(R.string.md_loading)
-                .theme(mSettingHelper.getIsNightMode() ? Theme.DARK : Theme.LIGHT)
+                .theme(mSettingHelper.isNightMode() ? Theme.DARK : Theme.LIGHT)
                 .cancelable(true)
                 .build();
 

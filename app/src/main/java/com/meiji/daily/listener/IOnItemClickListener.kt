@@ -1,12 +1,12 @@
-package com.meiji.daily.listener;
+package com.meiji.daily.listener
 
-import android.view.View;
+import android.view.View
 
 /**
  * Created by Meiji on 2016/11/18.
  */
 
-public interface IOnItemClickListener {
+interface IOnItemClickListener {
 
     /**
      * RecyclerView Item点击事件
@@ -14,5 +14,5 @@ public interface IOnItemClickListener {
      * @param view
      * @param position
      */
-    void onClick(View view, int position);
+    fun onClick(view: View, position: Int)
 }
