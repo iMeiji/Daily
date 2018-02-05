@@ -26,6 +26,7 @@ import com.meiji.daily.module.base.BaseFragment
 import com.meiji.daily.util.RecyclerViewUtil
 import com.meiji.daily.util.SettingHelper
 import kotlinx.android.synthetic.main.fragment_useradd.*
+import kotlinx.android.synthetic.main.fragment_useradd.view.*
 import kotlinx.android.synthetic.main.item_zhuanlan.view.*
 import me.drakeet.multitype.MultiTypeAdapter
 import javax.inject.Inject
@@ -83,9 +84,8 @@ class UserAddView : BaseFragment(), View.OnClickListener, SwipeRefreshLayout.OnR
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        if (key == "color") {
-            fab_add.backgroundTintList = ColorStateList.valueOf(mSettingHelper.color)
-        }
+        fab_add.backgroundTintList = ColorStateList.valueOf(mSettingHelper.color)
+        refresh_layout.setColorSchemeColors(mSettingHelper.color)
     }
 
     override fun onStop() {
@@ -94,15 +94,15 @@ class UserAddView : BaseFragment(), View.OnClickListener, SwipeRefreshLayout.OnR
     }
 
     override fun initViews(view: View) {
-        recycler_view.setHasFixedSize(true)
-        recycler_view.layoutManager = LinearLayoutManager(activity)
+        view.recycler_view.setHasFixedSize(true)
+        view.recycler_view.layoutManager = LinearLayoutManager(activity)
 
         // 设置下拉刷新的按钮的颜色
-        refresh_layout.setColorSchemeColors(mSettingHelper.color)
-        refresh_layout.setOnRefreshListener(this)
+        view.refresh_layout.setColorSchemeColors(mSettingHelper.color)
+        view.refresh_layout.setOnRefreshListener(this)
 
-        fab_add.backgroundTintList = ColorStateList.valueOf(mSettingHelper.color)
-        fab_add.setOnClickListener(this)
+        view.fab_add.backgroundTintList = ColorStateList.valueOf(mSettingHelper.color)
+        view.fab_add.setOnClickListener(this)
 
         val helper = ItemTouchHelper(
                 object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {

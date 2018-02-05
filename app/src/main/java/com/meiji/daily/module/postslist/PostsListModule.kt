@@ -19,7 +19,7 @@ class PostsListModule(private val mPostsListView: PostsListView) {
     @Provides
     internal fun provideModule(@Named("application") application: Application,
                                @Named("slug") slug: String,
-                               postCount: Int,
+                               @Named("count") postCount: Int,
                                retrofit: Retrofit): PostsListViewModel {
         val factory = PostsListViewModel.Factory(application, slug, postCount, retrofit)
         return ViewModelProviders.of(mPostsListView, factory).get(PostsListViewModel::class.java)
@@ -37,6 +37,7 @@ class PostsListModule(private val mPostsListView: PostsListView) {
 
     @FragmentScoped
     @Provides
+    @Named("count")
     internal fun providePostCount(): Int {
         val bundle = mPostsListView.arguments
         return bundle?.getInt(PostsListView.ARGUMENT_POSTSCOUNT, 0) ?: 0

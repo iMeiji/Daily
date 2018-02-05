@@ -22,13 +22,13 @@ constructor(application: Application,
             private val mPostCount: Int,
             private val mRetrofit: Retrofit) : AndroidViewModel(application) {
     private val mDisposable: CompositeDisposable
-    var mList: MutableList<PostsListBean>
+    private var mList: MutableList<PostsListBean>
     var isLoading: MutableLiveData<Boolean>
         private set
     var isEnd: MutableLiveData<Boolean>
         private set
     var mOffset: MutableLiveData<Int>
-    var listLiveData: LiveData<List<PostsListBean>>
+    var mListLiveData: LiveData<List<PostsListBean>>
         private set
 
     init {
@@ -36,21 +36,21 @@ constructor(application: Application,
         mDisposable = CompositeDisposable()
         isLoading = MutableLiveData()
         isEnd = MutableLiveData()
-        listLiveData = MutableLiveData()
+        mListLiveData = MutableLiveData()
         mOffset = MutableLiveData()
 
         isLoading.value = true
         mOffset.value = 0
 
         // 当 mOffset 的值发生改变，就会执行 apply
-        listLiveData = Transformations.switchMap(mOffset) { input -> handleData(input!!) }
+        mListLiveData = Transformations.switchMap(mOffset) { offset -> handleData(offset!!) }
     }
 
     private fun handleData(offset: Int): LiveData<List<PostsListBean>> {
 
         val liveData = MutableLiveData<List<PostsListBean>>()
 
-        val subscribe = mRetrofit.create(IApi::class.java).getPostsList(mSlug, offset)
+        mRetrofit.create(IApi::class.java).getPostsList(mSlug, offset)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(Consumer { list ->
@@ -60,8 +60,7 @@ constructor(application: Application,
                     override fun doAction() {
                         liveData.value = null
                     }
-                }.action())
-        mDisposable.add(subscribe)
+                }.action()).let { mDisposable.add(it) }
         isLoading.value = false
         return liveData
     }
@@ -85,7 +84,10 @@ constructor(application: Application,
         super.onCleared()
     }
 
-    class Factory internal constructor(private val mApplication: Application, private val mSlug: String, private val mPostCount: Int, private val mRetrofit: Retrofit) : ViewModelProvider.NewInstanceFactory() {
+    class Factory internal constructor(private val mApplication: Application,
+                                       private val mSlug: String,
+                                       private val mPostCount: Int,
+                                       private val mRetrofit: Retrofit) : ViewModelProvider.NewInstanceFactory() {
 
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return PostsListViewModel(mApplication, mSlug, mPostCount, mRetrofit) as T

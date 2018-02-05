@@ -51,7 +51,7 @@ internal class PostsListViewBinder : ItemViewBinder<PostsListBean, PostsListView
         holder.tv_likesCount.text = likesCount
         holder.tv_commentsCount.text = commentsCount
         holder.tv_title.text = title
-        holder.root.setOnClickListener { PostsContentActivity.start(context, item.titleImage, item.title, item.slug) }
+        holder.root.setOnClickListener { PostsContentActivity.start(context, item.titleImage, item.title, item.slug.toString()) }
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

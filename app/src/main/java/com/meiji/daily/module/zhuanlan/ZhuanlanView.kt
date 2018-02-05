@@ -1,6 +1,7 @@
 package com.meiji.daily.module.zhuanlan
 
 import android.arch.lifecycle.Observer
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.widget.SwipeRefreshLayout
@@ -15,6 +16,7 @@ import com.meiji.daily.module.base.BaseFragment
 import com.meiji.daily.util.RecyclerViewUtil
 import com.meiji.daily.util.SettingHelper
 import kotlinx.android.synthetic.main.fragment_zhuanlan.*
+import kotlinx.android.synthetic.main.fragment_zhuanlan.view.*
 import kotlinx.android.synthetic.main.item_zhuanlan.view.*
 import me.drakeet.multitype.MultiTypeAdapter
 import javax.inject.Inject
@@ -24,11 +26,14 @@ import javax.inject.Inject
  * Created by Meiji on 2017/11/29.
  */
 
-class ZhuanlanView : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
+class ZhuanlanView : BaseFragment(), SwipeRefreshLayout.OnRefreshListener, SharedPreferences.OnSharedPreferenceChangeListener {
+
     @Inject
     lateinit var mModel: ZhuanlanViewModel
     @Inject
     lateinit var mSettingHelper: SettingHelper
+    @Inject
+    lateinit var mSharedPreferences: SharedPreferences
 
     private var mAdapter: MultiTypeAdapter? = null
 
@@ -66,11 +71,19 @@ class ZhuanlanView : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
     override fun attachLayoutId() = R.layout.fragment_zhuanlan
 
     override fun initViews(view: View) {
-        recycler_view.setHasFixedSize(true)
-        recycler_view.layoutManager = LinearLayoutManager(activity)
-        // 设置下拉刷新的按钮的颜色
+        view.recycler_view.setHasFixedSize(true)
+        view.recycler_view.layoutManager = LinearLayoutManager(activity)
+        view.refresh_layout.setColorSchemeColors(mSettingHelper.color)
+        view.refresh_layout.setOnRefreshListener(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mSharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
+    }
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         refresh_layout.setColorSchemeColors(mSettingHelper.color)
-        refresh_layout.setOnRefreshListener(this)
     }
 
     override fun subscribeUI() {
@@ -89,6 +102,7 @@ class ZhuanlanView : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
             }
         })
         mModel.isRefreshUI.observe(this, Observer<Boolean> { refreshUI() })
+        mSharedPreferences.registerOnSharedPreferenceChangeListener(this)
     }
 
     private fun onSetAdapter(list: List<ZhuanlanBean>) {

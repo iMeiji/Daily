@@ -54,5 +54,5 @@ public interface IApi {
      * @return
      */
     @GET("api/posts/{slug}")
-    Maybe<PostsContentBean> getPostsContentBean(@Path("slug") int slug);
+    Maybe<PostsContentBean> getPostsContentBean(@Path("slug") String slug);
 }

@@ -5,8 +5,6 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
 import android.view.View
 import com.meiji.daily.App
 import com.meiji.daily.R
@@ -19,6 +17,7 @@ import com.meiji.daily.util.DiffCallback
 import com.meiji.daily.util.OnLoadMoreListener
 import com.meiji.daily.util.SettingHelper
 import kotlinx.android.synthetic.main.activity_postslist.*
+import kotlinx.android.synthetic.main.activity_postslist.view.*
 import me.drakeet.multitype.Items
 import me.drakeet.multitype.MultiTypeAdapter
 import javax.inject.Inject
@@ -38,7 +37,6 @@ class PostsListView : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
     @Inject
     lateinit var mSettingHelper: SettingHelper
 
-    private var mRecyclerView: RecyclerView? = null
     private val mOldItems = Items()
     private var mAdapter: MultiTypeAdapter? = null
     private var mCanloadmore: Boolean = false
@@ -52,28 +50,25 @@ class PostsListView : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
 
     override fun attachLayoutId() = R.layout.activity_postslist
 
-
     override fun initViews(view: View) {
-        val toolbar = view.findViewById<Toolbar>(R.id.toolbar_title)
-        mRecyclerView = view.findViewById(R.id.recycler_view)
-//        initToolBar(toolbar, true, mTitle!!)
-        toolbar.setOnClickListener { mRecyclerView!!.smoothScrollToPosition(0) }
-        mRecyclerView!!.layoutManager = LinearLayoutManager(context)
-        mRecyclerView!!.setHasFixedSize(true)
+        initToolBar(view.toolbar_title, true, mTitle)
+        view.toolbar_title.setOnClickListener { view.recycler_view.smoothScrollToPosition(0) }
+        view.recycler_view.layoutManager = LinearLayoutManager(context)
+        view.recycler_view.setHasFixedSize(true)
         // 设置下拉刷新的按钮的颜色
-        refresh_layout.setColorSchemeColors(mSettingHelper.color)
-        refresh_layout.setOnRefreshListener(this)
+        view.refresh_layout.setColorSchemeColors(mSettingHelper.color)
+        view.refresh_layout.setOnRefreshListener(this)
 
         mAdapter = MultiTypeAdapter()
         mAdapter!!.register(PostsListBean::class.java, PostsListViewBinder())
         mAdapter!!.register(FooterBean::class.java, FooterViewBinder())
         mAdapter!!.items = mOldItems
-        mRecyclerView!!.adapter = mAdapter
+        view.recycler_view.adapter = mAdapter
     }
 
     override fun subscribeUI() {
-        mModel.listLiveData.observe(this, Observer<List<PostsListBean>> { list ->
-            if (null != list && list.size > 0) {
+        mModel.mListLiveData.observe(this, Observer<List<PostsListBean>> { list ->
+            if (null != list && list.isNotEmpty()) {
                 onSetAdapter(list)
             } else {
                 onShowNetError()
@@ -105,7 +100,7 @@ class PostsListView : BaseFragment(), SwipeRefreshLayout.OnRefreshListener {
 
         mCanloadmore = true
 
-        mRecyclerView!!.addOnScrollListener(object : OnLoadMoreListener() {
+        recycler_view.addOnScrollListener(object : OnLoadMoreListener() {
             override fun onLoadMore() {
                 if (mCanloadmore) {
                     mCanloadmore = false

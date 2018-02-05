@@ -13,16 +13,11 @@ import com.meiji.daily.module.base.BaseActivity
 
 class PostsListActivity : BaseActivity() {
 
-    override fun attachLayoutId(): Int {
-        return R.layout.container
-    }
+    override fun attachLayoutId() = R.layout.container
 
-    override fun initViews() {
-
-    }
+    override fun initViews() {}
 
     override fun initData(savedInstanceState: Bundle?) {
-        val intent = intent
         if (intent == null) {
             finish()
             return
@@ -30,9 +25,7 @@ class PostsListActivity : BaseActivity() {
         val slug = intent.getStringExtra(EXTRA_SLUG)
         val title = intent.getStringExtra(EXTRA_NAME)
         val postCount = intent.getIntExtra(EXTRA_POSTSCOUNT, 0)
-        if (supportActionBar != null) {
-            supportActionBar!!.title = title
-        }
+//        supportActionBar?.title = title
         if (savedInstanceState == null) {
             supportFragmentManager
                     .beginTransaction()
