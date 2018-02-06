@@ -66,7 +66,7 @@ class ShareAddActivity : AppCompatActivity() {
         val matcher = Pattern.compile(regex).matcher(shareText)
         if (matcher.find()) {
             val slug = matcher.group(1).toLowerCase()
-            mAppDatabase.ZhuanlanNewDao().query(Constant.TYPE_USERADD)
+            mAppDatabase.zhuanlanDao().query(Constant.TYPE_USERADD)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(Consumer { list ->
@@ -82,7 +82,7 @@ class ShareAddActivity : AppCompatActivity() {
                     .subscribeOn(Schedulers.io())
                     .map { bean ->
                         bean.type = Constant.TYPE_USERADD
-                        return@map mAppDatabase.ZhuanlanNewDao().insert(bean).toInt() != -1
+                        return@map mAppDatabase.zhuanlanDao().insert(bean).toInt() != -1
                     }
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({ isSuccess ->

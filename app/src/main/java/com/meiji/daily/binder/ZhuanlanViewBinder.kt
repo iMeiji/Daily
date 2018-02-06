@@ -30,12 +30,13 @@ internal class ZhuanlanViewBinder : ItemViewBinder<ZhuanlanBean, ZhuanlanViewBin
         val context = holder.itemView.context
         val followersCount = item.followersCount.toString() + "人关注TA"
         val postsCount = item.postsCount.toString() + "篇文章"
-        var avatarUrl = item.avatar.template
+        var avatarUrl = item.avatar?.template
         if (!TextUtils.isEmpty(avatarUrl)) {
             // 拼凑avatar链接
             avatarUrl = avatarUrl
-                    .replace("{id}", item.avatar.id)
-                    .replace("{size}", "m")
+                    ?.replace("{id}", item.avatar?.id.toString())
+                    ?.replace("{size}", "m")
+
             GlideApp.with(context)
                     .load(avatarUrl)
                     .centerCrop()
@@ -46,7 +47,7 @@ internal class ZhuanlanViewBinder : ItemViewBinder<ZhuanlanBean, ZhuanlanViewBin
         holder.tv_followersCount.text = followersCount
         holder.tv_postsCount.text = postsCount
         holder.tv_intro.text = item.intro
-        holder.cardView.setOnClickListener { PostsListActivity.start(context, item.slug, item.name, item.postsCount) }
+        holder.cardView.setOnClickListener { PostsListActivity.start(context, item.slug, item.name!!, item.postsCount) }
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

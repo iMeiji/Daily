@@ -62,7 +62,7 @@ constructor(application: Application,
     fun handleData() {
         isLoading.value = true
 
-        mAppDatabase.ZhuanlanNewDao().query(Constant.TYPE_USERADD)
+        mAppDatabase.zhuanlanDao().query(Constant.TYPE_USERADD)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(Consumer<MutableList<ZhuanlanBean>> { list ->
@@ -79,7 +79,7 @@ constructor(application: Application,
                 .doOnSuccess { bean ->
                     bean?.let {
                         it.type = Constant.TYPE_USERADD
-                        mAppDatabase.ZhuanlanNewDao().insert(it)
+                        mAppDatabase.zhuanlanDao().insert(it)
                     }
                 }
                 .observeOn(AndroidSchedulers.mainThread())
@@ -103,7 +103,7 @@ constructor(application: Application,
 
     internal fun deleteItem(bean: ZhuanlanBean) {
         Single.create(SingleOnSubscribe<Any> {
-            mAppDatabase.ZhuanlanNewDao().delete(bean.slug)
+            mAppDatabase.zhuanlanDao().delete(bean.slug)
         }).subscribeOn(Schedulers.io())
                 .subscribe().let { mDisposable.add(it) }
 

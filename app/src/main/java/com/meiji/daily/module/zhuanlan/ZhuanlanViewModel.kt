@@ -65,7 +65,7 @@ constructor(application: Application,
     }
 
     internal fun handleData() {
-        mAppDatabase.ZhuanlanNewDao().query(mType)
+        mAppDatabase.zhuanlanDao().query(mType)
                 .subscribeOn(Schedulers.io())
                 .flatMap {
                     if (it.size > 0) {
@@ -112,7 +112,7 @@ constructor(application: Application,
         val maybeList = mIdArr.map { api.getZhuanlanBean(it) }
 
         Maybe.merge(maybeList)
-                .doOnComplete { mAppDatabase.ZhuanlanNewDao().insert(list) }
+                .doOnComplete { mAppDatabase.zhuanlanDao().insert(list) }
                 .subscribe(Consumer { bean ->
                     if (bean != null) {
                         bean.type = mType

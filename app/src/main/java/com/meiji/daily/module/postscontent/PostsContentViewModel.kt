@@ -43,7 +43,7 @@ internal constructor(application: Application,
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(Consumer { bean ->
                     isLoading.value = false
-                    html.value = parserHTML(bean.content)
+                    html.value = parserHTML(bean.content!!)
                 }, object : ErrorAction() {
                     override fun doAction() {
                         isLoading.value = false
@@ -75,7 +75,7 @@ internal constructor(application: Application,
                                        private val mRetrofit: Retrofit) : ViewModelProvider.NewInstanceFactory() {
 
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return PostsContentViewModel(mApplication, mSlug, mRetrofit) as T
+            return com.meiji.daily.module.postscontent.PostsContentViewModel(mApplication, mSlug, mRetrofit) as T
         }
     }
 }
