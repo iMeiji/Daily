@@ -25,7 +25,6 @@ import kotlinx.android.synthetic.main.activity_about.*
 
 class AboutActivity : BaseActivity(), View.OnClickListener {
 
-
     override fun attachLayoutId() = R.layout.activity_about
 
     override fun initData(savedInstanceState: Bundle?) {

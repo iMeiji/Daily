@@ -10,6 +10,7 @@ import com.meiji.daily.R;
 /**
  * Created by Meiji on 2017/2/20.
  */
+@SuppressWarnings("all")
 @Deprecated
 public class SettingUtil {
 

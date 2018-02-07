@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by Meiji on 2017/4/22.
  */
+@Suppress("deprecation")
 @Deprecated("")
 class RetrofitFactory private constructor() {
 

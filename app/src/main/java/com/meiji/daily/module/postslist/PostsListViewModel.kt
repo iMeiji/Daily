@@ -56,12 +56,12 @@ constructor(application: Application,
                 .subscribe(Consumer { list ->
                     mList.addAll(list)
                     liveData.value = mList
+                    isLoading.value = false
                 }, object : ErrorAction() {
                     override fun doAction() {
                         liveData.value = null
                     }
                 }.action()).let { mDisposable.add(it) }
-        isLoading.value = false
         return liveData
     }
 
@@ -90,7 +90,7 @@ constructor(application: Application,
                                        private val mRetrofit: Retrofit) : ViewModelProvider.NewInstanceFactory() {
 
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return PostsListViewModel(mApplication, mSlug, mPostCount, mRetrofit) as T
+            return com.meiji.daily.module.postslist.PostsListViewModel(mApplication, mSlug, mPostCount, mRetrofit) as T
         }
     }
 }

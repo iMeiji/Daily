@@ -52,7 +52,7 @@ class PostsContentView : BaseFragment() {
     override fun initInject() {
         DaggerPostsContentComponent.builder()
                 .appComponent(App.sAppComponent)
-                .postsContentModule(PostsContentModule(this))
+                .postsContentModule(com.meiji.daily.module.postscontent.PostsContentModule(this))
                 .build().inject(this)
     }
 
@@ -175,7 +175,7 @@ class PostsContentView : BaseFragment() {
             args.putString(ARGUMENT_TITLEIMAGE, titleImage)
             args.putString(ARGUMENT_TITLE, title)
             args.putString(ARGUMENT_SLUG, slug)
-            val fragment = PostsContentView()
+            val fragment = com.meiji.daily.module.postscontent.PostsContentView()
             fragment.arguments = args
             return fragment
         }

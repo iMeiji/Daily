@@ -139,6 +139,7 @@ class UserAddView : BaseFragment(), View.OnClickListener, SwipeRefreshLayout.OnR
         }
     }
 
+    @Suppress("deprecation")
     private fun refreshUI() {
         val theme = activity!!.theme
         val resources = resources

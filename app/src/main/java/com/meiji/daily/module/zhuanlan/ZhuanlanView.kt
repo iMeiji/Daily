@@ -36,7 +36,7 @@ class ZhuanlanView : BaseFragment(), SwipeRefreshLayout.OnRefreshListener, Share
     lateinit var mSharedPreferences: SharedPreferences
 
     private var mAdapter: MultiTypeAdapter? = null
-
+    @Suppress("deprecation")
     private fun refreshUI() {
         val theme = activity!!.theme
         val rootViewBackground = TypedValue()

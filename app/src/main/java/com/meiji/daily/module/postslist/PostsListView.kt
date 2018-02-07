@@ -13,6 +13,7 @@ import com.meiji.daily.bean.PostsListBean
 import com.meiji.daily.binder.FooterViewBinder
 import com.meiji.daily.binder.PostsListViewBinder
 import com.meiji.daily.module.base.BaseFragment
+import com.meiji.daily.module.postslist.PostsListModule
 import com.meiji.daily.util.DiffCallback
 import com.meiji.daily.util.OnLoadMoreListener
 import com.meiji.daily.util.SettingHelper

@@ -30,6 +30,7 @@ import com.meiji.daily.module.zhuanlan.ZhuanlanView
 import com.meiji.daily.util.RxBusHelper
 import io.reactivex.Flowable
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.item_switch.view.*
 import kotlinx.android.synthetic.main.toolbar.*
 import javax.inject.Inject
 
@@ -75,7 +76,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         nav_view.setNavigationItemSelectedListener(this)
 
-        mSwitchCompat = nav_view.menu.findItem(R.id.app_bar_switch).actionView.findViewById(R.id.switch_input)
+        mSwitchCompat = nav_view.menu.findItem(R.id.app_bar_switch).actionView.switch_input
         mSwitchCompat.isChecked = mSettingHelper.isNightMode
 
         setUpSwitch()
@@ -83,22 +84,21 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         mSwitchCompat.setOnCheckedChangeListener { compoundButton, isNightMode ->
             mSettingHelper.isNightMode = isNightMode
             setUpSwitch()
-            if (isNightMode) {
-                setTheme(R.style.DarkTheme)
-            } else {
-                setTheme(R.style.LightTheme)
+            when {
+                isNightMode -> setTheme(R.style.DarkTheme)
+                else -> setTheme(R.style.LightTheme)
             }
             mRxBusHelper.post(Constant.RxBusEvent.REFRESHUI, isNightMode)
         }
     }
 
+
+    @Suppress("deprecation")
     private fun setUpSwitch() {
         val isNightMode = mSettingHelper.isNightMode
         if (isNightMode) {
             mSwitchCompat.thumbTintList = ColorStateList.valueOf(mSettingHelper.color)
         } else {
-            val theme = theme
-            val resources = resources
             val textColorPrimary = TypedValue()
             theme.resolveAttribute(R.attr.textColorPrimary, textColorPrimary, true)
             mSwitchCompat.thumbTintList = resources.getColorStateList(textColorPrimary.resourceId)
@@ -107,13 +107,13 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     override fun onBackPressed() {
         val currentTime = System.currentTimeMillis()
-        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
-            drawer_layout.closeDrawer(GravityCompat.START)
-        } else if (currentTime - mExitTime < 2000) {
-            super.onBackPressed()
-        } else {
-            Snackbar.make(drawer_layout, getString(R.string.double_click_exit), Snackbar.LENGTH_SHORT).show()
-            mExitTime = currentTime
+        when {
+            drawer_layout.isDrawerOpen(GravityCompat.START) -> drawer_layout.closeDrawer(GravityCompat.START)
+            (currentTime - mExitTime < 2000) -> super.onBackPressed()
+            else -> {
+                Snackbar.make(drawer_layout, getString(R.string.double_click_exit), Snackbar.LENGTH_SHORT).show()
+                mExitTime = currentTime
+            }
         }
     }
 
@@ -137,13 +137,12 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         return true
     }
 
+    @Suppress("deprecation")
     private fun refreshUI() {
-        val theme = theme
         val rootViewBackground = TypedValue()
         val textColorPrimary = TypedValue()
         theme.resolveAttribute(R.attr.rootViewBackground, rootViewBackground, true)
         theme.resolveAttribute(R.attr.textColorPrimary, textColorPrimary, true)
-        val resources = resources
         nav_view.setBackgroundResource(rootViewBackground.resourceId)
         nav_view.setItemBackgroundResource(rootViewBackground.resourceId)
         nav_view.itemTextColor = resources.getColorStateList(textColorPrimary.resourceId)
@@ -156,17 +155,13 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         val fragmentById = fragmentManager.findFragmentByTag(type.toString())
         if (fragmentById == null) {
-            val fragment: Fragment = if (type != Constant.TYPE_USERADD) {
-                ZhuanlanView.newInstance(type)
-            } else {
-                UserAddView()
+            val fragment: Fragment = when {
+                type != Constant.TYPE_USERADD -> ZhuanlanView.newInstance(type)
+                else -> UserAddView()
             }
-            fragmentTransaction
-                    .add(R.id.content_main, fragment, type.toString())
+            fragmentTransaction.add(R.id.content_main, fragment, type.toString())
         } else {
-            for (fragment in fragmentManager.fragments) {
-                fragmentTransaction.hide(fragment)
-            }
+            fragmentManager.fragments.forEach { fragment -> fragmentTransaction.hide(fragment) }
             fragmentTransaction.show(fragmentById)
         }
         fragmentTransaction.commit()
@@ -237,6 +232,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     companion object {
-        internal val TAG = "MainActivity"
+        const val TAG = "MainActivity"
     }
 }

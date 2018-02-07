@@ -13,7 +13,7 @@ import io.reactivex.processors.PublishProcessor;
  * Created by Meiji on 2017/12/14.
  * 参考 ：https://juejin.im/entry/58ff2e26a0bb9f0065d2c5f2
  */
-
+@SuppressWarnings("all")
 @Deprecated
 public class RxBus {
 

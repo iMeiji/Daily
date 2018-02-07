@@ -21,6 +21,7 @@ constructor(private val mPreferences: SharedPreferences, private val mContext: C
     val isNoPhotoMode: Boolean
         get() = mPreferences.getBoolean("switch_noPhotoMode", false) && NetWorkUtil.isMobileConnected(mContext)
 
+    @Suppress("deprecation")
     var color: Int
         get() {
             val defaultColor = mContext.resources.getColor(R.color.colorPrimary)
