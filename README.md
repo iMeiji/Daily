@@ -13,7 +13,7 @@
 
 
 ## Daily
-第三方[知乎专栏](https://zhuanlan.zhihu.com/)Android App，风格采用了Material Design  
+第三方[知乎专栏](https://zhuanlan.zhihu.com/)Android App，风格采用了Material Design，有 Kotlin 和 Java 两个版本，切换分支即可查看
 
 
 
@@ -26,6 +26,7 @@
 - 模块清晰，聚合有度
 - 使用最新 RxJava 2，Glide 4 新特征
 - 使用 DiffUtil 优雅实现 notifyDataSetChanged
+- 运用 Kotlin 语法糖，精简代码
 
 
 
@@ -58,6 +59,9 @@
 
 ### 更新日志
 ```
+2018-2-7
+完成 Kotlin 版本
+
 2017-12-17
 更新 RxJava 2，Glide 4
 集成 Fabric SDK 
@@ -118,7 +122,7 @@ Gradle 差异化构建
 ### 编译
 
 1. 导入项目
-2. 重命名 `fabric.properties.example` 为 `fabric.properties`
+2. 复制 `fabric.properties.example` 并重命名为 `fabric.properties`
 3. 运行项目
 
 
@@ -139,3 +143,5 @@ Gradle 差异化构建
 - [RxJava](https://github.com/ReactiveX/RxJava)
 - [RxAndroid](https://github.com/ReactiveX/RxAndroid)
 - [MultiType](https://github.com/drakeet/MultiType)
+- [Dagger 2](https://github.com/google/dagger)
+
