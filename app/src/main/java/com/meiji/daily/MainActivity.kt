@@ -144,7 +144,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         theme.resolveAttribute(R.attr.rootViewBackground, rootViewBackground, true)
         theme.resolveAttribute(R.attr.textColorPrimary, textColorPrimary, true)
         nav_view.setBackgroundResource(rootViewBackground.resourceId)
-        nav_view.setItemBackgroundResource(rootViewBackground.resourceId)
         nav_view.itemTextColor = resources.getColorStateList(textColorPrimary.resourceId)
         nav_view.itemIconTintList = resources.getColorStateList(textColorPrimary.resourceId)
     }

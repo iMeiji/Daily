@@ -26,7 +26,6 @@
         android:background="?attr/rootViewBackground"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_main"
-        app:itemBackground="?attr/rootViewBackground"
         app:itemIconTint="?attr/textColorPrimary"
         app:itemTextColor="?attr/textColorPrimary"
         app:menu="@menu/activity_main_drawer"/>
