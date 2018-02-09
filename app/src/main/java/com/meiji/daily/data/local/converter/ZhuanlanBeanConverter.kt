@@ -15,19 +15,33 @@ class ZhuanlanBeanConverter {
     private val mGson = Gson()
 
     @TypeConverter
-    fun toString(avatarBeanX: ZhuanlanBean.AvatarBeanX): String {
-        return mGson.toJson(avatarBeanX)
+    fun fromCreator(c: ZhuanlanBean.Creator): String {
+        return mGson.toJson(c)
     }
 
     @TypeConverter
-    fun toBean(s: String): ZhuanlanBean.AvatarBeanX {
-        return mGson.fromJson(s, ZhuanlanBean.AvatarBeanX::class.java)
+    fun toCreator(s: String): ZhuanlanBean.Creator {
+        return mGson.fromJson(s, ZhuanlanBean.Creator::class.java)
     }
 
-    fun toList(s: String): List<ZhuanlanBean.AvatarBeanX> {
-        val listType = object : TypeToken<ArrayList<ZhuanlanBean.AvatarBeanX>>() {
+    @TypeConverter
+    fun fromTopicList(l: List<ZhuanlanBean.Topic>): String {
+        return mGson.toJson(l)
+    }
 
-        }.type
+    @TypeConverter
+    fun toTopicList(s: String): List<ZhuanlanBean.Topic> {
+        val listType = object : TypeToken<ArrayList<ZhuanlanBean.Topic>>() {}.type
         return mGson.fromJson(s, listType)
+    }
+
+    @TypeConverter
+    fun fromAvatar(a: ZhuanlanBean.Avatar): String {
+        return mGson.toJson(a)
+    }
+
+    @TypeConverter
+    fun toAvatar(s: String): ZhuanlanBean.Avatar {
+        return mGson.fromJson(s, ZhuanlanBean.Avatar::class.java)
     }
 }
