@@ -29,14 +29,14 @@ internal class PostsListViewBinder : ItemViewBinder<PostsListBean, PostsListView
 
     override fun onBindViewHolder(holder: PostsListViewBinder.ViewHolder, item: PostsListBean) {
         val context = holder.itemView.context
-        val publishedTime = item.publishedTime?.substring(0, 10)
+        val publishedTime = item.publishedTime.substring(0, 10)
         val likesCount = item.likesCount.toString() + "赞"
         val commentsCount = item.commentsCount.toString() + "条评论"
         var titleImage = item.titleImage
         val title = item.title
 
         if (!TextUtils.isEmpty(titleImage)) {
-            titleImage = item.titleImage?.replace("r.jpg", "b.jpg")
+            titleImage = item.titleImage.replace("r.jpg", "b.jpg")
             GlideApp.with(context)
                     .load(titleImage)
                     .centerCrop()
@@ -51,12 +51,12 @@ internal class PostsListViewBinder : ItemViewBinder<PostsListBean, PostsListView
         holder.tv_likesCount.text = likesCount
         holder.tv_commentsCount.text = commentsCount
         holder.tv_title.text = title
-        holder.root.setOnClickListener { PostsContentActivity.start(context, item.titleImage!!, item.title!!, item.slug.toString()) }
+        holder.root.setOnClickListener { PostsContentActivity.start(context, item.titleImage, item.title, item.slug.toString()) }
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        val root: CardView = itemView.ll_root
+        val root: CardView = itemView.cardview
         val tv_publishedTime: TextView = itemView.tv_publishedTime
         val tv_likesCount: TextView = itemView.tv_likesCount
         val tv_commentsCount: TextView = itemView.tv_commentsCount

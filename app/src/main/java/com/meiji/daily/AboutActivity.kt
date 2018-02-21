@@ -29,24 +29,24 @@ class AboutActivity : BaseActivity(), View.OnClickListener {
 
     override fun initData(savedInstanceState: Bundle?) {
         packageManager?.getPackageInfo(packageName, 0)?.versionName.let {
-            tv_version.text = it
+            tv_versionCode.text = it
         }
     }
 
     override fun initViews() {
         initToolBar(toolbar as Toolbar, true, null)
 
-        changelogView.setOnClickListener(this)
-        developersView.setOnClickListener(this)
-        licensesView.setOnClickListener(this)
-        sourceCodeView.setOnClickListener(this)
-        copyRightView.setOnClickListener(this)
+        cl_changelog.setOnClickListener(this)
+        cl_developers.setOnClickListener(this)
+        cl_licenses.setOnClickListener(this)
+        cl_source.setOnClickListener(this)
+        cl_copyright.setOnClickListener(this)
     }
 
     override fun onClick(view: View) {
         when (view.id) {
-            R.id.changelogView -> startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.changelog_url))))
-            R.id.developersView -> {
+            R.id.cl_changelog -> startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.changelog_url))))
+            R.id.cl_developers -> {
                 val devDialog = MaterialDialog.Builder(this)
                         .title(R.string.about_developers_label)
                         .content(R.string.about_developers)
@@ -56,9 +56,9 @@ class AboutActivity : BaseActivity(), View.OnClickListener {
                 devDialog.getActionButton(DialogAction.POSITIVE).setTextColor(mSettingHelper.color)
                 devDialog.show()
             }
-            R.id.licensesView -> createLicenseDialog()
-            R.id.sourceCodeView -> startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.source_code_url))))
-            R.id.copyRightView -> {
+            R.id.cl_licenses -> createLicenseDialog()
+            R.id.cl_source -> startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.source_code_url))))
+            R.id.cl_copyright -> {
                 val copyRightDialog = MaterialDialog.Builder(this)
                         .title(R.string.action_copyright)
                         .theme(if (mSettingHelper.isNightMode) Theme.DARK else Theme.LIGHT)

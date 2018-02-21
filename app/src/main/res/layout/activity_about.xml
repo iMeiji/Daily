@@ -2,10 +2,12 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/rootViewBackground"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    tools:ignore="KeyboardInaccessibleWidget,ContentDescription">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -28,239 +30,246 @@
         android:layout_marginTop="?attr/actionBarSize"
         android:padding="8dp">
 
-        <LinearLayout
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="?attr/itemViewBackground"
+            app:cardUseCompatPadding="true">
 
-            <android.support.v7.widget.CardView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                app:cardBackgroundColor="?attr/itemViewBackground"
-                app:cardUseCompatPadding="true">
+                android:orientation="vertical">
 
-                <LinearLayout
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginStart="16dp"
+                    android:gravity="center"
+                    android:text="@string/app_name"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                    android:textColor="?attr/textColorPrimary"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/cl_version"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="48dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:foreground="?attr/selectableItemBackground">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="72dp"
-                        android:background="?attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:foreground="?attr/selectableItemBackground"
-                        android:orientation="horizontal">
+                    <ImageView
+                        android:id="@+id/iv_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_info"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
 
-                        <!--<ImageView-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_gravity="center_vertical"-->
-                        <!--android:paddingLeft="16dp"-->
-                        <!--android:paddingRight="16dp"-->
-                        <!--android:src="@mipmap/ic_launcher"/>-->
+                    <TextView
+                        android:id="@+id/tv_versionName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/version"
+                        app:layout_constraintStart_toEndOf="@+id/iv_info"
+                        app:layout_constraintTop_toTopOf="@+id/iv_info"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:paddingLeft="16dp"
-                            android:paddingRight="16dp"
-                            android:text="@string/app_name"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-                            android:textColor="?attr/textColorPrimary"/>
-                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/tv_versionCode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="1dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/iv_info"
+                        app:layout_constraintStart_toEndOf="@+id/iv_info"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_versionName"
+                        tools:text="v1.23"/>
+                </android.support.constraint.ConstraintLayout>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:background="?attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:foreground="?attr/selectableItemBackground"
-                        android:orientation="horizontal">
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/cl_changelog"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:foreground="?attr/selectableItemBackground">
 
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:paddingLeft="16dp"
-                            android:paddingRight="16dp"
-                            android:src="@drawable/ic_info"/>
+                    <ImageView
+                        android:id="@+id/iv_history"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_history"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
 
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/changelog"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="?attr/textColorPrimary"
+                        app:layout_constraintBottom_toBottomOf="@id/iv_history"
+                        app:layout_constraintLeft_toRightOf="@+id/iv_history"
+                        app:layout_constraintTop_toTopOf="@id/iv_history"/>
+                </android.support.constraint.ConstraintLayout>
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:paddingLeft="16dp"
-                                android:paddingRight="16dp"
-                                android:text="@string/version"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                                android:textColor="?attr/textColorPrimary"/>
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/cl_developers"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:foreground="?attr/selectableItemBackground">
 
-                            <TextView
-                                android:id="@+id/tv_version"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:paddingLeft="16dp"
-                                android:paddingRight="16dp"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-                                android:textColor="?attr/textColorPrimary"/>
-                        </LinearLayout>
+                    <ImageView
+                        android:id="@+id/iv_persion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_person"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
 
-                    </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/about_developers_label"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="?attr/textColorPrimary"
+                        app:layout_constraintBottom_toBottomOf="@id/iv_persion"
+                        app:layout_constraintLeft_toRightOf="@+id/iv_persion"
+                        app:layout_constraintTop_toTopOf="@id/iv_persion"/>
+                </android.support.constraint.ConstraintLayout>
 
-                    <LinearLayout
-                        android:id="@+id/changelogView"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:background="?attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:foreground="?attr/selectableItemBackground"
-                        android:onClick="true"
-                        android:orientation="horizontal">
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/cl_licenses"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:foreground="?attr/selectableItemBackground">
 
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:paddingLeft="16dp"
-                            android:paddingRight="16dp"
-                            android:src="@drawable/ic_history"/>
+                    <ImageView
+                        android:id="@+id/iv_description"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_description"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:paddingLeft="16dp"
-                            android:paddingRight="16dp"
-                            android:text="@string/changelog"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                            android:textColor="?attr/textColorPrimary"/>
-                    </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/about_libraries_label"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="?attr/textColorPrimary"
+                        app:layout_constraintBottom_toBottomOf="@id/iv_description"
+                        app:layout_constraintLeft_toRightOf="@+id/iv_description"
+                        app:layout_constraintTop_toTopOf="@id/iv_description"/>
+                </android.support.constraint.ConstraintLayout>
 
-                    <LinearLayout
-                        android:id="@+id/developersView"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:background="?attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:foreground="?attr/selectableItemBackground"
-                        android:onClick="true"
-                        android:orientation="horizontal">
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/cl_source"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:foreground="?attr/selectableItemBackground">
 
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:paddingLeft="16dp"
-                            android:paddingRight="16dp"
-                            android:src="@drawable/ic_person"/>
+                    <ImageView
+                        android:id="@+id/iv_github"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_github"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:paddingLeft="16dp"
-                            android:paddingRight="16dp"
-                            android:text="@string/about_developers_label"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                            android:textColor="?attr/textColorPrimary"/>
-                    </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/source_code"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="?attr/textColorPrimary"
+                        app:layout_constraintBottom_toBottomOf="@id/iv_github"
+                        app:layout_constraintLeft_toRightOf="@+id/iv_github"
+                        app:layout_constraintTop_toTopOf="@id/iv_github"/>
+                </android.support.constraint.ConstraintLayout>
 
-                    <LinearLayout
-                        android:id="@+id/licensesView"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:background="?attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:foreground="?attr/selectableItemBackground"
-                        android:onClick="true"
-                        android:orientation="horizontal">
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/cl_copyright"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:foreground="?attr/selectableItemBackground">
 
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:paddingLeft="16dp"
-                            android:paddingRight="16dp"
-                            android:src="@drawable/ic_description"/>
+                    <ImageView
+                        android:id="@+id/iv_copyright"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_copyright"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:paddingLeft="16dp"
-                            android:paddingRight="16dp"
-                            android:text="@string/about_libraries_label"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                            android:textColor="?attr/textColorPrimary"/>
-                    </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/copyright"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                        android:textColor="?attr/textColorPrimary"
+                        app:layout_constraintBottom_toBottomOf="@id/iv_copyright"
+                        app:layout_constraintLeft_toRightOf="@+id/iv_copyright"
+                        app:layout_constraintTop_toTopOf="@id/iv_copyright"/>
+                </android.support.constraint.ConstraintLayout>
 
-                    <LinearLayout
-                        android:id="@+id/sourceCodeView"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:background="?attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:foreground="?attr/selectableItemBackground"
-                        android:onClick="true"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:paddingLeft="16dp"
-                            android:paddingRight="16dp"
-                            android:src="@drawable/ic_github"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:paddingLeft="16dp"
-                            android:paddingRight="16dp"
-                            android:text="@string/source_code"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                            android:textColor="?attr/textColorPrimary"/>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/copyRightView"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:background="?attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:foreground="?attr/selectableItemBackground"
-                        android:onClick="true"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:paddingLeft="16dp"
-                            android:paddingRight="16dp"
-                            android:src="@drawable/ic_copyright"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:paddingLeft="16dp"
-                            android:paddingRight="16dp"
-                            android:text="@string/copyright"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                            android:textColor="?attr/textColorPrimary"/>
-                    </LinearLayout>
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-        </LinearLayout>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
     </ScrollView>
 </android.support.design.widget.CoordinatorLayout>

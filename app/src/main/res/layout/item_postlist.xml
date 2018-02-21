@@ -1,78 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ll_root"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardview"
     android:layout_width="match_parent"
-    android:layout_height="256dp"
-    android:layout_marginBottom="4dp"
-    android:layout_marginLeft="8dp"
-    android:layout_marginRight="8dp"
-    android:layout_marginTop="4dp">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="2dp"
+    android:layout_marginTop="2dp">
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?attr/itemViewBackground"
         android:foreground="?attr/selectableItemBackground"
-        android:orientation="vertical"
-        android:paddingBottom="4dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:paddingTop="4dp">
+        android:padding="8dp">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="26dp">
+        <TextView
+            android:id="@+id/tv_publishedTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/textColorPrimary"
+            app:layout_constraintStart_toStartOf="@+id/iv_titleImage"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="2018-02-07"/>
 
-            <TextView
-                android:id="@+id/tv_publishedTime"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:gravity="center_vertical"
-                android:textColor="?attr/textColorPrimary"/>
+        <TextView
+            android:id="@+id/tv_likesCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:textColor="?attr/textColorPrimary"
+            app:layout_constraintEnd_toStartOf="@+id/tv_commentsCount"
+            app:layout_constraintTop_toTopOf="@+id/tv_publishedTime"
+            tools:text="22赞"/>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="32dp"
-                android:layout_toRightOf="@+id/tv_publishedTime">
-
-                <TextView
-                    android:id="@+id/tv_likesCount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_toLeftOf="@+id/tv_commentsCount"
-                    android:gravity="center_vertical"
-                    android:paddingRight="8dp"
-                    android:textColor="?attr/textColorPrimary"/>
-
-                <TextView
-                    android:id="@+id/tv_commentsCount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentRight="true"
-                    android:gravity="center_vertical"
-                    android:textColor="?attr/textColorPrimary"/>
-            </RelativeLayout>
-        </RelativeLayout>
+        <TextView
+            android:id="@+id/tv_commentsCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/textColorPrimary"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_likesCount"
+            tools:text="5条评论"/>
 
         <ImageView
             android:id="@+id/iv_titleImage"
             android:layout_width="match_parent"
-            android:layout_height="184dp"/>
+            android:layout_height="184dp"
+            android:layout_marginTop="2dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_publishedTime"
+            tools:ignore="ContentDescription"
+            tools:scaleType="centerCrop"
+            tools:src="@drawable/error_image"/>
 
         <TextView
             android:id="@+id/tv_title"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:ellipsize="end"
-            android:gravity="center_vertical"
             android:maxLines="1"
             android:textColor="?attr/textColorPrimary"
             android:textSize="16sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_titleImage"
+            tools:text="发布了一款叫做「抽奖助手」的小程序"/>
 
-    </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>

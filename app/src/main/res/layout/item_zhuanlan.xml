@@ -2,81 +2,84 @@
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cardview"
     android:layout_width="match_parent"
     android:layout_height="96dp"
-    android:layout_marginBottom="4dp"
-    android:layout_marginLeft="8dp"
-    android:layout_marginRight="8dp"
-    android:layout_marginTop="4dp"
+    android:layout_marginBottom="2dp"
+    android:layout_marginTop="2dp"
     android:background="?attr/itemViewBackground"
     app:cardBackgroundColor="?attr/itemViewBackground">
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?attr/selectableItemBackground"
         android:foreground="?attr/selectableItemBackground"
-        android:padding="8dp">
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/cv_avatar"
             android:layout_width="72dp"
             android:layout_height="72dp"
-            android:layout_gravity="center"
-            android:src="@drawable/error_image"/>
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/error_image"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            android:orientation="vertical"
-            android:paddingBottom="8dp"
-            android:paddingTop="8dp">
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginStart="24dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:textColor="?attr/textColorPrimary"
+            android:textSize="18sp"
+            app:layout_constraintStart_toEndOf="@+id/cv_avatar"
+            app:layout_constraintTop_toTopOf="@+id/cv_avatar"
+            tools:text="小道消息"/>
 
-            <TextView
-                android:id="@+id/tv_name"
-                android:layout_width="match_parent"
-                android:layout_height="28dp"
-                android:ellipsize="end"
-                android:gravity="center_vertical"
-                android:maxLines="1"
-                android:textColor="?attr/textColorPrimary"
-                android:textSize="18sp"/>
+        <TextView
+            android:id="@+id/tv_followersCount"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:textColor="?attr/textColorPrimary"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="@+id/tv_name"
+            app:layout_constraintTop_toBottomOf="@+id/tv_name"
+            tools:text="123人关注TA"/>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tv_postsCount"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:textColor="?attr/textColorPrimary"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@+id/tv_followersCount"
+            app:layout_constraintTop_toTopOf="@+id/tv_followersCount"
+            tools:text="20篇文章"/>
 
-                <TextView
-                    android:id="@+id/tv_followersCount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:textColor="?attr/textColorPrimary"
-                    android:textSize="14sp"/>
-
-                <TextView
-                    android:id="@+id/tv_postsCount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginStart="8dp"
-                    android:textColor="?attr/textColorPrimary"
-                    android:textSize="14sp"/>
-
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/tv_intro"
-                android:layout_width="match_parent"
-                android:layout_height="32dp"
-                android:ellipsize="end"
-                android:maxLines="2"
-                android:textColor="?attr/textColorPrimary"
-                android:textSize="12sp"/>
-        </LinearLayout>
-    </LinearLayout>
+        <TextView
+            android:id="@+id/tv_intro"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="?attr/textColorPrimary"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="@+id/tv_name"
+            app:layout_constraintTop_toBottomOf="@+id/tv_followersCount"
+            tools:text="马力的互联网产品设计与用户体验专栏,马力的互联网产品设计与用户体验专栏"/>
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.v7.widget.CardView>
