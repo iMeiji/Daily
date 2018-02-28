@@ -79,8 +79,11 @@ dependencies {
 
     // retrofit 2
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-moshi:2.3.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+
+    // Moshi
+    implementation 'com.squareup.moshi:moshi-kotlin:1.5.0'
 
     // 持久化 Cookie
     implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'

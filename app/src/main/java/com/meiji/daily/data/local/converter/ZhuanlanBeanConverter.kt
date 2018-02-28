@@ -1,10 +1,10 @@
 package com.meiji.daily.data.local.converter
 
 import android.arch.persistence.room.TypeConverter
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.meiji.daily.bean.ZhuanlanBean
-import java.util.*
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 
 /**
  * Created by Meiji on 2017/11/28.
@@ -12,36 +12,34 @@ import java.util.*
 
 class ZhuanlanBeanConverter {
 
-    private val mGson = Gson()
+    private val mMoshi = Moshi.Builder().build()
+    private val mCreatorAdapter: JsonAdapter<ZhuanlanBean.Creator>
+    private var mAvatarAdapter: JsonAdapter<ZhuanlanBean.Avatar>
+    private var mTopicAdapter: JsonAdapter<List<ZhuanlanBean.Topic>>
 
-    @TypeConverter
-    fun fromCreator(c: ZhuanlanBean.Creator): String {
-        return mGson.toJson(c)
+    init {
+        mCreatorAdapter = mMoshi.adapter(ZhuanlanBean.Creator::class.java)
+        mAvatarAdapter = mMoshi.adapter(ZhuanlanBean.Avatar::class.java)
+
+        val type = Types.newParameterizedType(List::class.java, ZhuanlanBean.Topic::class.java)
+        mTopicAdapter = mMoshi.adapter<List<ZhuanlanBean.Topic>>(type)
     }
 
     @TypeConverter
-    fun toCreator(s: String): ZhuanlanBean.Creator {
-        return mGson.fromJson(s, ZhuanlanBean.Creator::class.java)
-    }
+    fun fromCreator(c: ZhuanlanBean.Creator): String = mCreatorAdapter.toJson(c)
 
     @TypeConverter
-    fun fromTopicList(l: List<ZhuanlanBean.Topic>): String {
-        return mGson.toJson(l)
-    }
+    fun toCreator(s: String): ZhuanlanBean.Creator = mCreatorAdapter.fromJson(s)!!
 
     @TypeConverter
-    fun toTopicList(s: String): List<ZhuanlanBean.Topic> {
-        val listType = object : TypeToken<ArrayList<ZhuanlanBean.Topic>>() {}.type
-        return mGson.fromJson(s, listType)
-    }
+    fun fromTopicList(l: List<ZhuanlanBean.Topic>): String = mTopicAdapter.toJson(l)
 
     @TypeConverter
-    fun fromAvatar(a: ZhuanlanBean.Avatar): String {
-        return mGson.toJson(a)
-    }
+    fun toTopicList(s: String): List<ZhuanlanBean.Topic> = mTopicAdapter.fromJson(s)!!
 
     @TypeConverter
-    fun toAvatar(s: String): ZhuanlanBean.Avatar {
-        return mGson.fromJson(s, ZhuanlanBean.Avatar::class.java)
-    }
+    fun fromAvatar(a: ZhuanlanBean.Avatar): String = mAvatarAdapter.toJson(a)
+
+    @TypeConverter
+    fun toAvatar(s: String): ZhuanlanBean.Avatar = mAvatarAdapter.fromJson(s)!!
 }
