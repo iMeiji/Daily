@@ -57,7 +57,7 @@ dependencies {
     implementation "com.android.support:support-annotations:${support_version}"
 
     // implementation "com.android.support:support-v4:${support_version}"
-    implementation 'com.android.support:multidex:1.0.2'
+    implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 
 
@@ -65,8 +65,8 @@ dependencies {
     implementation 'com.afollestad.material-dialogs:commons:0.9.4.4'
 
     // Glide
-    implementation 'com.github.bumptech.glide:glide:4.4.0'
-    kapt 'com.github.bumptech.glide:compiler:4.4.0'
+    implementation 'com.github.bumptech.glide:glide:4.6.1'
+    kapt 'com.github.bumptech.glide:compiler:4.6.1'
     implementation('com.github.bumptech.glide:okhttp-integration:4.4.0') {
         exclude group: 'com.squareup.okhttp3', module: 'okhttp'
     }
@@ -122,8 +122,8 @@ dependencies {
     }
 
     // Dagger 2
-    implementation 'com.google.dagger:dagger:2.13'
-    kapt 'com.google.dagger:dagger-compiler:2.13'
+    implementation 'com.google.dagger:dagger:2.14.1'
+    kapt 'com.google.dagger:dagger-compiler:2.14.1'
 
     //    implementation 'com.google.dagger:dagger-android:2.13'
 
