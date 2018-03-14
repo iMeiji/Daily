@@ -41,8 +41,17 @@ android {
             ext.enableCrashlytics = false
         }
     }
+    flavorDimensions "default"
     productFlavors {
+        dev {
+            minSdkVersion 21
+            dimension "default"
+        }
     }
+}
+
+kapt {
+    useBuildCache = true
 }
 
 dependencies {
@@ -59,7 +68,6 @@ dependencies {
     // implementation "com.android.support:support-v4:${support_version}"
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-
 
     // MD dialog
     implementation 'com.afollestad.material-dialogs:commons:0.9.4.4'
