@@ -175,7 +175,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 .allowUserColorInputAlpha(false)
                 .theme(if (mSettingHelper.isNightMode) Theme.DARK else Theme.LIGHT)
                 .customButton(R.string.md_custom)
-                .show()
+                .build()
     }
 
     override fun onColorSelection(dialog: ColorChooserDialog, @ColorInt selectedColor: Int) {
