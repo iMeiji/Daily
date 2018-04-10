@@ -4,11 +4,11 @@ import android.app.Application
 import android.arch.lifecycle.*
 import com.meiji.daily.bean.PostsListBean
 import com.meiji.daily.data.remote.IApi
+import com.meiji.daily.io
+import com.meiji.daily.mainThread
 import com.meiji.daily.util.ErrorAction
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
-import io.reactivex.schedulers.Schedulers
 import retrofit2.Retrofit
 import java.util.*
 
@@ -51,8 +51,8 @@ constructor(application: Application,
         val liveData = MutableLiveData<List<PostsListBean>>()
 
         mRetrofit.create(IApi::class.java).getPostsList(mSlug, offset)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(io)
+                .observeOn(mainThread)
                 .subscribe(Consumer { list ->
                     mList.addAll(list)
                     liveData.value = mList

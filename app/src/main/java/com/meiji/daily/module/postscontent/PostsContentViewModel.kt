@@ -6,11 +6,11 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import com.meiji.daily.data.remote.IApi
+import com.meiji.daily.io
+import com.meiji.daily.mainThread
 import com.meiji.daily.util.ErrorAction
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
-import io.reactivex.schedulers.Schedulers
 import retrofit2.Retrofit
 
 /**
@@ -39,11 +39,11 @@ internal constructor(application: Application,
         isLoading.value = true
 
         mRetrofit.create(IApi::class.java).getPostsContentBean(slug)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(io)
+                .observeOn(mainThread)
                 .subscribe(Consumer { bean ->
                     isLoading.value = false
-                    html.value = parserHTML(bean.content!!)
+                    html.value = parserHTML(bean.content)
                 }, object : ErrorAction() {
                     override fun doAction() {
                         isLoading.value = false

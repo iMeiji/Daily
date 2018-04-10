@@ -10,14 +10,14 @@ import com.meiji.daily.R
 import com.meiji.daily.bean.ZhuanlanBean
 import com.meiji.daily.data.local.AppDatabase
 import com.meiji.daily.data.remote.IApi
+import com.meiji.daily.io
+import com.meiji.daily.mainThread
 import com.meiji.daily.util.ErrorAction
 import com.meiji.daily.util.RxBusHelper
 import io.reactivex.Flowable
 import io.reactivex.Maybe
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
-import io.reactivex.schedulers.Schedulers
 import retrofit2.Retrofit
 import java.util.*
 
@@ -66,7 +66,6 @@ constructor(application: Application,
 
     internal fun handleData() {
         mAppDatabase.zhuanlanDao().query(mType)
-                .subscribeOn(Schedulers.io())
                 .flatMap {
                     if (it.size > 0) {
                         return@flatMap Maybe.just(it)
@@ -75,7 +74,8 @@ constructor(application: Application,
                         return@flatMap Maybe.just(l)
                     }
                 }
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(io)
+                .observeOn(mainThread)
                 .subscribe(Consumer<List<ZhuanlanBean>> { list ->
                     mList.value = list
                     isLoading.setValue(false)

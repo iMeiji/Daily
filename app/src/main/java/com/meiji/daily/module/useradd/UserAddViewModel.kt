@@ -9,15 +9,15 @@ import com.meiji.daily.Constant
 import com.meiji.daily.bean.ZhuanlanBean
 import com.meiji.daily.data.local.AppDatabase
 import com.meiji.daily.data.remote.IApi
+import com.meiji.daily.io
+import com.meiji.daily.mainThread
 import com.meiji.daily.util.ErrorAction
 import com.meiji.daily.util.RxBusHelper
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.SingleOnSubscribe
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
-import io.reactivex.schedulers.Schedulers
 import retrofit2.Retrofit
 
 /**
@@ -63,8 +63,8 @@ constructor(application: Application,
         isLoading.value = true
 
         mAppDatabase.zhuanlanDao().query(Constant.TYPE_USERADD)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(io)
+                .observeOn(mainThread)
                 .subscribe(Consumer<MutableList<ZhuanlanBean>> { list ->
                     mList.value = list
                 }, ErrorAction.error()).let { mDisposable.add(it) }
@@ -75,14 +75,14 @@ constructor(application: Application,
         isLoading.value = true
 
         mRetrofit.create(IApi::class.java).getZhuanlanBean(input)
-                .subscribeOn(Schedulers.io())
                 .doOnSuccess { bean ->
                     bean?.let {
                         it.type = Constant.TYPE_USERADD
                         mAppDatabase.zhuanlanDao().insert(it)
                     }
                 }
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(io)
+                .observeOn(mainThread)
                 .subscribe(Consumer {
                     isAddResult.value = true
                     handleData()
@@ -104,7 +104,7 @@ constructor(application: Application,
     internal fun deleteItem(bean: ZhuanlanBean) {
         Single.create(SingleOnSubscribe<Any> {
             mAppDatabase.zhuanlanDao().delete(bean.slug)
-        }).subscribeOn(Schedulers.io())
+        }).subscribeOn(io)
                 .subscribe().let { mDisposable.add(it) }
 
     }

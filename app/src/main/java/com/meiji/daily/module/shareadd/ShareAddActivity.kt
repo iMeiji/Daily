@@ -8,16 +8,12 @@ import android.text.TextUtils
 import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.Theme
-import com.meiji.daily.App
-import com.meiji.daily.Constant
-import com.meiji.daily.R
+import com.meiji.daily.*
 import com.meiji.daily.data.local.AppDatabase
 import com.meiji.daily.data.remote.IApi
 import com.meiji.daily.util.SettingHelper
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
-import io.reactivex.schedulers.Schedulers
 import retrofit2.Retrofit
 import java.util.regex.Pattern
 import javax.inject.Inject
@@ -67,8 +63,8 @@ class ShareAddActivity : AppCompatActivity() {
         if (matcher.find()) {
             val slug = matcher.group(1).toLowerCase()
             mAppDatabase.zhuanlanDao().query(Constant.TYPE_USERADD)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(io)
+                    .observeOn(mainThread)
                     .subscribe(Consumer { list ->
                         for (bean in list) {
                             if (bean.slug == slug) {
@@ -79,12 +75,12 @@ class ShareAddActivity : AppCompatActivity() {
                     }).let { mDisposable.add(it) }
 
             mRetrofit.create(IApi::class.java).getZhuanlanBean(slug)
-                    .subscribeOn(Schedulers.io())
                     .map { bean ->
                         bean.type = Constant.TYPE_USERADD
                         return@map mAppDatabase.zhuanlanDao().insert(bean).toInt() != -1
                     }
-                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(io)
+                    .observeOn(mainThread)
                     .subscribe({ isSuccess ->
                         if (isSuccess!!) {
                             onFinish(getString(R.string.add_zhuanlan_id_success))
